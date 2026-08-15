@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Capacidade Oculta · Acolhida</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#5B4BA8;--accent-soft:#EFEBFA;--accent-deep:#2E2560;
+--h-bg:#15112A;--h-gold:#F2C14E;--h-sub:#9A93B5;--h-line:#322A57;
+--gold:#9A7414;--gold-s:#FDF6E0;--gold-b:#E0C87A;
+--rice:#E3CE95;--water:#4FA3D1;
+--green:#1D5E21;--green-s:#E9F5EC;--rose:#B0264A;--rose-s:#FBE9EC;
+--ink:#171327;--ink-mid:#413A56;--ink-soft:#6F6885;--border:#E3DFEC;--bg:#F8F7FB;--bg-card:#fff;--radius:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ══════════════════════════════════════════════════════════
+   REGRA MESTRA — tudo que é do formador some quando o modo
+   formador está desligado. É esta linha que torna a página
+   projetável.
+   ══════════════════════════════════════════════════════════ */
+body:not(.fmode) .fonly{display:none !important}
+
+/* ── TOPO ── */
+.top{background:var(--h-bg);padding:.9rem 1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative;z-index:40}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1;min-width:150px}
+.top-t em{font-style:italic;color:var(--h-gold)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(242,193,78,.3);padding:4px 12px;border-radius:3px}
+.clock{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.06);border:.5px solid var(--h-line);border-radius:100px;padding:4px 6px 4px 14px}
+.clock-n{font-family:var(--f-mono);font-size:15px;font-weight:600;color:#fff;letter-spacing:.02em}
+.clock-n.over{color:#F2A08A}
+.clock-lim{font-family:var(--f-mono);font-size:10px;color:var(--h-sub)}
+.clock-b{background:none;border:1px solid var(--h-line);color:var(--h-sub);font-size:11px;width:26px;height:26px;border-radius:50%;cursor:pointer;line-height:1}
+.clock-b:hover{border-color:var(--h-gold);color:var(--h-gold)}
+
+/* botão mestre do modo formador */
+.fkey{font-family:var(--f-body);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--h-sub);
+  background:rgba(255,255,255,.05);border:1px solid var(--h-line);border-radius:100px;padding:7px 15px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fkey:hover{border-color:var(--h-gold);color:var(--h-gold)}
+body.fmode .fkey{background:var(--h-gold);border-color:var(--h-gold);color:#15112A}
+.fbar{background:var(--gold-s);border-bottom:1px solid var(--gold-b);color:#6B4F08;font-size:11.5px;font-weight:600;
+  padding:7px 1.5rem;letter-spacing:.02em;position:relative;z-index:39;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fbar b{font-weight:800}
+
+.container{max-width:880px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:10.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 11px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--green)}.tab.done .tn{background:var(--green-s);color:var(--green);border-color:var(--green)}
+.tab.fonly{color:var(--gold)}
+.tab.fonly .tn{background:var(--gold-s);color:var(--gold);border-color:var(--gold-b)}
+.tab.fonly.on{color:var(--gold);border-bottom-color:var(--gold);background:var(--gold-s)}
+.tab.fonly.on .tn{background:var(--gold);color:#fff}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH (o que a sala lê na tela) ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#241C42);border-radius:var(--radius);padding:1.7rem 1.9rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'"';position:absolute;left:12px;top:-6px;font-family:var(--f-head);font-size:100px;color:rgba(242,193,78,.1);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(18px,3.3vw,26px);font-weight:400;font-style:italic;color:#DCD6EE;line-height:1.5;position:relative;z-index:1}
+.speech p+p{margin-top:12px}
+.speech p b{color:var(--h-gold);font-weight:600;font-style:normal}
+
+/* ── INST (instruções que a sala pode ler) ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1.1rem 1.4rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--accent-deep);margin-bottom:9px}
+.inst p,.inst li{font-size:15px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:21px;position:relative;margin-bottom:8px}
+.inst li:last-child{margin-bottom:0}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:12px;line-height:1.7}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(91,75,168,.22);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:var(--rose-s);border:1px solid rgba(176,38,74,.22);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7C1832;line-height:1.6}
+.ok{background:var(--green-s);border:1px solid rgba(29,94,33,.22);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#123D15;line-height:1.6}
+.gold{background:var(--gold-s);border:1px solid var(--gold-b);border-left:4px solid var(--gold);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#6B4F08;line-height:1.6}
+.tip b,.warn b,.ok b,.gold b{font-weight:700}
+.tip ul,.warn ul,.ok ul,.gold ul{list-style:none;padding:0;margin-top:7px}
+.tip li,.warn li,.ok li,.gold li{padding-left:16px;position:relative;margin-bottom:5px}
+.tip li::before,.warn li::before,.ok li::before,.gold li::before{content:"·";position:absolute;left:4px;font-weight:700}
+
+/* ══════════ NOTA DO FORMADOR ══════════ */
+.fnote{background:#FFFDF6;border:1px solid var(--gold-b);border-left:5px solid var(--gold);border-radius:var(--radius);
+  padding:.95rem 1.2rem;margin:1rem 0;position:relative}
+.fnote.alerta{background:#FFF8F9;border-color:rgba(176,38,74,.35);border-left-color:var(--rose)}
+.fnote.chave{background:#F6FBF7;border-color:rgba(29,94,33,.3);border-left-color:var(--green)}
+.fnote-h{font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.fnote.alerta .fnote-h{color:var(--rose)}
+.fnote.chave .fnote-h{color:var(--green)}
+.fnote-h::before{content:"◆";font-size:8px}
+.fnote-b{font-size:13.5px;color:var(--ink-mid);line-height:1.72}
+.fnote-b b{color:var(--ink);font-weight:700}
+.fnote-b p+p{margin-top:9px}
+.fnote-b ul{list-style:none;padding:0;margin:0}
+.fnote-b li{padding-left:19px;position:relative;margin-bottom:8px}
+.fnote-b li:last-child{margin-bottom:0}
+.fnote-b li::before{content:"▸";position:absolute;left:0;color:var(--gold);font-size:10px;line-height:1.85}
+.fnote.alerta .fnote-b li::before{color:var(--rose)}
+.fnote.chave .fnote-b li::before{color:var(--green)}
+
+/* ── LINHA DO TEMPO ── */
+.tline{display:flex;gap:6px;margin:1rem 0 1.2rem;flex-wrap:wrap}
+.tl-i{flex:1;min-width:120px;background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:6px;padding:.7rem .8rem}
+.tl-i.opt{border-top-color:var(--ink-soft);opacity:.75}
+.tl-min{font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.tl-i.opt .tl-min{color:var(--ink-soft)}
+.tl-n{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--ink);margin:3px 0 2px;line-height:1.3}
+.tl-d{font-size:11px;color:var(--ink-soft);line-height:1.45}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--rose)}.tm.done{color:var(--green)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px;text-align:center}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.14)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn-gold:hover{filter:brightness(1.1)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;align-items:center}
+
+/* ── STAGE (painel escuro — o que a sala vê) ── */
+.stage{background:#1A1533;border:1px solid var(--h-line);border-radius:9px;padding:1.3rem 1.2rem 1.5rem;margin-bottom:1.2rem;position:relative}
+.stage.palco{position:fixed;inset:0;z-index:300;border-radius:0;border:none;margin:0;overflow-y:auto;padding:4vh 4vw;display:flex;flex-direction:column;justify-content:center}
+.st-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--h-gold);
+  border-bottom:1px solid var(--h-line);padding-bottom:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.stage.palco .st-h{position:absolute;top:2vh;left:4vw;right:4vw;border:none}
+.fs-btn{background:none;border:1px solid var(--h-line);color:var(--h-sub);font-family:var(--f-mono);font-size:10px;padding:5px 11px;border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.fs-btn:hover{border-color:var(--h-gold);color:var(--h-gold)}
+.stage.palco .ctrls,.stage.palco .gin,.stage.palco .st-sub{display:none}
+.st-sub{font-size:11.5px;color:#7C749B;text-align:center;margin-top:12px;line-height:1.5}
+
+/* pote */
+.q{font-family:var(--f-head);font-size:clamp(22px,4.6vw,32px);font-weight:600;color:#fff;text-align:center;margin-bottom:18px;line-height:1.25}
+.stage.palco .q{font-size:clamp(28px,5vw,52px);margin-bottom:3vh}
+.est{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+@media(max-width:620px){.est{grid-template-columns:1fr}}
+.jarwrap{display:flex;justify-content:center}
+.jarwrap svg{height:210px;width:auto}
+.stage.palco .jarwrap svg{height:36vh}
+.tick{font-family:var(--f-mono);font-size:clamp(30px,7vw,52px);font-weight:600;color:var(--h-gold);text-align:center;line-height:1;margin-bottom:14px}
+.stage.palco .tick{font-size:clamp(48px,11vw,120px);margin-bottom:3vh}
+.track{position:relative;height:44px;background:#120E24;border:1px solid var(--h-line);border-radius:5px;overflow:visible;margin-bottom:8px}
+.tfill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(79,163,209,.35),rgba(79,163,209,.85));border-radius:4px 0 0 4px}
+.pin{position:absolute;top:-11px;bottom:-11px;width:2px;background:#8B84AE;transition:all .3s}
+.pin::after{content:attr(data-n);position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:var(--f-mono);font-size:10px;color:#8B84AE;white-space:nowrap}
+.pin.passed{background:#E8846B}.pin.passed::after{color:#E8846B}
+.pin.best{background:#8FD494;width:3px}.pin.best::after{color:#8FD494;font-weight:600}
+.axis{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:#6C6490;margin-top:2px}
+.gin{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:16px}
+@media(max-width:520px){.gin{grid-template-columns:repeat(2,1fr)}}
+.gcell{background:#241E45;border:1px solid #3A3163;border-radius:5px;padding:5px 8px;display:flex;align-items:center;gap:6px}
+.gcell label{font-family:var(--f-body);font-size:9.5px;font-weight:700;color:#7C749B;letter-spacing:.06em}
+.gcell input{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:13px;width:100%;outline:none;min-width:0}
+.cap{text-align:center;font-size:14px;color:var(--h-sub);font-style:italic;margin-top:16px;min-height:20px;line-height:1.55}
+.stage.palco .cap{font-size:clamp(14px,2.1vw,22px);margin-top:3vh}
+.realbox{display:inline-flex;align-items:center;gap:8px;background:#FFFDF6;border:1px solid var(--gold-b);border-radius:6px;padding:6px 12px}
+.realbox label{font-family:var(--f-body);font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.realbox input{background:transparent;border:none;color:#6B4F08;font-family:var(--f-mono);font-size:16px;font-weight:700;width:56px;outline:none;text-align:center}
+
+/* mini-cronômetro de estimativa */
+.esttimer{font-family:var(--f-mono);font-size:clamp(22px,4.4vw,34px);font-weight:600;color:#fff;text-align:center;letter-spacing:.04em;margin-top:16px;min-height:38px}
+.esttimer.low{color:#E8846B}.esttimer.go{color:#8FD494}
+.stage.palco .esttimer{font-size:clamp(34px,7vw,72px)}
+
+/* frase montada */
+.phrase{display:flex;flex-wrap:wrap;gap:10px 12px;justify-content:center;align-items:center;padding:8px 0 4px}
+.frag{font-family:var(--f-head);font-weight:700;font-size:clamp(20px,4.2vw,36px);color:#fff;padding:5px 12px;border-radius:5px;line-height:1.18;transition:all .35s;cursor:pointer;user-select:none}
+.frag.hid{color:transparent;background:#221C42;border:1px dashed #453C72;position:relative}
+.frag.hid::after{content:attr(data-n);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:14px;font-weight:400;color:#5B5285}
+@keyframes pop{0%{transform:scale(.86) translateY(7px);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.frag.show{animation:pop .42s cubic-bezier(.3,.9,.3,1.2) both;background:rgba(242,193,78,.13)}
+.stage.palco .phrase{padding:2vh 0}
+.stage.palco .frag{font-size:clamp(26px,5.6vw,64px);padding:6px 16px}
+.defn{margin-top:22px;opacity:0;transition:opacity .8s;text-align:center}
+.defn.on{opacity:1}
+.defn-r{display:inline-block;background:#241E45;border:1px solid #3A3163;border-radius:100px;padding:8px 20px;margin:5px;font-size:14px;color:#C6BFE0;font-family:var(--f-body)}
+.defn-r b{color:var(--h-gold);font-weight:700}
+.stage.palco .defn-r{font-size:clamp(13px,1.9vw,20px);padding:9px 24px}
+.pcount{font-family:var(--f-mono);font-size:11px;color:#7C749B;text-align:center;margin-top:14px}
+
+/* frase final estática (M3) */
+.final{font-family:var(--f-head);font-weight:700;font-size:clamp(22px,4.6vw,40px);color:#fff;text-align:center;line-height:1.3;padding:10px 0 4px}
+.final em{font-style:normal;color:var(--h-gold)}
+.stage.palco .final{font-size:clamp(30px,6vw,68px)}
+
+/* ── ponte: garrafa de 1 L ── */
+.bridge{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.br-q{background:#221C42;border:1px solid var(--h-line);border-radius:7px;padding:1rem 1.2rem;cursor:pointer;transition:all .2s}
+.br-q:hover{border-color:var(--h-gold)}
+.br-qt{font-family:var(--f-head);font-size:clamp(16px,2.8vw,22px);font-weight:600;color:#fff;line-height:1.35}
+.br-a{display:none;margin-top:9px;padding-top:9px;border-top:1px dashed var(--h-line);font-family:var(--f-mono);font-size:clamp(13px,2.2vw,18px);color:var(--h-gold)}
+.br-q.open .br-a{display:block}
+.stage.palco .br-qt{font-size:clamp(19px,3.4vw,34px)}
+.stage.palco .br-a{font-size:clamp(15px,2.6vw,26px)}
+
+/* ── gabarito do enigma ── */
+.lockbar{display:flex;align-items:center;gap:10px;background:var(--rose-s);border:1px solid rgba(176,38,74,.3);border-radius:var(--radius);padding:.75rem 1rem;margin:.6rem 0 0;flex-wrap:wrap}
+.lockbar span{flex:1;min-width:170px;font-size:12.5px;color:#7C1832;line-height:1.5}
+.enig{display:none;flex-direction:column;gap:8px;margin:12px 0 0}
+.enig.on{display:flex}
+.ecard{background:#1A1533;border:1px solid var(--h-line);border-radius:8px;padding:.85rem 1.1rem;cursor:pointer;transition:all .2s}
+.ecard:hover{border-color:var(--accent)}
+.ecard-top{display:flex;gap:12px;align-items:center}
+.ecard-pos{font-family:var(--f-mono);font-size:11px;font-weight:700;color:#5B5285;min-width:60px}
+.ecard-q{flex:1;font-size:12.5px;color:#DCD6EE;line-height:1.4}
+.ecard-ans{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--h-line);align-items:center;gap:12px;flex-wrap:wrap}
+.ecard.open .ecard-ans{display:flex}
+.ecard-n{font-family:var(--f-head);font-size:22px;font-weight:700;color:var(--h-gold);min-width:26px}
+.ecard-frag{font-family:var(--f-head);font-size:14px;font-weight:600;color:#fff;background:rgba(242,193,78,.13);border-radius:5px;padding:3px 12px}
+.ecard-c{font-family:var(--f-mono);font-size:11px;color:#8B84AE;flex-basis:100%;margin-top:4px}
+
+/* ── checklist ── */
+.check{display:flex;flex-direction:column;gap:8px;margin:1rem 0}
+.ck{display:flex;gap:12px;align-items:flex-start;background:var(--bg-card);border:.5px solid var(--border);border-radius:var(--radius);padding:.85rem 1.1rem;cursor:pointer;transition:all .2s}
+.ck:hover{border-color:var(--accent)}
+.ck.on{background:var(--green-s);border-color:var(--green)}
+.ck-box{width:20px;height:20px;border:2px solid var(--accent);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;transition:all .2s}
+.ck.on .ck-box{background:var(--green);border-color:var(--green)}
+.ck-box::after{content:"✓";opacity:0;transition:opacity .2s}
+.ck.on .ck-box::after{opacity:1}
+.ck-t{font-size:13px;color:var(--ink-mid);line-height:1.6}
+.ck-t b{color:var(--ink)}
+.ck-tag{display:inline-block;font-family:var(--f-mono);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);border-radius:3px;padding:1px 6px;margin-right:7px;vertical-align:1px}
+.ck-tag.casa{background:var(--gold-s);color:var(--gold)}
+
+/* roteiro de fala */
+.script{background:#1A1533;border:1px solid var(--h-line);border-radius:var(--radius);padding:1.2rem 1.3rem;margin:12px 0 0}
+.script-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--h-gold);border-bottom:1px solid var(--h-line);padding-bottom:9px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.script p{font-family:var(--f-head);font-size:14.5px;color:#DCD6EE;line-height:1.75;font-style:italic}
+.script p+p{margin-top:11px}
+.script p b{color:var(--h-gold);font-style:normal;font-weight:600}
+.script .js-real{color:var(--h-gold);font-style:normal;font-weight:700}
+
+/* tabela de ajuste de mesas */
+.adj{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px}
+.adj th,.adj td{border:1px solid var(--border);padding:7px 10px;text-align:left;line-height:1.5}
+.adj th{background:var(--accent-soft);color:var(--accent-deep);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.adj td{color:var(--ink-mid)}
+.adj td b{color:var(--ink)}
+
+/* ── nav ── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+.kbd{font-family:var(--f-mono);font-size:10px;background:var(--bg-card);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:1px 5px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A <em>Capacidade</em> Oculta</div>
+  <span class="top-badge">🫙 Acolhida · Dia 2</span>
+  <span class="top-badge fonly">21 min + 4 opcionais</span>
+  <div class="clock fonly">
+    <span class="clock-n" id="gclock">00:00</span>
+    <span class="clock-lim">/ 21:00</span>
+    <button class="clock-b" id="gbtn" onclick="gToggle()" title="iniciar/pausar o relógio da acolhida">▶</button>
+    <button class="clock-b" onclick="gReset()" title="zerar">↺</button>
+  </div>
+  <button class="fkey" id="fkey" onclick="toggleF()" title="mostrar/ocultar as notas do formador (tecla F)">notas do formador</button>
+</div>
+
+<div class="fbar fonly">
+  <b>MODO FORMADOR ATIVO.</b> As notas em âmbar são só suas — não devem ir para a tela. Tecle <b>F</b> ou clique no botão do topo para voltar ao modo projeção.
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab fonly" onclick="go(0)"><span class="tn">✓</span>Preparação</button>
+      <button class="tab on" onclick="go(1)"><span class="tn">1</span>O pote</button>
+      <button class="tab" onclick="go(2)"><span class="tn">2</span>O enigma</button>
+      <button class="tab" onclick="go(3)"><span class="tn">3</span>A frase</button>
+      <!-- <button class="tab" onclick="go(4)"><span class="tn">4</span>O bilhete</button> -->
+      <button class="tab fonly" onclick="go(5)"><span class="tn">!</span>Imprevistos</button>
+    </div>
+  </div>
+
+<!-- ══════════════════ 0 · PREPARAÇÃO (só formador) ══════════════════ -->
+<div class="pane fonly" id="p0">
+
+  <div class="fnote">
+    <div class="fnote-h">como esta página funciona</div>
+    <div class="fnote-b">
+      <p>Esta página foi feita para ficar <b>projetada o tempo todo</b>. No estado normal ela mostra apenas o que a sala pode ver: as perguntas, as instruções, o pote, a frase se montando.</p>
+      <ul>
+        <li>O botão <b>notas do formador</b> (topo direito) ou a tecla <span class="kbd">F</span> revela tudo o que é só seu: sequência de condução, roteiro de fala, gabarito, planos B, e estas duas abas âmbar (<b>Preparação</b> e <b>Imprevistos</b>), que desaparecem no modo projeção.</li>
+        <li>Quando o modo formador está ligado, aparece uma <b>faixa âmbar</b> logo abaixo do título. Ela é o seu aviso de que a tela não está limpa.</li>
+        <li>O <b>gabarito do enigma</b> tem uma segunda tranca: mesmo no modo formador, ele só abre com um clique próprio.</li>
+        <li>O botão <b>⛶ modo palco</b>, dentro de cada painel escuro, joga só aquele painel em tela cheia — útil no despejo e na montagem da frase. <span class="kbd">Esc</span> sai.</li>
+        <li>Se puder, use <b>tela estendida</b>: projetor com a página, notebook com as notas abertas. Se não puder, a alternância pelo botão dá conta.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Os momentos · 21 min de núcleo</div>
+  </div>
+
+  <div class="tline">
+    <div class="tl-i"><div class="tl-min">0 → 8 min</div><div class="tl-n">M1 · O pote que parecia cheio</div><div class="tl-d">Estimativa, despejo, surpresa coletiva.</div></div>
+    <div class="tl-i"><div class="tl-min">8 → 16 min</div><div class="tl-n">M2 · O enigma das 8 peças</div><div class="tl-d">Cada mesa acha a posição do seu fragmento.</div></div>
+    <div class="tl-i"><div class="tl-min">16 → 21 min</div><div class="tl-n">M3 · A frase</div><div class="tl-d">A ponte da garrafa e cinco frases suas.</div></div>
+    <div class="tl-i opt"><div class="tl-min">+ 4 min</div><div class="tl-n">M4 · O bilhete na garrafa</div><div class="tl-d">Opcional. Só com sala receptiva e relógio folgado.</div></div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Antes de a sala encher — marque cada item</div>
+  </div>
+
+  <div class="check" id="prepCheck">
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><span class="ck-tag casa">em casa</span><b>Meça o valor real da SUA montagem, uma vez.</b> Encha o pote de arroz, nivele e despeje água até a superfície. Anote. Costuma dar 400–450 mL, mas depende do arroz e da compactação. <b>Você precisa do número da sua montagem, não o do papel</b> — alguém vai perguntar.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><span class="ck-tag casa">em casa</span><b>Monte os 8 envelopes</b> pelo gabarito: uma carta e um fragmento, sempre de mesmo número. Escreva o número por fora, a lápis — ele não vai para dentro.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><span class="ck-tag casa">em casa</span><b>Marque a garrafa de despejo de 100 em 100 mL</b> com fita, e confira a marcação com um copo medidor. É ela que permite contar as centenas em voz alta.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Conte as mesas da sala</b> e ajuste a distribuição dos envelopes (aba <b>Imprevistos</b>). Faça isso antes de distribuir, não na hora.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Encha o pote de arroz até a borda</b> e deixe a régua ao lado — <b>o nivelamento acontece na frente da sala</b>, não antes. O pote precisa estar pronto e visível quando chegarem.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Bandeja sob o pote e pano à mão.</b> Vai transbordar um pouco no fim do despejo — e deve mesmo.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t">Distribua <b>um envelope e um cartão de estimativa por mesa, virados para baixo</b>, antes de sentarem. Diga uma vez, quando sentarem: <b>"não abram ainda."</b></div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t">Deixe o pote em uma mesa central ou na frente, à vista, <b>sem comentar nada sobre ele</b>.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Registre o valor real medido</b> no campo <b>valor real</b> da aba <b>O pote</b> (dentro das notas do formador). Ele alimenta o gráfico e entra sozinho no seu roteiro de fala do M3.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t">Combine com alguém da equipe para <b>digitar as estimativas</b> enquanto você lê os cartões em voz alta. Sozinho dá — a dois flui.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Abra a página já no modo projeção</b> (sem as notas) e deixe na aba <b>O pote</b> antes de conectar o projetor.</div></div>
+  </div>
+
+  <div class="fnote chave">
+    <div class="fnote-h">a régua de ouro desta acolhida</div>
+    <div class="fnote-b"><b>A única pergunta que você NÃO responde</b> é por que a água coube no pote cheio de arroz. Ela é a porta de entrada da oficina "O Litro Tem Aresta", mais tarde na manhã — e vale mais aberta do que fechada.</div>
+  </div>
+
+  <div class="fnote">
+    <div class="fnote-h">atalhos de teclado</div>
+    <div class="fnote-b">
+      <span class="kbd">F</span> liga/desliga as notas do formador · <span class="kbd">←</span> <span class="kbd">→</span> navegam entre as abas · <span class="kbd">espaço</span> aciona o gesto principal do palco (despejar no M1, chamar a próxima mesa no M2) · <span class="kbd">R</span> reinicia a frase no palco do M2 · <span class="kbd">Esc</span> sai do modo palco.
+    </div>
+  </div>
+
+  <div class="nav">
+    <span></span>
+    <button class="btn btn-a" onclick="go(1)">momento 1 →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ 1 · M1 — O POTE ══════════════════ -->
+<div class="pane on" id="p1">
+
+  <div class="speech">
+    <p><b>Este pote está cheio?</b></p>
+    <p>Então: <b>quanta água ainda cabe aqui dentro?</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">O que cada mesa faz agora</div>
+    <ul>
+      <li>Escrevam <b>um número, em mililitros</b>, no cartão da mesa. Um só — combinem entre vocês</li>
+      <li>Ninguém levanta antes: <b>todas as mesas levantam o cartão ao mesmo tempo</b></li>
+      <li>Depois disso, olhem <b>o pote</b> — a tela só marca o placar</li>
+    </ul>
+  </div>
+
+  <div class="stage" id="stg1">
+    <div class="st-h">O pote que parecia cheio
+      <button class="fs-btn" onclick="palco('stg1')">⛶ modo palco</button></div>
+    <div class="q">Este pote está cheio.<br>Quanta água ainda cabe aqui dentro?</div>
+    <div class="est">
+      <div class="jarwrap">
+        <svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pote de arroz com nível de água">
+          <defs><clipPath id="jclip"><rect x="18" y="34" width="84" height="150" rx="7"/></clipPath></defs>
+          <rect x="32" y="18" width="56" height="13" rx="3" fill="none" stroke="#6A5FA0" stroke-width="2"/>
+          <g clip-path="url(#jclip)">
+            <rect x="18" y="34" width="84" height="150" fill="#E3CE95" opacity=".62"/>
+            <g fill="#B79C58" opacity=".6">
+              <ellipse cx="34" cy="50" rx="5.5" ry="2.7" transform="rotate(-20 34 50)"/>
+              <ellipse cx="60" cy="62" rx="5.5" ry="2.7" transform="rotate(15 60 62)"/>
+              <ellipse cx="86" cy="48" rx="5.5" ry="2.7" transform="rotate(-8 86 48)"/>
+              <ellipse cx="44" cy="82" rx="5.5" ry="2.7" transform="rotate(28 44 82)"/>
+              <ellipse cx="76" cy="94" rx="5.5" ry="2.7" transform="rotate(-32 76 94)"/>
+              <ellipse cx="52" cy="114" rx="5.5" ry="2.7" transform="rotate(10 52 114)"/>
+              <ellipse cx="88" cy="128" rx="5.5" ry="2.7" transform="rotate(-18 88 128)"/>
+              <ellipse cx="32" cy="140" rx="5.5" ry="2.7" transform="rotate(22 32 140)"/>
+              <ellipse cx="64" cy="152" rx="5.5" ry="2.7" transform="rotate(-6 64 152)"/>
+              <ellipse cx="94" cy="168" rx="5.5" ry="2.7" transform="rotate(14 94 168)"/>
+              <ellipse cx="40" cy="172" rx="5.5" ry="2.7" transform="rotate(-24 40 172)"/>
+            </g>
+            <rect id="wtr" x="18" y="184" width="84" height="0" fill="#4FA3D1" opacity=".45"/>
+          </g>
+          <rect x="18" y="34" width="84" height="150" rx="7" fill="none" stroke="#F2C14E" stroke-width="2.4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="tick" id="tick">0 mL</div>
+        <div class="track" id="track"><div class="tfill" id="tfill"></div></div>
+        <div class="axis"><span>0</span><span id="axMid">300</span><span id="axMax">600 mL</span></div>
+        <div class="cap" id="cap1">Cada mesa escreve sua estimativa e levanta o cartão. Só depois, o despejo.</div>
+      </div>
+    </div>
+
+    <div class="esttimer" id="estT"></div>
+    <div class="gin" id="gin"></div>
+
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="startEst()">⏱ 60 s para estimar</button>
+      <button class="btn btn-gold" onclick="pour()">💧 espelhar o despejo</button>
+      <button class="btn btn-g" onclick="clearG()">↺ limpar</button>
+    </div>
+    <div class="st-sub">os números das mesas entram na grade acima · o despejo na tela só depois do despejo real</div>
+  </div>
+
+  <!-- <div class="fnote">
+    <div class="fnote-h">a sequência exata · o pote é o protagonista, a tela é o placar</div>
+    <div class="fnote-b">
+      <ul>
+        <li>Levante o pote e <b>nivele o arroz com a régua na frente de todos</b> — ninguém pode duvidar de que está no limite. Não explique nada ainda</li>
+        <li>Pergunte <b>"este pote está cheio?"</b>. A sala vai dizer que sim e alguém vai rir da pergunta. <b>Aceite o sim sem discutir</b> e emende: <b>"quanta água ainda cabe aqui dentro?"</b></li>
+        <li>60 segundos de mesa (botão <b>⏱</b> no painel). Cada mesa escreve um número em mL e <b>levanta ao mesmo tempo</b> que as outras</li>
+        <li>Leia as estimativas em voz alta, <b>sem comentar nenhuma</b>. Alguém da equipe digita na grade enquanto você lê</li>
+        <li><b>O despejo é físico.</b> Verta devagar, contando as centenas em voz alta, até a água aparecer na superfície do arroz. A demora é parte do efeito</li>
+        <li>Só então clique em <b>espelhar o despejo</b> e <b>anuncie o total e a mesa que chegou mais perto</b>. Nenhum prêmio — o reconhecimento basta e é mais rápido</li>
+      </ul>
+    </div>
+  </div> -->
+
+  <!-- <div class="fnote chave">
+    <div class="fnote-h">o fecho do momento — e só ele</div>
+    <div class="fnote-b">
+      <p>"<b>O que parecia cheio ainda tinha quase metade de si mesmo em espaço.</b>" Não explique por quê. Não fale em vãos, porosidade ou densidade. <b>Alguém vai perguntar — é exatamente aí que você resiste.</b></p>
+      <p>E deixe a pergunta em aberto: <b>"por que a água coube, se o pote estava cheio de arroz? Guardem essa dúvida — ela volta antes do almoço."</b> Uma pergunta que atravessa três horas vale mais que uma resposta que dura três minutos.</p>
+    </div>
+  </div> -->
+
+  <!-- <div class="fnote alerta">
+    <div class="fnote-h">se a sala acertar de primeira</div>
+    <div class="fnote-b">Acontece com formadores: alguém chuta 400 mL. Não desminta nem estrague — leia o cartão junto com os outros, siga o despejo e feche com: <b>"uma mesa em oito enxergou o espaço que estava lá o tempo todo."</b> O efeito muda de surpresa para reconhecimento, e funciona igual.</div>
+  </div> -->
+
+  <div class="fnote">
+    <div class="fnote-h">seus controles · valor real e relógio do momento</div>
+    <div class="fnote-b">
+      <p>Preencha aqui o número que <b>você mediu em casa</b>. Ele calibra a barra, define a mesa vencedora e entra sozinho no roteiro de fala do M3.</p>
+      <div class="ctrls" style="justify-content:flex-start;margin-top:12px">
+        <div class="realbox"><label>valor real</label><input id="real" value="430" inputmode="numeric" aria-label="valor real medido em mililitros"> <span style="font-family:var(--f-mono);font-size:12px;color:var(--gold)">mL</span></div>
+        <button class="btn btn-g" onclick="preset()">números de ensaio</button>
+      </div>
+      <div class="tw" style="margin:1.1rem 0 0">
+        <div class="tm" id="t1" style="font-size:clamp(30px,7vw,52px)">08:00</div>
+        <div class="tl" id="t1l">momento 1 inteiro</div>
+        <div class="tbs">
+          <button class="btn btn-a" onclick="startT(1,480)">▶ 8 min</button>
+          <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+          <button class="btn btn-g" onclick="resetT(1,480)">↺</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <span><button class="btn btn-g fonly" onclick="go(0)">← preparação</button></span>
+    <span class="nav-info">momento 1 de 4</span>
+    <button class="btn btn-a" onclick="go(2)">o enigma →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ 2 · M2 — O ENIGMA ══════════════════ -->
+<div class="pane" id="p2">
+
+  <div class="speech">
+    <p>Vocês receberam uma <b>carta com uma pergunta</b> e uma <b>tira com um pedaço de frase</b>.</p>
+    <p>A resposta da carta é um número de <b>1 a 8</b> — e esse número é a <b>posição do seu pedaço</b> na frase que a sala vai montar.</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">As regras do enigma</div>
+    <ul>
+      <li>A tira de papel é <b>um pedaço de uma frase que a sala inteira vai montar</b> — não é da mesa, é da sala</li>
+      <li>A resposta da carta é <b>um número inteiro de 1 a 8</b>. Esse número é a posição do pedaço de vocês</li>
+      <li>Quando eu chamar o número, a mesa <b>lê o seu pedaço em voz alta</b>, sem pressa</li>
+      <li>Travou? <b>Peça ajuda à mesa do lado.</b> Terminou antes? <b>Confira a conta da mesa vizinha</b> e tente adivinhar a frase inteira com o pedaço que tem em mãos</li>
+    </ul>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t21" style="font-size:clamp(34px,9vw,64px)">02:30</div>
+    <div class="tl" id="t21l">tempo das mesas</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(21,150)">▶ 2min30</button>
+      <button class="btn btn-g" onclick="stopT(21)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(21,150)">↺</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stg2">
+    <div class="st-h">A frase se montando
+      <button class="fs-btn" onclick="palco('stg2')">⛶ modo palco</button></div>
+    <div class="phrase" id="phrase"></div>
+    <div class="pcount" id="pcount">0 de 8 chamadas</div>
+    <div class="defn" id="defn">
+      <span class="defn-r"><b>capacidade</b> = propriedade do recipiente</span>
+      <span class="defn-r"><b>conteúdo</b> = o que está dentro</span>
+    </div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="nextFrag()">▶ chamar a próxima mesa</button>
+      <button class="btn btn-g" onclick="allFrags()">revelar tudo</button>
+      <button class="btn btn-g" onclick="resetFrags()">↺ reiniciar</button>
+    </div>
+    <div class="st-sub">clique em qualquer casa para revelar fora de ordem</div>
+  </div>
+
+  <!-- <div class="fnote">
+    <div class="fnote-h">a chamada · aqui você só faz uma coisa</div>
+    <div class="fnote-b">
+      <ul>
+        <li>Chame <b>"número um"</b>, <b>"número dois"</b>, e assim por diante. A cada leitura, revele a casa correspondente — <span class="kbd">espaço</span> no modo palco</li>
+        <li><b>Não escreva no quadro agora:</b> a tela já está montando a frase, e escrever de costas para a sala mata o ritmo</li>
+        <li>Com a frase completa na tela, aí sim <b>copie-a no quadro</b> — ou fixe a tira impressa em A3 — e <b>deixe até o fim da manhã</b></li>
+        <li>Se duas mesas se declararem com o mesmo número, ótimo: <b>pare, deixe a sala resolver o impasse</b>, e siga. O erro é do enigma, não da mesa</li>
+        <li>Circule pelas mesas, mas <b>não confirme respostas</b>. Se perguntarem "é isso?", devolva: <b>"se for, a frase vai fazer sentido."</b></li>
+      </ul>
+    </div>
+  </div> -->
+
+  <!-- <div class="fnote">
+    <div class="fnote-h">por que 2min30 e não 4 minutos</div>
+    <div class="fnote-b">Cada mesa resolve <b>uma</b> conta de trinta segundos: quatro minutos criam três minutos de conversa paralela e a sala esfria. Dê <b>2min30</b> e anuncie a tarefa da espera <b>junto com a instrução</b> — é a última regra da lista projetada. Ninguém fica ocioso e a expectativa pela frase começa antes da chamada.</div>
+  </div> -->
+
+  <!-- <div class="fnote alerta">
+    <div class="fnote-h">gabarito do enigma · dupla tranca</div>
+    <div class="fnote-b">
+      <div class="lockbar">
+        <span>Mesmo com as notas abertas, o gabarito só aparece com um clique próprio. <b>Feche-o antes de voltar ao modo projeção.</b></span>
+        <button class="btn btn-g" id="lockBtn" onclick="toggleEnig()">🔒 abrir gabarito</button>
+      </div>
+      <div class="enig" id="enigList"></div>
+    </div>
+  </div> -->
+
+  <div class="fnote">
+    <div class="fnote-h">relógio do momento</div>
+    <div class="fnote-b">
+      <div class="tw" style="margin:.2rem 0 0">
+        <div class="tm" id="t2" style="font-size:clamp(30px,7vw,52px)">08:00</div>
+        <div class="tl" id="t2l">momento 2 inteiro</div>
+        <div class="tbs">
+          <button class="btn btn-a" onclick="startT(2,480)">▶ 8 min</button>
+          <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+          <button class="btn btn-g" onclick="resetT(2,480)">↺</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← o pote</button>
+    <span class="nav-info">momento 2 de 4</span>
+    <button class="btn btn-a" onclick="go(3)">a frase →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ 3 · M3 — A FRASE ══════════════════ -->
+<div class="pane" id="p3">
+
+  <div class="speech">
+    <p>A frase que vocês montaram <b>não é uma metáfora bonita.</b></p>
+    <p><b>É uma definição.</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Três perguntas relâmpago · respondam em coro, sem levantar a mão</div>
+    <p>Uma garrafa de 1 litro sobre a mesa. Só isso.</p>
+  </div>
+
+  <div class="stage" id="stg3">
+    <div class="st-h">A ponte · uma garrafa de 1 litro
+      <button class="fs-btn" onclick="palco('stg3')">⛶ modo palco</button></div>
+    <div class="bridge">
+      <div class="br-q" onclick="this.classList.toggle('open')">
+        <div class="br-qt">Uma garrafa de 1 litro com 300 mL de água dentro.<br>Qual é a <b>capacidade</b> dela?</div>
+        <div class="br-a">1 litro.</div>
+      </div>
+      <div class="br-q" onclick="this.classList.toggle('open')">
+        <div class="br-qt">E qual é o <b>volume ocupado</b>?</div>
+        <div class="br-a">300 mL.</div>
+      </div>
+      <div class="br-q" onclick="this.classList.toggle('open')">
+        <div class="br-qt">Bebi 200 mL.<br>Mudou a <b>capacidade</b>?</div>
+        <div class="br-a">Não. Mudou o volume ocupado — a capacidade continua 1 litro.</div>
+      </div>
+    </div>
+    <div class="cap">Clique em cada pergunta para revelar a resposta depois que a sala responder.</div>
+  </div>
+
+  <div class="speech">
+    <div class="st-h">A definição
+      <button class="fs-btn" onclick="palco('stg4')">⛶ modo palco</button></div>
+    <p>Em Matemática, <b>capacidade é uma propriedade do recipiente</b> — não do que está dentro dele. Foi o que vocês acabaram de dizer sobre a garrafa: cheia, pela metade ou vazia, a capacidade é a mesma. O que muda é o volume ocupado. A capacidade é o que cabe.</p>
+  </div>
+
+  <div class="speech">
+    <div class="st-h">A definição
+      <button class="fs-btn" onclick="palco('stg4')">⛶ modo palco</button></div>
+    <p>O <b>volume de aprendizado</b> que um estudante já comporta não determina sua <b>capacidade final</b>. </p>
+  </div>
+
+  <!-- <div class="fnote">
+
+      <div class="script">
+        <div class="script-h"><span>A definição de capacidade</span></div>
+        <p>"Reparem que a frase que vocês montaram não é uma metáfora bonita. Ela é uma <b>definição</b>.</p>
+        <p>Em Matemática, <b>capacidade é uma propriedade do recipiente</b> — não do que está dentro dele. Foi o que vocês acabaram de dizer sobre a garrafa: cheia, pela metade ou vazia, a capacidade é a mesma. O que muda é o volume ocupado. A capacidade é o que cabe.</p>
+        <p>E foi isso que o pote de arroz mostrou, no começo da manhã: o que parecia cheio ainda tinha <span class="js-real">430 mL</span> de espaço que ninguém enxergava.</p>
+        <p>As três oficinas desta manhã são todas sobre capacidade — como se mede, como se converte, como se calcula. Mas eu queria começar pelo outro sentido da palavra, porque ele volta quando vocês estiverem na escola: <b>a capacidade de um estudante também não é o que já está dentro.</b></p>
+=
+      </div>
+    </div>
+  </div> -->
+
+  <!-- <div class="fnote alerta">
+    <div class="fnote-h">o que NÃO fazer aqui</div>
+    <div class="fnote-b">Não peça que compartilhem sentimentos, não abra roda de depoimentos, não estenda. A força está na brevidade. <b>Trinta segundos a mais e vira palestra motivacional</b> — que é exatamente o que ela não é.</div>
+  </div> -->
+
+  <!-- <div class="fnote chave">
+    <div class="fnote-h">emende direto na primeira oficina</div>
+    <div class="fnote-b">
+      <p>Sem pausa, sem "e agora vamos começar". A acolhida já começou a manhã; basta seguir.</p>
+      <div class="tw" style="margin:1rem 0 0">
+        <div class="tm" id="t3" style="font-size:clamp(30px,7vw,52px)">05:00</div>
+        <div class="tl" id="t3l">momento 3 inteiro</div>
+        <div class="tbs">
+          <button class="btn btn-a" onclick="startT(3,300)">▶ 5 min</button>
+          <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+          <button class="btn btn-g" onclick="resetT(3,300)">↺</button>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← o enigma</button>
+    <span class="nav-info">momento 3 de 4</span>
+    <button class="btn btn-a" onclick="go(4)">o bilhete →</button>
+  </div>
+</div>
+
+<!-- ══════════════════ 4 · M4 — O BILHETE (OPCIONAL) ══════════════════ -->
+<!-- <div class="pane" id="p4">
+
+  <div class="speech">
+    <p>Para fechar, um <b>gesto silencioso</b>.</p>
+    <p><b>Ninguém vai ler. Ninguém vai contar.</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Cada mesa recebe uma garrafa PET e tiras de papel</div>
+    <ul>
+      <li>Escreva o <b>primeiro nome</b> de alguém cuja capacidade foi subestimada — um estudante, um professor, uma escola, ou você mesmo</li>
+      <li>Subestimada por quem for: a escola, um colega, ou a própria pessoa</li>
+      <li><b>Só o primeiro nome.</b> Dobre o papel e ponha na garrafa</li>
+      <li>As garrafas ficam nas mesas a manhã inteira, à vista, fechadas. No fim do dia, cada um leva a sua tira de volta — ou não</li>
+    </ul>
+  </div>
+
+  <div class="stage" id="stg5">
+    <div class="st-h">O bilhete na garrafa
+      <button class="fs-btn" onclick="palco('stg5')">⛶ modo palco</button></div>
+    <div class="q">Um primeiro nome.<br>Alguém cuja capacidade foi subestimada.</div>
+    <div class="cap">Dobre o papel e ponha na garrafa. Ninguém vai ler, ninguém vai contar.</div>
+  </div>
+
+  <div class="fnote">
+    <div class="fnote-h">ajuste para formadores de CREDE</div>
+    <div class="fnote-b">Boa parte da sala não tem turma há anos, e a instrução literal ("um estudante") deixa gente de fora — por isso a versão projetada já vem ampliada: <b>um estudante, um professor, uma escola, ou você mesmo</b>. <b>Reforce em voz alta que é só o primeiro nome</b> — o papel fica numa garrafa em cima da mesa a manhã inteira.</div>
+  </div>
+
+  <div class="fnote alerta">
+    <div class="fnote-h">quando pular este momento</div>
+    <div class="fnote-b">
+      <p>Se a sala estiver dispersa, atrasada ou visivelmente resistente a dinâmicas afetivas, <b>pule sem cerimônia</b> — a acolhida se sustenta inteira nos três primeiros momentos. Um gesto simbólico feito com meia sala constrangida rende menos do que gesto nenhum.</p>
+      <div class="tw" style="margin:1rem 0 0">
+        <div class="tm" id="t4" style="font-size:clamp(30px,7vw,52px)">04:00</div>
+        <div class="tl" id="t4l">momento 4 · opcional</div>
+        <div class="tbs">
+          <button class="btn btn-a" onclick="startT(4,240)">▶ 4 min</button>
+          <button class="btn btn-g" onclick="stopT(4)">⏸</button>
+          <button class="btn btn-g" onclick="resetT(4,240)">↺</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fnote chave">
+    <div class="fnote-h">o fecho da acolhida</div>
+    <div class="fnote-b">Uma frase que a sala montou com as próprias mãos, uma definição matemática exata, e a dúvida do pote guardada para a manhã inteira.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← a frase</button>
+    <span class="nav-info">momento 4 · opcional</span>
+    <span><button class="btn btn-g fonly" onclick="go(5)">imprevistos →</button></span>
+  </div>
+</div> -->
+
+<!-- ══════════════════ 5 · IMPREVISTOS (só formador) ══════════════════ -->
+<div class="pane fonly" id="p5">
+
+  <div class="fnote">
+    <div class="fnote-h">a sala não vai ter exatamente oito mesas</div>
+    <div class="fnote-b">Decida isso antes, não no meio da distribuição.</div>
+  </div>
+
+  <table class="adj">
+    <tr><th>Mesas</th><th>O que fazer com os 8 envelopes</th><th>Efeito na chamada</th></tr>
+    <tr><td><b>4</b></td><td>Cada mesa fica com <b>dois</b> envelopes (1+5, 2+6, 3+7, 4+8)</td><td>Cada mesa lê duas vezes, em momentos diferentes. Funciona bem</td></tr>
+    <tr><td><b>5 a 7</b></td><td>Distribua um por mesa e <b>fique com os restantes</b>. Você lê os pedaços que sobraram</td><td>Melhor que sobrecarregar uma mesa. Sua leitura fecha os buracos</td></tr>
+    <tr><td><b>8</b></td><td>Um por mesa, como no papel</td><td>Ideal</td></tr>
+    <tr><td><b>9 a 12</b></td><td><b>Duplique os envelopes 3, 5 e 7</b> (e 2, se precisar)</td><td>Duas mesas com o mesmo número leem em coro. Não estraga — confirma</td></tr>
+    <tr><td><b>Mais de 12</b></td><td>Agrupe mesas vizinhas em <b>duplas</b> para o enigma</td><td>Mantém oito vozes na chamada, que é o que importa</td></tr>
+  </table>
+
+  <div class="fnote alerta">
+    <div class="fnote-h">plano B para cada coisa que pode dar errado</div>
+    <div class="fnote-b">
+      <ul>
+        <li><b>Sala sem água, ou piso que não pode molhar:</b> encha o pote de <b>feijão</b> e despeje <b>arroz</b> por cima. Tudo seco, o efeito é o mesmo e costuma descer ainda mais pelos vãos</li>
+        <li><b>Sala muito grande, o fundo não enxerga o pote:</b> filme o despejo com o celular projetado, ou repita a demonstração em duas mesas centrais ao mesmo tempo</li>
+        <li><b>Projetor caiu ou não há projeção:</b> a acolhida inteira funciona sem tela. Escreva a frase no quadro conforme as mesas leem, e anote as estimativas no canto do quadro em vez da grade</li>
+        <li><b>Atraso de 10 minutos:</b> corte o M4 e reduza o M2 para <b>2 minutos</b> de resolução. Nunca corte o despejo nem o M3 — são o começo e o fim do arco</li>
+        <li><b>Atraso de 15 minutos ou mais:</b> faça o M1 completo e vá direto ao M3, dizendo a frase você mesmo. Guarde os envelopes: o enigma reaparece bem como aquecimento depois do intervalo</li>
+        <li><b>Uma mesa erra a conta e a chamada trava:</b> abra o gabarito no M2, diga "essa é a posição sete" e siga. <b>Não transforme em correção pública</b> — o objetivo é a frase, não a conta</li>
+        <li><b>Alguém insiste em explicar por que a água coube:</b> "boa hipótese, segura essa até o fim da manhã." Anote a hipótese no quadro com o nome de quem disse. Você a retoma na oficina e a pessoa se sente lida</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="fnote chave">
+    <div class="fnote-h">não antecipe nada das oficinas</div>
+    <div class="fnote-b">A acolhida trabalha melhor como enigma solto: <b>quanto menos ela explicar, mais a manhã tem para entregar.</b></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← o bilhete</button>
+    <span class="nav-info">plano B · consulta rápida</span>
+    <button class="btn btn-g" onclick="go(0)">↺ voltar à preparação</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ═══ MODO FORMADOR ═══ */
+var FONLY=[true,false,false,false,false,true];   /* painéis exclusivos do formador */
+function fmodeOn(){return document.body.classList.contains('fmode');}
+function toggleF(){
+  var on=document.body.classList.toggle('fmode');
+  document.getElementById('fkey').textContent=on?'ocultar notas':'notas do formador';
+  if(!on){
+    /* fecha o gabarito e sai de qualquer aba exclusiva do formador */
+    var e=document.getElementById('enigList');
+    if(e.classList.contains('on'))toggleEnig();
+    if(FONLY[cur])go(1);
+  }
+}
+
+/* ═══ NAV ═══ */
+var tabs=[].slice.call(document.querySelectorAll('#tabs .tab')),
+    panes=[].slice.call(document.querySelectorAll('.pane'));
+var NPANE=panes.length,cur=1;
+function go(i){
+  if(i<0||i>=NPANE)return;
+  if(FONLY[i]&&!fmodeOn())return;
+  if(cur<i&&!FONLY[cur])tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on')});
+  panes.forEach(function(p){p.classList.remove('on')});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function step(d){
+  var i=cur+d;
+  while(i>=0&&i<NPANE&&FONLY[i]&&!fmodeOn())i+=d;
+  go(i);
+}
+
+/* ═══ RELÓGIO GERAL ═══ */
+var gEl=document.getElementById('gclock'),gBtn=document.getElementById('gbtn'),gIv=null,gS=0;
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function gPaint(){gEl.textContent=fmtT(gS);gEl.classList.toggle('over',gS>1260);}
+function gToggle(){
+  if(gIv){clearInterval(gIv);gIv=null;gBtn.textContent='▶';return;}
+  gBtn.textContent='⏸';
+  gIv=setInterval(function(){gS++;gPaint();},1000);
+}
+function gReset(){if(gIv){clearInterval(gIv);gIv=null;}gBtn.textContent='▶';gS=0;gPaint();}
+gPaint();
+
+/* ═══ TIMERS DOS MOMENTOS ═══ */
+var TM={};
+function startT(id,dur){
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id])TM[id]={rem:dur};
+  var el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+  el.classList.remove('done','low');lb.textContent='em andamento';
+  TM[id].iv=setInterval(function(){TM[id].rem--;var r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));
+    el.classList.toggle('low',r<=15&&r>0);
+    if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';el.classList.remove('low');el.classList.add('done');lb.textContent='tempo esgotado';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};var el=document.getElementById('t'+id);el.textContent=fmtT(dur);el.classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* ═══ MODO PALCO ═══ */
+function palco(id){
+  var s=document.getElementById(id);
+  document.querySelectorAll('.stage.palco').forEach(function(o){if(o!==s)o.classList.remove('palco');});
+  s.classList.toggle('palco');
+  document.body.style.overflow=s.classList.contains('palco')?'hidden':'';
+}
+function sairPalco(){document.querySelectorAll('.stage.palco').forEach(function(s){s.classList.remove('palco');});document.body.style.overflow='';}
+
+/* ═══ M1 — POTE / ESTIMATIVAS / DESPEJO ═══ */
+var NM=8;
+var gin=document.getElementById('gin');
+for(var gi=0;gi<NM;gi++){
+  var d=document.createElement('div');d.className='gcell';
+  d.innerHTML='<label>M'+(gi+1)+'</label><input type="text" inputmode="numeric" id="g'+gi+'" placeholder="—" aria-label="estimativa da mesa '+(gi+1)+'">';
+  gin.appendChild(d);
+}
+var track=document.getElementById('track'),tfill=document.getElementById('tfill'),tick=document.getElementById('tick'),
+    wtr=document.getElementById('wtr'),cap1=document.getElementById('cap1'),realIn=document.getElementById('real');
+var pourT=null;
+function val(id){var el=document.getElementById(id);if(!el)return null;var v=parseFloat(String(el.value).replace(',','.'));return isFinite(v)?v:null;}
+function scaleMax(){
+  var gs=[];for(var i=0;i<NM;i++){var v=val('g'+i);if(v!==null)gs.push(v);}
+  var r=val('real')||430;
+  var arr=[r*1.25,300].concat(gs.map(function(x){return x*1.25;}));
+  return Math.max(600,Math.ceil(Math.max.apply(null,arr)/100)*100);
+}
+function bestIdx(){
+  var r=val('real'),best=-1,bd=Infinity;
+  for(var i=0;i<NM;i++){var v=val('g'+i);if(v===null)continue;if(r!==null&&Math.abs(v-r)<bd){bd=Math.abs(v-r);best=i;}}
+  return best;
+}
+function drawPins(){
+  [].slice.call(track.querySelectorAll('.pin')).forEach(function(p){p.remove();});
+  var M=scaleMax();
+  document.getElementById('axMid').textContent=Math.round(M/2);
+  document.getElementById('axMax').textContent=M+' mL';
+  var best=bestIdx();
+  for(var i=0;i<NM;i++){
+    var v=val('g'+i);if(v===null)continue;
+    var p=document.createElement('div');p.className='pin'+(i===best?' best':'');
+    p.dataset.n='M'+(i+1)+'·'+v;p.dataset.v=v;
+    p.style.left=Math.min(99.5,(v/M)*100)+'%';
+    track.appendChild(p);
+  }
+}
+/* valor real espelhado no roteiro de fala do M3 */
+function syncReal(){
+  var r=val('real');
+  var txt=(r===null?'—':Math.round(r))+' mL';
+  [].slice.call(document.querySelectorAll('.js-real')).forEach(function(e){e.textContent=txt;});
+}
+for(var gi2=0;gi2<NM;gi2++)document.getElementById('g'+gi2).addEventListener('input',drawPins);
+realIn.addEventListener('input',function(){drawPins();syncReal();});
+function resetPour(){
+  if(pourT){clearInterval(pourT);pourT=null;}
+  tfill.style.width='0%';tick.textContent='0 mL';
+  wtr.setAttribute('height',0);wtr.setAttribute('y',184);
+  [].slice.call(track.querySelectorAll('.pin')).forEach(function(p){p.classList.remove('passed');});
+  cap1.textContent='Cada mesa escreve sua estimativa e levanta o cartão. Só depois, o despejo.';
+}
+function clearG(){for(var i=0;i<NM;i++)document.getElementById('g'+i).value='';resetPour();drawPins();}
+function preset(){
+  if(!confirm('Preencher a grade com números de ENSAIO?\n\nUse só antes da formação — apaga as estimativas reais da sala.'))return;
+  var ex=[50,100,80,150,60,120,90,200];ex.forEach(function(v,i){document.getElementById('g'+i).value=v;});drawPins();resetPour();
+}
+function pour(){
+  resetPour();
+  var r=val('real')||430,M=scaleMax(),v=0;
+  cap1.textContent='Contando as centenas em voz alta…';
+  pourT=setInterval(function(){
+    v+=r/95;
+    if(v>=r){v=r;clearInterval(pourT);pourT=null;
+      var gs=[];for(var i=0;i<NM;i++){var g=val('g'+i);if(g!==null)gs.push(g);}
+      var abaixo=gs.filter(function(g){return g<r;}).length;
+      var b=bestIdx();
+      var frase='O que parecia cheio ainda tinha '+Math.round(r)+' mL de espaço.';
+      if(gs.length)frase+=' '+abaixo+' de '+gs.length+' estimativas ficaram abaixo do real.';
+      if(b>=0)frase+=' Mesa '+(b+1)+' chegou mais perto.';
+      cap1.textContent=frase;
+    }
+    tick.textContent=Math.round(v)+' mL';
+    tfill.style.width=(v/M)*100+'%';
+    var h=150*Math.min(1,(v/r))*0.97;
+    wtr.setAttribute('height',h);wtr.setAttribute('y',184-h);
+    [].slice.call(track.querySelectorAll('.pin')).forEach(function(p){if(+p.dataset.v<=v)p.classList.add('passed');});
+  },28);
+}
+/* cronômetro de estimativa (60 s) */
+var estIv=null,estS=60;
+function startEst(){
+  var el=document.getElementById('estT');
+  if(estIv){clearInterval(estIv);estIv=null;el.textContent='';el.className='esttimer';return;}
+  estS=60;el.className='esttimer';el.textContent=fmtT(estS);
+  estIv=setInterval(function(){estS--;el.textContent=fmtT(Math.max(0,estS));
+    if(estS<=10&&estS>0)el.className='esttimer low';
+    if(estS<=0){clearInterval(estIv);estIv=null;el.className='esttimer go';el.textContent='levantem os cartões';}
+  },1000);
+}
+drawPins();syncReal();
+
+/* ═══ M2 — A FRASE ═══ */
+var FRAG=['O que você sabe hoje','não limita tudo','o que','ainda pode','aprender.','Nunca confunda','conteúdo com','capacidade.'];
+var phrase=document.getElementById('phrase'),pcount=document.getElementById('pcount'),defn=document.getElementById('defn');
+FRAG.forEach(function(f,i){
+  var s=document.createElement('span');s.className='frag hid';s.textContent=f;s.dataset.n=(i+1);
+  s.addEventListener('click',function(){s.classList.toggle('hid');s.classList.toggle('show');updPhrase();});
+  phrase.appendChild(s);
+});
+var frags=[].slice.call(phrase.children);
+function updPhrase(){
+  var n=frags.filter(function(f){return !f.classList.contains('hid');}).length;
+  pcount.textContent=n+' de 8 chamadas';
+  defn.classList.toggle('on',n===8);
+}
+function nextFrag(){var f=frags.filter(function(x){return x.classList.contains('hid');})[0];if(!f)return;f.classList.remove('hid');f.classList.add('show');updPhrase();}
+function allFrags(){frags.forEach(function(f,i){setTimeout(function(){f.classList.remove('hid');f.classList.add('show');updPhrase();},i*260);});}
+function resetFrags(){frags.forEach(function(f){f.classList.add('hid');f.classList.remove('show');});updPhrase();}
+updPhrase();
+
+/* ═══ GABARITO ═══ */
+var CARTAS=[
+  {q:'Um cubo de 10 cm de aresta guarda quantos litros?',n:1,f:'CAPACIDADE',c:'10 × 10 × 10 = 1000 cm³ = 1 L'},
+  {q:'Quantos litros são 2000 cm³?',n:2,f:'NÃO É',c:'1 L = 1000 cm³ → 2000 cm³ = 2 L'},
+  {q:'Uma caixa de 10 cm × 10 cm × 30 cm guarda quantos litros?',n:3,f:'O QUE',c:'10 × 10 × 30 = 3000 cm³ = 3 L'},
+  {q:'Quantos litros são 0,004 m³?',n:4,f:'JÁ ESTÁ',c:'0,004 m³ = 4 dm³ = 4 L'},
+  {q:'Meio litro, mais 500 mL, mais 4000 cm³. Quantos litros ao todo?',n:5,f:'DENTRO.',c:'0,5 + 0,5 + 4 = 5 L (4000 cm³ = 4 L)'},
+  {q:'Uma cisterna de 6000 litros ocupa quantos metros cúbicos?',n:6,f:'É O QUE',c:'1 m³ = 1000 L → 6000 L = 6 m³'},
+  {q:'0,7 L são quantos decilitros?',n:7,f:'AINDA',c:'1 L = 10 dL → 0,7 L = 7 dL'},
+  {q:'Um cubo de 20 cm de aresta guarda quantos litros?',n:8,f:'CABE.',c:'20 × 20 × 20 = 8000 cm³ = 8 L'}
+];
+var enigList=document.getElementById('enigList');
+CARTAS.forEach(function(c){
+  var el=document.createElement('div');el.className='ecard';
+  el.innerHTML='<div class="ecard-top"><span class="ecard-pos">posição ?</span><span class="ecard-q">'+c.q+'</span></div>'
+    +'<div class="ecard-ans"><span class="ecard-n">'+c.n+'</span><span class="ecard-frag">'+c.f+'</span><span class="ecard-c">'+c.c+'</span></div>';
+  el.addEventListener('click',function(){el.classList.toggle('open');});
+  enigList.appendChild(el);
+});
+function toggleEnig(){
+  var e=document.getElementById('enigList'),b=document.getElementById('lockBtn');
+  e.classList.toggle('on');
+  b.textContent=e.classList.contains('on')?'🔓 fechar gabarito':'🔒 abrir gabarito';
+}
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){sairPalco();return;}
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;
+  var inPalco=document.querySelector('.stage.palco');
+  if(inPalco){
+    if(e.key===' '||e.key==='ArrowRight'){
+      if(inPalco.id==='stg2'){e.preventDefault();nextFrag();return;}
+      if(inPalco.id==='stg1'){e.preventDefault();pour();return;}
+    }
+    if((e.key==='r'||e.key==='R')&&inPalco.id==='stg2'){resetFrags();return;}
+    return;
+  }
+  if(e.key==='f'||e.key==='F'){toggleF();return;}
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);
+});
+</script>
+</body>
+</html>

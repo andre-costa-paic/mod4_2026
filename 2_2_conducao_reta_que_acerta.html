@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · A Reta que Acerta</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#8C2E30;--accent-soft:#FBEDED;--accent-deep:#5C1A1C;
+--h-bg:#14171B;--h-accent:#E9B84E;--h-sub:#9BA3AC;
+--amber:#8A6A12;--amber-s:#FDF6E3;--amber-hi:#E9B84E;
+--green:#1A6B1A;--green-s:#EBF5EB;
+--meta:#2F4F6B;--meta-s:#EDF3F8;
+--ink:#14171B;--ink-mid:#3d444d;--ink-soft:#6f7780;--border:#e2e0dd;--bg:#faf8f7;--bg-card:#fff;--radius:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+body.proj{zoom:1.18}
+body.proj2{zoom:1.38}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ── TOPO + RELÓGIO MESTRE ── */
+.top{background:var(--h-bg);padding:.8rem 1.5rem;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:40}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-spacer{flex:1}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(233,184,78,.3);padding:4px 12px;border-radius:3px}
+.master{display:flex;align-items:center;gap:10px}
+.master-clock{font-family:var(--f-mono);font-size:16px;font-weight:600;color:#fff;letter-spacing:.02em}
+.master-clock small{color:var(--h-sub);font-size:11px;font-weight:400}
+.pace{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid}
+.pace.ok{color:#8FE08F;border-color:rgba(143,224,143,.5);background:rgba(143,224,143,.1)}
+.pace.late{color:#F0B34E;border-color:rgba(240,179,78,.5);background:rgba(240,179,78,.1)}
+.pace.over{color:#F09090;border-color:rgba(240,144,144,.5);background:rgba(240,144,144,.1)}
+.mini{font-family:var(--f-body);font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:100px;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:transparent;color:#cfd5db}
+.mini:hover{border-color:var(--h-accent);color:var(--h-accent)}
+.mini.on{background:var(--h-accent);color:#14171B;border-color:var(--h-accent)}
+
+.container{max-width:900px;margin:0 auto;padding:0 1.2rem 4rem}
+.tabs-wrap{position:sticky;top:52px;background:var(--bg);z-index:30;padding:.7rem 0 0;margin-bottom:1.2rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:10.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 10px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--green)}.tab.done .tn{background:var(--green-s);color:var(--green);border-color:var(--green)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── CABEÇALHO DE ETAPA ── */
+.stage-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:.9rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.stage-n{font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.stage-t{font-family:var(--f-head);font-size:20px;font-weight:600;flex:1}
+.stage-goal{font-size:11.5px;color:var(--ink-soft);font-style:italic;width:100%;line-height:1.5}
+.stage-time{font-family:var(--f-mono);font-size:11px;color:var(--ink-soft);background:var(--bg-card);border:.5px solid var(--border);padding:3px 9px;border-radius:100px}
+
+/* ── FALA ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#26170E);border-radius:var(--radius);padding:1.5rem 1.7rem;margin-bottom:1.1rem;position:relative;overflow:hidden}
+.speech::before{content:'◎';position:absolute;right:16px;top:-4px;font-size:90px;color:rgba(233,184,78,.08);line-height:1}
+.speech .sp-tag{font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--h-sub);margin-bottom:9px}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#F0E4D0;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+/* ── CAIXAS ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+.inst ol{list-style:none;padding:0;counter-reset:step;margin:0}
+.inst ol li{counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6}
+.inst ol li .step-num{position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px}
+.inst ol li b{color:var(--ink)}
+.tip{background:var(--amber-s);border:1px solid rgba(138,106,18,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#6B4A08;line-height:1.6}
+.warn{background:var(--accent-soft);border:1px solid rgba(140,46,48,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.ok{background:var(--green-s);border:1px solid rgba(26,107,26,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#0F4A0F;line-height:1.6}
+
+/* ── CAMADA DE REPLICAÇÃO ── */
+.meta{display:none;background:var(--meta-s);border:1px dashed var(--meta);border-radius:var(--radius);padding:.9rem 1.1rem;margin:1rem 0;font-size:12.5px;color:#20394F;line-height:1.65}
+body.showmeta .meta{display:block}
+.meta-t{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--meta);margin-bottom:6px}
+.meta ul{list-style:none;padding:0;margin-top:6px}
+.meta li{padding-left:16px;position:relative;margin-bottom:5px}
+.meta li::before{content:"›";position:absolute;left:0;color:var(--meta);font-weight:700}
+
+/* ── CRONÔMETRO ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--accent)}.tm.done{color:var(--green);animation:blink 1s ease-in-out 3}
+@keyframes blink{50%{opacity:.25}}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.15)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-v{background:var(--green);border-color:var(--green);color:#fff}
+.btn-v:hover{filter:brightness(1.1)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;filter:none}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ── PROTOCOLO ── */
+.proto{background:#14171B;border:1px solid #2b3138;border-radius:var(--radius);padding:1.1rem 1.2rem;margin-bottom:1.2rem}
+.proto-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-hi);border-bottom:1px solid #2b3138;padding-bottom:9px;margin-bottom:11px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.prow{display:flex;gap:12px;align-items:baseline;font-size:13px;line-height:1.95;flex-wrap:wrap;transition:opacity .4s}
+.prow.locked .pd b,.prow.locked .pc{filter:blur(4px)}
+.prow.locked{opacity:.5}
+.pn{font-family:var(--f-mono);color:#5c646d;width:20px;flex-shrink:0}
+.pc{font-family:var(--f-mono);color:var(--amber-hi);font-weight:600;width:120px;flex-shrink:0;letter-spacing:.02em}
+.pd{color:#c3c9d0;font-weight:400}
+.pd b{color:#fff;font-weight:600;font-family:var(--f-mono)}
+.lockmsg{font-size:10.5px;color:#7a828b;font-style:italic;margin-top:8px;letter-spacing:.02em}
+
+/* ── CAMPO (canvas escuro) ── */
+.rig{background:#14171B;border:1px solid #2b3138;border-radius:var(--radius);padding:1.1rem 1rem 1.3rem;margin-bottom:1.2rem}
+.rig-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--amber-hi);
+  border-bottom:1px solid #2b3138;padding-bottom:9px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.rig-h span{color:#7a828b;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.plot-wrap{position:relative;margin:6px 0}
+.plot-wrap canvas{display:block;width:100%;height:auto;touch-action:none}
+.narr{font-size:13px;color:#a9b1ba;text-align:center;margin:10px 0 2px;min-height:20px;line-height:1.6}
+.narr b{color:var(--amber-hi)}
+.eq-big{font-family:var(--f-mono);font-size:clamp(18px,4vw,30px);font-weight:600;color:var(--h-accent);text-align:center;margin:12px 0;min-height:38px}
+.eq-sub{font-family:var(--f-mono);font-size:12px;color:#7a828b;text-align:center;margin-top:-6px;margin-bottom:8px;min-height:16px}
+
+/* ── ÁRBITRO ── */
+.calc-in{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.calc-fld{display:flex;align-items:center;gap:6px;background:#1E232A;border:1px solid #333B44;border-radius:8px;padding:6px 12px}
+.calc-fld label{font-family:var(--f-body);font-size:9px;font-weight:700;color:#7a828b;letter-spacing:.06em;text-transform:uppercase}
+.calc-fld input{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:15px;font-weight:600;outline:none;width:46px;text-align:center}
+.calc-fld input.wide{width:76px}
+.calc-arrow{color:#5c646d;font-size:16px}
+.mode-sw{display:flex;gap:0;justify-content:center;margin-bottom:4px}
+.mode-sw button{font-family:var(--f-body);font-size:10.5px;font-weight:700;padding:6px 14px;background:transparent;border:1px solid #333B44;color:#7a828b;cursor:pointer}
+.mode-sw button:first-child{border-radius:100px 0 0 100px}
+.mode-sw button:last-child{border-radius:0 100px 100px 0;border-left:none}
+.mode-sw button.on{background:var(--amber-hi);color:#14171B;border-color:var(--amber-hi)}
+.solve-steps{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.sstep{display:flex;gap:10px;align-items:baseline;background:#1A1F26;border:1px solid #2b3138;border-radius:6px;padding:8px 12px;
+  font-family:var(--f-mono);font-size:13px;color:#c3c9d0;opacity:.35;transition:all .3s}
+.sstep.on{opacity:1;border-color:#3a444e}
+.sstep .sc{color:var(--amber-hi);font-weight:600;min-width:80px;font-size:11px;letter-spacing:.02em}
+.sstep .sv{color:#fff;font-weight:600}
+.sstep.hit{border-color:var(--green);background:#0F1A0F}
+.sstep.hit .sv{color:#6FCF6F}
+.sstep.miss{border-color:var(--accent);background:#241012}
+.sstep.miss .sv{color:#E88}
+
+/* ── VEREDITOS ── */
+.verds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:1rem 0}
+@media(max-width:560px){.verds{grid-template-columns:1fr}}
+.vd{border-radius:var(--radius);padding:.85rem .9rem;border:1.5px solid;text-align:center}
+.vd-c{font-family:var(--f-mono);font-size:15px;font-weight:700;margin-bottom:5px}
+.vd-t{font-family:var(--f-head);font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.vd-d{font-size:11px;line-height:1.45;opacity:.85}
+.vd.pass{background:var(--green-s);border-color:var(--green);color:#0F4A0F}
+.vd.graze{background:var(--amber-s);border-color:var(--amber);color:#6B4A08}
+.vd.block{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+
+/* ── CAMPO: ALVOS E MUROS ── */
+.roster{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:1rem 0}
+@media(max-width:560px){.roster{grid-template-columns:1fr}}
+.ros-box{background:var(--bg-card);border:.5px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem}
+.ros-t{font-family:var(--f-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.ros-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-mid);padding:3px 0;border-bottom:.5px solid var(--border)}
+.ros-row:last-child{border-bottom:none}
+.ros-row b{font-family:var(--f-mono);color:var(--ink)}
+.ros-pts{font-family:var(--f-mono);font-weight:700;color:var(--accent);white-space:nowrap}
+
+/* ── SORTEADOR ── */
+.draw-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin:1rem 0;text-align:center}
+.draw-out{font-family:var(--f-mono);font-size:clamp(26px,7vw,46px);font-weight:700;color:var(--accent);min-height:52px;line-height:1.1}
+.draw-sub{font-size:12px;color:var(--ink-soft);font-style:italic;min-height:18px;margin-bottom:8px}
+.draw-hist{font-family:var(--f-mono);font-size:11px;color:var(--ink-soft);margin-top:8px}
+
+/* ── PLACAR ── */
+.score{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin:1rem 0}
+.score-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.score-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep)}
+.srow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border);flex-wrap:wrap}
+.srow:last-child{border-bottom:none}
+.srow input.nm{flex:1;min-width:110px;font-family:var(--f-body);font-size:13px;font-weight:600;border:none;border-bottom:1px dashed var(--border);background:transparent;color:var(--ink);padding:3px 2px;outline:none}
+.srow input.nm:focus{border-bottom-color:var(--accent)}
+.srow .pts{font-family:var(--f-mono);font-size:19px;font-weight:700;color:var(--accent);min-width:56px;text-align:right}
+.sbtn{font-family:var(--f-mono);font-size:11px;font-weight:700;border:1px solid var(--border);background:transparent;color:var(--ink-soft);border-radius:6px;padding:4px 7px;cursor:pointer}
+.sbtn:hover{border-color:var(--accent);color:var(--accent)}
+.srow.lead .pts{color:var(--green)}
+
+/* ── TABELA DE TRADUÇÃO ── */
+.trans{display:flex;flex-direction:column;gap:6px;margin:1rem 0}
+.trow{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;align-items:center;background:var(--bg-card);border:.5px solid var(--border);border-radius:var(--radius);padding:.7rem .9rem;cursor:pointer;transition:all .2s}
+.trow:hover{border-color:var(--accent)}
+.trow.on{background:var(--accent-soft);border-color:var(--accent)}
+.trow-a{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--accent-deep)}
+.trow-b{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-mid);opacity:0;transition:opacity .3s}
+.trow.on .trow-b{opacity:1}
+.trow-c{font-size:11.5px;color:var(--ink-soft);font-style:italic;opacity:0;transition:opacity .3s}
+.trow.on .trow-c{opacity:1}
+.trans-head{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;padding:0 .9rem;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ── CHECKLIST ── */
+.chk{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1rem}
+.chk-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:10px}
+.chk label{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-mid);line-height:1.6;padding:5px 0;cursor:pointer}
+.chk input{margin-top:4px;accent-color:var(--accent);flex-shrink:0;width:15px;height:15px}
+.chk label.done{opacity:.45;text-decoration:line-through}
+
+/* ── LINHA DO TEMPO ── */
+.tl-grid{display:flex;gap:3px;margin:1rem 0 .4rem;height:26px;border-radius:4px;overflow:hidden}
+.tl-seg{flex-grow:1;background:var(--border);position:relative;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:9px;color:var(--ink-soft);font-weight:700}
+.tl-seg.on{background:var(--accent);color:#fff}
+.tl-seg.past{background:#cfc9c6;color:#fff}
+.tl-cap{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:9.5px;color:var(--ink-soft)}
+
+/* ── NAV ── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+.kbd{font-family:var(--f-mono);font-size:10px;color:var(--ink-soft);text-align:center;margin-top:1.4rem;opacity:.7}
+.kbd b{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--ink-mid)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A Reta <em>que Acerta</em></div>
+  <span class="top-badge">Função afim · 60 min · 4 grupos</span>
+  <div class="top-spacer"></div>
+  <div class="master">
+    <button class="mini" onclick="cycleZoom()" title="ampliar para projeção">A+</button>
+    <button class="mini" id="metabtn" onclick="toggleMeta()" title="notas para quem vai replicar">notas de replicação</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">0</span>Check-list</button>
+      <button class="tab" onclick="go(1)"><span class="tn">1</span>Preparação</button>
+      <button class="tab" onclick="go(2)"><span class="tn">2</span>Est. 1 · Raso</button>
+      <button class="tab" onclick="go(3)"><span class="tn">3</span>Est. 2 · Torre</button>
+      <button class="tab" onclick="go(4)"><span class="tn">4</span>Est. 3 · Avançado</button>
+      <button class="tab" onclick="go(5)"><span class="tn">5</span>Est. 4 · Livre</button>
+      <button class="tab" onclick="go(6)"><span class="tn">6</span>Torneio</button>
+      <button class="tab" onclick="go(7)"><span class="tn">7</span>Conclusão</button>
+    </div>
+  </div>
+
+<!-- ══════════ 0 · PREPARAR ══════════ -->
+<div class="pane on" id="p0">
+
+  <div class="stage-head">
+    <span class="stage-n">Antes de abrir a sala</span>
+
+    <div class="stage-t">Montagem do campo de tiro</div>
+    <div class="stage-goal">Nada aqui é projetado para os participantes. Esta aba é sua lista de conferência.</div>
+  </div>
+
+  <div class="chk">
+    <div class="chk-t">Conferência de montagem</div>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Plano cartesiano grande</b> montado: x de 0 a 10, y de −4 a 10, <b>mesma unidade nos dois eixos</b>. O trecho negativo de y é obrigatório — é onde a Estação 3 acontece.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Alvos A–E</b> fixados em (4,4) (8,4) (6,8) (10,6) (8,10) com o valor em pontos legível a 3 m de distância.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Alvo Fantasma</b> marcado com X em (4,9) — não é um alvo real.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Muro Sul</b> em x=3 até a altura 2 e <b>Muro Norte</b> em x=7 até a altura 6, presos ao plano.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Alvos e muros cobertos</b> com papel até o início do torneio — o campo completo só aparece depois das estações.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Barbante cortado</b>: 2 m por equipe, mais 3 m de reserva para a demonstração coletiva da Estação 3.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Protocolo de Tiro impresso</b> com as etapas 5 a 7 <b>cobertas</b> (dobra ou tarja). Uma folha por equipe por estação.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Cartões de posição P1–P8</b> recortados e no saquinho de sorteio (ou use o sorteador digital da aba Torneio).</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Quadro dividido</b>: metade esquerda reservada para o protocolo que a turma escreve; metade direita para o placar.</span></label>
+    <label><input type="checkbox" onchange="ck(this)"><span><b>Este arquivo projetado</b> e testado — abra a aba Torneio e clique em "conferir" uma vez para garantir que o canvas desenha.</span></label>
+  </div>
+
+  <div class="tip"><b>Números exatos, não decimais.</b> Boa parte das combinações do torneio produz mira fracionária (2/3, 4/3, 1/3, 5/3...). Se a equipe arredondar para 0,67 e declarar y = 0,67x − 1,33, a conferência no alvo <b>não fecha</b> — dá 4,03 em vez de 4. Combine em voz alta, antes da primeira rodada: <b>a mira e a altura de origem ficam em fração</b>. O árbitro digital desta página mostra sempre a fração exata e o decimal ao lado.</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação · o que dizer aos formadores</div>
+    Esta oficina será replicada duas vezes antes de chegar ao professor. O que costuma se perder na cadeia é sempre a mesma coisa: a <b>ordem</b> dos eventos da Estação 3. Deixe explícito na formação das CREDEs:
+    <ul>
+      <li>O barbante esticado para trás vem <b>antes</b> da fórmula b = q − a·p. Se alguém inverter, a oficina vira uma aula de fórmula com barbante decorativo.</li>
+      <li>As etapas 5 a 7 do protocolo permanecem cobertas até esse momento. Isso não é enfeite: é o que transforma o b em resposta a uma pergunta que a turma já fez.</li>
+      <li>O vocabulário (mira, altura de origem, avanço) só é traduzido para o vocabulário técnico no debriefing, nunca antes.</li>
+    </ul>
+    Peça que cada formador de CREDE registre, ao replicar, quantas equipes erraram o b na Estação 3. Esse número é o melhor indicador de que a demonstração física foi feita de verdade.
+  </div>
+
+  <div class="nav">
+    <span></span>
+    <button class="btn btn-a" onclick="go(1)">preparação →</button>
+  </div>
+</div>
+
+<!-- ══════════ 1 · BRIEFING ══════════ -->
+<div class="pane" id="p1">
+
+  <div class="stage-head">
+    <span class="stage-n">Preparação</span>
+
+    <div class="stage-t">O campo de tiro</div>
+    <div class="stage-goal">Objetivo desta etapa: criar a pergunta. Ninguém calcula nada ainda.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>Este plano é um <b>campo de tiro</b>. O eixo horizontal marca a distância percorrida; o vertical marca a altura.</p>
+    <p><b>Ao final desta oficina, vocês descreverão qualquer trajetória em uma única linha de escrita</b> — e saberão, sem disparar, se o tiro acerta ou não.</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Roteiro</div>
+    <ul>
+      <li><b>Material:</b> Rascunho quadriculado, Protocolo de tiro, barbante</li>
+      <li>Fixe um alvo em um ponto qualquer. O tiro partirá da origem</li>
+      <li><b>Visualizar a trajetória:</b> estique o barbante entre eles, esta é a trajetória"</li>
+    </ul>
+  </div>
+
+  <div class="proto">
+    <div class="proto-h"><span>Protocolo de tiro · a turma constrói por partes</span><span id="protostate" style="color:#7a828b;text-transform:none;letter-spacing:0;font-weight:400">etapas 5–7 ocultas</span></div>
+    <div class="prow"><span class="pn">1</span><span class="pc">LOCALIZAR</span><span class="pd">atirador <b>(p, q)</b> · alvo <b>(m, n)</b></span></div>
+    <div class="prow"><span class="pn">2</span><span class="pc">SUBIDA</span><span class="pd">quanta altura ganhar? &nbsp;<b>n − q</b></span></div>
+    <div class="prow"><span class="pn">3</span><span class="pc">AVANÇO</span><span class="pd">quanta distância vencer? &nbsp;<b>m − p</b></span></div>
+    <div class="prow"><span class="pn">4</span><span class="pc">MIRA</span><span class="pd"><b>a = subida ÷ avanço</b></span></div>
+    <div class="prow locked" id="pr5"><span class="pn">5</span><span class="pc">RECUO</span><span class="pd"><b>b = q − a·p</b></span></div>
+    <div class="prow locked" id="pr6"><span class="pn">6</span><span class="pc">DECLARAR</span><span class="pd"><b>y = a x + b</b></span></div>
+    <div class="prow locked" id="pr7"><span class="pn">7</span><span class="pc">CONFERIR</span><span class="pd">substitua o x do alvo — deu o y? <b>confirmado</b></span></div>
+    <div class="lockmsg" id="lockmsg">as três últimas etapas são reveladas na Estação 3, depois da demonstração com o barbante</div>
+  </div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    A tentação de todo formador experiente é dizer, já no briefing, "isto é função afim, y = ax + b". Isso destrói a oficina inteira: a turma passa a procurar a fórmula que já foi dada em vez de construir o procedimento. Combine com os formadores das CREDEs que a expressão "função afim" <b>não é pronunciada</b> antes do minuto 55.
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← preparar</button>
+    <span class="nav-info">preparação</span>
+    <button class="btn btn-a" onclick="go(2)">estação 1 →</button>
+  </div>
+</div>
+
+<!-- ══════════ 2 · ESTAÇÃO 1 ══════════ -->
+<div class="pane" id="p2">
+
+  <div class="stage-head">
+    <span class="stage-n">Estação 1 · Tiro Raso</span>
+    <div class="stage-t">O atirador na origem</div>
+    <div class="stage-goal">Objetivo: dar sentido concreto à mira — quanto se sobe a cada passo à frente. O b não existe aqui e não deve ser mencionado.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>Atirador em <b>(0, 0)</b>, alvo em <b>(4, 8)</b>. Marquem os dois pontos e estiquem o barbante.</p>
+    <p><b>Para chegar ao alvo, quanto vocês precisam subir? E quanto avançar?</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Registre:</div>
+    <ul>
+      <li><b>Subida</b></li>
+      <li><b>Avanço</b></li>
+      <li><b>Mira</b></li>
+      <li><b>Opcional:</b> de lápis e com ajuda do colega que segurará o barbante, desenhe a trajetória no rascunho quadriculado</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">CAMPO DE TIRO — estação 1 <span id="s1hint">resolva no papel primeiro</span></div>
+    <div class="plot-wrap"><canvas id="cv1"></canvas></div>
+    <div class="eq-big" id="eq1"></div>
+    <div class="solve-steps" id="sv1"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="runStation(1)">conferir o tiro</button>
+      <button class="btn btn-g" onclick="loadStation(1,'b')">2.º alvo (5,5)</button>
+      <button class="btn btn-g" onclick="loadStation(1,'a')">voltar ao 1.º</button>
+      <button class="btn btn-g" onclick="compareS1()">ver os dois juntos</button>
+    </div>
+  </div>
+
+  <div class="ok"><b>A pergunta de fechamento:</b> "a cada passo à frente, quanto o tiro sobe?"
+  <br>A resposta — sobe 2 — é o significado concreto da mira.
+  <br>Confirme caminhando com o dedo sobre o barbante: um passo à frente, dois de altura. Depois do 2.º alvo, pergunte <b>qual dos dois tiros é mais "em pé"</b> e associe a inclinação visual do barbante ao valor de a.</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    Esta estação parece dispensável para quem já sabe o conteúdo — e é justamente a que os replicadores mais cortam por falta de tempo. Sem ela, a Estação 2 perde a comparação que produz a ideia de retas paralelas, e o b entra como fórmula. Se for preciso economizar tempo, corte o segundo alvo, nunca a estação.
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← preparação</button>
+    <span class="nav-info">estação 1 de 4</span>
+    <button class="btn btn-a" onclick="go(3)">estação 2 →</button>
+  </div>
+</div>
+
+<!-- ══════════ 3 · ESTAÇÃO 2 ══════════ -->
+<div class="pane" id="p3">
+
+  <div class="stage-head">
+    <span class="stage-n">Estação 2 · Tiro da Torre</span>
+    <div class="stage-t">O atirador sobe no eixo vertical</div>
+    <div class="stage-goal">Objetivo: fazer o b aparecer como altura lida no gráfico — ainda coincidindo com a posição do atirador. A fórmula do recuo continua coberta.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>Agora o atirador <b>sobe numa torre</b>: está em <b>(0, 3)</b>. O alvo, em <b>(6, 9)</b>.</p>
+    <p>Repitam o protocolo. <b>Onde aparece a diferença?</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Registre:</div>
+    <ul>
+      <li><b>Subida</b></li>
+      <li><b>Avanço</b></li>
+      <li><b>Mira</b></li>
+      <li><b>Altura de origem</b></li>
+      <li><b>Opcional:</b> de lápis e com ajuda do colega que segurará o barbante, desenhe a trajetória no rascunho quadriculado</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">CAMPO DE TIRO — estação 2 <span>a subida agora é 9 − 3, não 9</span></div>
+    <div class="plot-wrap"><canvas id="cv3"></canvas></div>
+    <div class="eq-big" id="eq3"></div>
+    <div class="solve-steps" id="sv3"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="runStation(3)">conferir o tiro</button>
+      <button class="btn btn-g" onclick="ghostS1()">sobrepor y = x da estação 1</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A descoberta desta estação</div>
+    <p>A altura da torre entra na equação como uma parcela que <b>não depende do avanço</b>: ela já está lá antes do primeiro passo. Use o botão de sobreposição — o tiro (0,0)→(5,5) e o tiro (0,3)→(6,9) têm a mesma mira e produzem <b>retas paralelas</b> em alturas diferentes.</p>
+  </div>
+
+  <div class="warn"><b>A pergunta que prepara a próxima estação:</b> "a altura de origem foi igual à altura do atirador. Isso vai acontecer sempre?" <b>Recolha as apostas por escrito</b> — quantas equipes dizem sim, quantas dizem não — e <b>não responda</b>. Você vai retomar esse placar no fim da Estação 3.</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    Registrar as apostas por escrito parece um detalhe de animação, mas é o que dá peso ao momento seguinte. Quem replica sem isso costuma perder o efeito da Estação 3: a turma vê o barbante cruzar em −4 e reage com indiferença, porque nunca se comprometeu com uma previsão.
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← estação 1</button>
+    <span class="nav-info">estação 2 de 4</span>
+    <button class="btn btn-a" onclick="go(4)">estação 3 →</button>
+  </div>
+</div>
+
+<!-- ══════════ 4 · ESTAÇÃO 3 ══════════ -->
+<div class="pane" id="p4">
+
+  <div class="stage-head">
+    <span class="stage-n">Estação 3 · Tiro Avançado</span>
+    <div class="stage-t">O atirador sai do eixo — a virada da oficina</div>
+    <div class="stage-goal">Objetivo: separar a posição do atirador da altura de origem. É aqui que o b deixa de ser onde ele está.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>O atirador <b>sai do eixo</b>: está em <b>(2, 0)</b> — no chão, mas dois passos à frente. Alvo em <b>(6, 8)</b>.</p>
+    <p>Calculem a mira. <b>E agora: qual é a altura de origem?</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O MOMENTO DECISIVO — estique o barbante para trás <span id="s3hint">deixe as equipes fazerem antes de projetar</span></div>
+    <div class="plot-wrap"><canvas id="cv4"></canvas></div>
+    <div class="eq-big" id="eq4"></div>
+    <div class="solve-steps" id="sv4"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="runStation3()">1 · recuar o barbante até o eixo</button>
+      <button class="btn btn-a" id="revealBtn" disabled onclick="revealProtocol()">2 · revelar as etapas 5 a 7</button>
+      <button class="btn btn-g" onclick="resetStation3()">↺ recomeçar</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A sequência exata do momento</div>
+    <ul>
+      <li>Estiquem o barbante para além do atirador, na direção contrária ao alvo</li>
+      <li><b>Vai cruzar acima ou abaixo do chão?</b> — retomar as apostas da Estação 2</li>
+      <li>Onde cruza? <br><b>Em −4 — abaixo do chão, atrás do atirador</b></li>
+      <li>Recuar 2 passos custa 2 × 2 = 4 de altura; como o atirador está em 0, a altura deorigem será −4</li>
+      <li>Agora vamos descobrir as etapas 5, 6 e 7 do Protocolo de Tiro</li>
+    </ul>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Registre:</div>
+    <ul>
+      <li><b>Subida</b></li>
+      <li><b>Avanço</b></li>
+      <li><b>Mira</b></li>
+      <li><b>Recuo</b></li>
+    </ul>
+  </div>
+
+  <div class="ok"><b>A altura de origem não é onde o atirador está.</b> É onde a trajetória dele teria começado se tivesse partido da linha vertical. A conferência fecha: y = 2 · 6 − 4 = 8 ✔</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    Se o formador municipal só puder guardar <b>uma</b> imagem desta oficina para levar ao professor, é esta: o barbante ultrapassando o atirador e cruzando o eixo abaixo do zero. Peça, na formação, que cada participante fotografe o próprio barbante nesse instante. A foto é o material de memória mais eficiente da cadeia de replicação — e vale mais do que o slide.
+    <br><b>O nome "recuo" não é um equívoco</b> — é uma âncora cinestésica. Ele lembra o movimento físico que o aluno fez com o barbante, evitando que a fórmula b = q - a·p seja apenas uma decoreba.
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← estação 2</button>
+    <span class="nav-info">estação 3 de 4 · a virada</span>
+    <button class="btn btn-a" onclick="go(5)">estação 4 →</button>
+  </div>
+</div>
+
+<!-- ══════════ 5 · ESTAÇÃO 4 ══════════ -->
+<div class="pane" id="p5">
+
+  <div class="stage-head">
+    <span class="stage-n">Estação 4 · Tiro Livre</span>
+    <div class="stage-t">O atirador em qualquer lugar</div>
+    <div class="stage-goal">Objetivo: constatar que o protocolo é geral, varrer os casos especiais e encontrar o tiro impossível.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>Atirador em <b>(2, 1)</b>, alvo em <b>(6, 9)</b>. <b>Nenhuma regra nova.</b></p>
+    <p>O protocolo completo funciona sem alteração — e descobrir isso <b>é o aprendizado desta estação</b>.</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">CAMPO DE TIRO — tiro livre <span id="s5hint">o mesmo protocolo, sem exceção</span></div>
+    <div class="plot-wrap"><canvas id="cv5"></canvas></div>
+    <div class="eq-big" id="eq5"></div>
+    <div class="solve-steps" id="sv5"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="runStation(5)">conferir o tiro</button>
+      <button class="btn btn-g" onclick="loadStation(5,'desc')">tiro descendente (a &lt; 0)</button>
+      <button class="btn btn-g" onclick="loadStation(5,'ras')">tiro rasante (a = 0)</button>
+      <button class="btn btn-g" onclick="loadStation(5,'a')">voltar ao tiro livre</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Dois casos especiais — projete cada um e pergunte antes de resolver</div>
+    <ul>
+      <li><b>Alvo mais baixo que o atirador</b> → subida negativa → a &lt; 0 → tiro descendente. Pergunte: "a mira ainda diz quanto sobe a cada passo?" Sim — só que o valor é negativo, ou seja, desce.</li>
+      <li><b>Alvo na mesma altura</b> → subida zero → a = 0 → tiro rasante. A equação perde o x: y é constante. Pergunte por que o x sumiu.</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O TIRO IMPOSSÍVEL — atirador (4,0), alvo (4,9) <span>deixe a equipe descobrir sozinha</span></div>
+    <div class="plot-wrap"><canvas id="cv5b"></canvas></div>
+    <div class="eq-big" id="eq5b"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="runImpossible()">tentar o tiro vertical</button>
+    </div>
+  </div>
+
+  <div class="ok"><b>Uma trajetória vertical não pode ser escrita como y = ax + b</b> — e nem seria função, porque para um mesmo avanço haveria infinitas alturas. É a retomada direta da <b>dependência unívoca</b> da EF09MA06.</div>
+
+  <div class="inst">
+    <div class="inst-t">Fechamento do treinamento</div>
+    <p>Cada equipe escreve <b>o protocolo completo, com as próprias palavras</b>. Ele fica visível durante todo o torneio. <br>Há algo que poderia ser acrescentado ou retirado?</p>
+  </div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    Aqui está o único ponto da oficina em que o professor de 8.º ano deve parar. A adaptação prevista para o 8.º ano usa só as Estações 1 e 2 e um torneio sem muros; o tiro impossível e a discussão de univocidade pertencem ao 9.º. Deixe isso explícito na formação — caso contrário, a adaptação chega à escola como "fazer menos", e não como "fazer outra coisa".
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← estação 3</button>
+    <span class="nav-info">estação 4 de 4</span>
+    <button class="btn btn-a" onclick="go(6)">torneio →</button>
+  </div>
+</div>
+
+<!-- ══════════ 6 · TORNEIO ══════════ -->
+<div class="pane" id="p6">
+
+  <div class="stage-head">
+    <span class="stage-n">Torneio</span>
+    <div class="stage-t">Duelo de Artilharia</div>
+    <div class="stage-goal">Objetivo: transformar a leitura do gráfico em decisão tática e a conferência em disputa por pontos.</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p><b>Duelo de Artilharia.</b> Cada equipe sorteia uma posição, escolhe um alvo e declara a ordem de tiro em voz alta. <b>Ordem dita é ordem registrada.</b></p>
+  </div>
+
+  <!-- Procedimento da rodada -->
+  <div class="inst">
+    <div class="inst-t">Procedimento da rodada</div>
+    <ol style="list-style:none;padding:0;counter-reset:step;margin:0;">
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">1.</span> -->
+        <b>Sortear a posição</b> — clique em "sortear posição" ou retire um cartão do saquinho. <b>Todas as equipes usam a mesma posição</b> na rodada.
+      </li>
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">2.</span> -->
+        <b>Escolher um alvo</b> — cada equipe decide qual alvo tentar atingir (consulte a tabela de alvos abaixo).
+      </li>
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">3.</span> -->
+        <b>Calcular a ordem de tiro</b> — use o protocolo completo: subida, avanço, mira, recuo e declare a equação <b>y = ax + b</b>. <span style="font-size:12px;color:var(--ink-soft);">(3 minutos)</span>
+      </li>
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">4.</span> -->
+        <b>Declarar em voz alta</b> — a equipe diz a equação encontrada. <b>Ordem dita é ordem registrada</b> — não há segunda chance.
+      </li>
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">5.</span> -->
+        <b>Validação cruzada</b> — a equipe à direita recebe a ficha de validação e confere a equação substituindo as coordenadas do alvo e testando os muros entre atirador e alvo. <span style="font-size:12px;color:var(--ink-soft);">(90 segundos)</span>
+      </li>
+      <li style="counter-increment:step;padding-left:30px;position:relative;margin-bottom:12px;font-size:13.5px;color:var(--ink-mid);line-height:1.6;">
+        <!-- <span style="position:absolute;left:0;top:0;font-weight:700;color:var(--accent);font-family:var(--f-mono);font-size:15px;">6.</span> -->
+        <b>Pontuar</b> — se a equação acertar o alvo e passar pelos muros, recebe os pontos. Se a validação encontrar erro, a equipe que contestou ganha os pontos. Se contestar sem razão, perde 10 pontos.
+      </li>
+    </ol>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">As três regras que geram dúvida</div>
+    <ul>
+      <li><b>Só contam os muros entre o atirador e o alvo.</b> Muro que ficou para trás não bloqueia nada</li>
+      <li><b>A mira e a altura de origem ficam em fração.</b> Decimal arredondado faz a conferência falhar</li>
+      <li><b>Qualquer alvo exatamente acima do atirador é impossível</b> e vale 15 pontos para quem provar. Vale para o Fantasma (4,9) e também para o Alvo A (4,4) visto de P5</li>
+    </ul>
+  </div>
+
+  <div class="roster">
+    <div class="ros-box">
+      <div class="ros-t">🎯 Alvos</div>
+      <div class="ros-row"><span>A <b>(4, 4)</b></span><span class="ros-pts">10 pts</span></div>
+      <div class="ros-row"><span>B <b>(8, 4)</b> · atrás do Muro Norte</span><span class="ros-pts">15 pts</span></div>
+      <div class="ros-row"><span>C <b>(6, 8)</b> · central</span><span class="ros-pts">20 pts</span></div>
+      <div class="ros-row"><span>D <b>(10, 6)</b> · no limite</span><span class="ros-pts">25 pts</span></div>
+      <div class="ros-row"><span>E <b>(8, 10)</b> · o mais valioso</span><span class="ros-pts">30 pts</span></div>
+      <div class="ros-row"><span>Fantasma <b>(4, 9)</b> · provar impossível</span><span class="ros-pts">15 pts</span></div>
+    </div>
+    <div class="ros-box">
+      <div class="ros-t">🧱 Muros e posições</div>
+      <div class="ros-row"><span>Muro Sul <b>x = 3</b></span><span class="ros-pts">altura 2</span></div>
+      <div class="ros-row"><span>Muro Norte <b>x = 7</b></span><span class="ros-pts">altura 6</span></div>
+      <div class="ros-row"><span>P1 (0,0) · P2 (0,2) · P3 (0,6) · P4 (2,0)</span></div>
+      <div class="ros-row"><span>P5 (4,0) · P6 (1,1) · P7 (3,2) · P8 (2,6)</span></div>
+    </div>
+  </div>
+
+  <div class="verds">
+    <div class="vd pass"><div class="vd-c">y &gt; muro</div><div class="vd-t">Passagem livre</div><div class="vd-d">valor integral do alvo</div></div>
+    <div class="vd graze"><div class="vd-c">y = muro</div><div class="vd-t">Raspão</div><div class="vd-d">metade dos pontos</div></div>
+    <div class="vd block"><div class="vd-c">y &lt; muro</div><div class="vd-t">Bloqueado</div><div class="vd-d">não pontua · a vez passa</div></div>
+  </div>
+
+  <div class="draw-box">
+    <div class="draw-out" id="drawOut">P?</div>
+    <div class="draw-sub" id="drawSub">sorteie a posição da rodada — ou use os cartões impressos</div>
+    <button class="btn btn-a" onclick="drawPos()">sortear posição</button>
+    <button class="btn btn-g" onclick="resetDraw()">↺ zerar sorteio</button>
+    <div class="draw-hist" id="drawHist"></div>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t6">03:00</div>
+    <div class="tl" id="t6l">rodada: 3 min de cálculo, depois 90 s de validação cruzada</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startRound()">▶ rodada completa</button>
+      <button class="btn btn-g" onclick="stopT(6)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(6,180)">↺</button>
+      <button class="btn btn-g" onclick="startT(60,1500)">▶ relógio do torneio (25 min)</button>
+    </div>
+    <div class="tm" id="t60" style="font-size:clamp(20px,4vw,30px);margin-top:4px;color:var(--ink-soft)">25:00</div>
+    <div class="tl" id="t60l">tempo total do torneio</div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">ÁRBITRO DE TIRO <span>para resolver disputas na hora</span></div>
+    <div class="mode-sw">
+      <button id="mA" class="on" onclick="setMode('calc')">calcular a ordem correta</button>
+      <button id="mB" onclick="setMode('check')">conferir a ordem declarada</button>
+    </div>
+    <div class="calc-in">
+      <div class="calc-fld"><label>atirador x</label><input id="ax" type="number" value="0"></div>
+      <div class="calc-fld"><label>y</label><input id="ay" type="number" value="0"></div>
+      <span class="calc-arrow">→</span>
+      <div class="calc-fld"><label>alvo x</label><input id="bx" type="number" value="4"></div>
+      <div class="calc-fld"><label>y</label><input id="by" type="number" value="4"></div>
+    </div>
+    <div class="calc-in" id="declRow" style="display:none">
+      <div class="calc-fld"><label>declarou a =</label><input id="da" class="wide" type="text" value="1"></div>
+      <div class="calc-fld"><label>b =</label><input id="db" class="wide" type="text" value="0"></div>
+      <span style="font-size:10px;color:#7a828b">aceita fração (4/3) ou decimal (1,33)</span>
+    </div>
+    <div class="calc-in"><button class="btn btn-a" onclick="arbitrate()">conferir</button></div>
+    <div class="plot-wrap"><canvas id="cvT"></canvas></div>
+    <div class="eq-big" id="eqT"></div>
+    <div class="eq-sub" id="eqTsub"></div>
+    <div class="narr" id="narrT">informe atirador e alvo — o árbitro calcula a ordem de tiro exata e testa os dois muros</div>
+    <div class="ctrls"><button class="btn btn-v" id="applyBtn" onclick="applyVerdict()" disabled>lançar pontos no placar</button></div>
+  </div>
+
+  <div class="score">
+    <div class="score-h">
+      <div class="score-t">Placar</div>
+      <div>
+        <button class="sbtn" onclick="addTeam()">+ equipe</button>
+        <button class="sbtn" onclick="zeroScores()">zerar</button>
+      </div>
+    </div>
+    <div id="scoreList"></div>
+    <div style="font-size:11px;color:var(--ink-soft);margin-top:8px;font-style:italic">Contestação correta transfere os pontos do alvo · contestação sem razão custa 10 pts. Use −10 para aplicar.</div>
+  </div>
+
+  <div class="tip"><b>Bônus da trajetória dupla:</b> uma ordem que passe por dois alvos vale a soma + 20 pts. Existem exatamente quatro alinhamentos, e os muros dão a eles desfechos diferentes — o que torna a busca uma decisão, não uma conta. Se ninguém achar até a penúltima rodada, dê a dica: <b>"há uma posição de onde dois alvos estão perfeitamente alinhados com o atirador"</b>.</div>
+
+  <div class="warn"><b>Faça as rodadas fechadas.</b> Todas as equipes calculam ao mesmo tempo, a partir da mesma posição sorteada, e declaram simultaneamente. Isso evita cópia, mantém todos ocupados e cabe no tempo: 3 min de cálculo + 90 s de validação = 4 rodadas reais em 25 minutos, não 6.</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação</div>
+    O torneio é a parte que mais desanda na replicação, sempre pelo mesmo motivo: as rodadas viram sequenciais (uma equipe joga, as outras assistem) e o tempo estoura na segunda rodada. Ensaie a rodada fechada na formação das CREDEs, cronômetro na mão, para que os formadores municipais tenham a experiência do ritmo — descrever não basta.
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(5)">← estação 4</button>
+    <span class="nav-info">torneio · 25 min</span>
+    <button class="btn btn-a" onclick="go(7)">conclusão →</button>
+  </div>
+</div>
+
+<!-- ══════════ 7 · DEBRIEFING ══════════ -->
+<div class="pane" id="p7">
+
+  <div class="stage-head">
+    <span class="stage-n">Conclusão</span>
+    <span class="stage-time">8 min · 72–80</span>
+    <div class="stage-t">Do campo de tiro para a matemática</div>
+    <div class="stage-goal">Objetivo: nomear tecnicamente o que já foi construído. É aqui, e só aqui, que se diz "função afim".</div>
+  </div>
+
+  <div class="speech">
+    <div class="sp-tag">projete e leia</div>
+    <p>Placar encerrado. Agora a <b>tradução</b>: do vocabulário do campo de tiro para o da matemática.</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Como conduzir a tradução</div>
+    <p>Escreva as duas primeiras colunas no quadro e peça que a <b>turma</b> preencha a segunda. Clique em cada linha da tela apenas para <b>confirmar</b> o que a turma já disse — nunca para antecipar.</p>
+  </div>
+
+  <div class="trans-head">
+    <span>Na oficina</span><span>Na matemática</span><span>Como se lê no gráfico</span>
+  </div>
+  <div class="trans" id="transTable"></div>
+  <div class="ctrls" style="justify-content:flex-start">
+    <button class="btn btn-g" onclick="toggleAllTrans()">revelar / ocultar tudo</button>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Três perguntas de síntese — projete uma por vez</div>
+    <ul>
+      <li>Duas equipes em posições diferentes acertaram o mesmo alvo. As equações foram iguais? Por quê?</li>
+      <li>O que muda no desenho da trajetória quando muda apenas o <b>a</b>? E quando muda apenas o <b>b</b>?</li>
+      <li>Por que o Alvo Fantasma não podia ser atingido — e o que isso tem a ver com a palavra <b>unívoca</b> da habilidade?</li>
+    </ul>
+  </div>
+
+  <div class="ok"><b>O caso mais instrutivo do campo:</b> a ordem y = 2x − 4 disparada de P4 (2,0) raspa o Muro Sul e vale metade; disparada de P7 (3,2), passa livre — o muro já ficou para trás. Mesma equação, resultados diferentes: <b>a reta é infinita, mas o trecho que interessa depende de onde se está</b>. Se alguma equipe viveu esse caso no torneio, chame-a para contar.</div>
+
+  <div class="meta">
+    <div class="meta-t">Camada de replicação · encerramento da formação</div>
+    Reserve os últimos minutos da <b>sua</b> formação, não da oficina, para três perguntas aos formadores das CREDEs:
+    <ul>
+      <li>Qual momento desta oficina você não pode deixar cair na replicação? (a resposta esperada é a Estação 3)</li>
+      <li>O que na sua rede impede montar o plano cartesiano grande — e qual é o plano B? (papel quadriculado por equipe, declaração escrita)</li>
+      <li>Qual pré-requisito faltante você prevê nas turmas de 8.º e 9.º? (a resposta mais comum é subtração de inteiros negativos, que aparece justamente na Estação 3)</li>
+    </ul>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t7">08:00</div>
+    <div class="tl" id="t7l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(7,480)">▶ 8 min</button>
+      <button class="btn btn-g" onclick="stopT(7)">⏸</button>
+      <button class="btn btn-g" onclick="addT(7,60)">+1 min</button>
+      <button class="btn btn-g" onclick="resetT(7,480)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(6)">← torneio</button>
+    <span class="nav-info">fim da oficina</span>
+    <span></span>
+  </div>
+
+  <div class="kbd"><b>←</b> <b>→</b> navegam entre etapas · <b>espaço</b> inicia ou pausa o cronômetro da etapa · <b>A+</b> amplia para projeção</div>
+</div>
+
+</div>
+
+<script>
+/* ═══════════ NAVEGAÇÃO ═══════════ */
+var tabs=[].slice.call(document.querySelectorAll('#tabs .tab'));
+var panes=[].slice.call(document.querySelectorAll('.pane'));
+var cur=0;
+var PANE_TIMER={1:300,2:480,3:600,4:720,5:720,6:180,7:480};
+function go(i){
+  if(cur<i)tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on')});
+  panes.forEach(function(p){p.classList.remove('on')});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(redraw,60);
+}
+function redraw(){
+  if(cur===2)drawStation(1);
+  if(cur===3)drawStation(3);
+  if(cur===4)drawStation3(s3done);
+  if(cur===5){drawStation(5);drawImpossible(false);}
+  if(cur===6)arbitrate();
+}
+
+/* ═══════════ CRONÔMETROS DE ETAPA ═══════════ */
+var TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function beep(){
+  try{
+    var C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+    var c=new C(),o=c.createOscillator(),g=c.createGain();
+    o.connect(g);g.connect(c.destination);o.frequency.value=760;g.gain.value=.08;
+    o.start();setTimeout(function(){o.stop();c.close();},420);
+  }catch(e){}
+}
+function startT(id,dur){
+  var el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+  if(!el)return;
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id]||TM[id].rem<=0)TM[id]={rem:dur};
+  el.classList.remove('done','low');lb.textContent='em andamento';
+  TM[id].iv=setInterval(function(){
+    TM[id].rem--;var r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));
+    el.classList.toggle('low',r<=15&&r>0);
+    if(r<=0){
+      clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';
+      el.classList.remove('low');el.classList.add('done');lb.textContent='tempo esgotado';beep();
+      if(TM[id].then){var f=TM[id].then;TM[id].then=null;setTimeout(f,900);}
+    }
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;var l=document.getElementById('t'+id+'l');if(l)l.textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};var e=document.getElementById('t'+id);e.textContent=fmtT(dur);e.classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+function addT(id,s){if(!TM[id])TM[id]={rem:PANE_TIMER[id]||0};TM[id].rem+=s;var e=document.getElementById('t'+id);e.textContent=fmtT(TM[id].rem);e.classList.remove('done');}
+
+/* rodada encadeada do torneio: 3 min de cálculo → 90 s de validação */
+function startRound(){
+  resetT(6,180);
+  document.getElementById('t6l').textContent='cálculo da ordem de tiro';
+  TM[6]={rem:180,then:function(){
+    resetT(6,90);
+    document.getElementById('t6l').textContent='validação cruzada — a equipe à direita confere';
+    TM[6]={rem:90};startT(6,90);
+  }};
+  startT(6,180);
+}
+
+/* ═══════════ FRAÇÕES EXATAS ═══════════ */
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t;}return a||1;}
+function R(n,d){d=d===undefined?1:d;if(d<0){n=-n;d=-d;}var g=gcd(n,d);return {n:n/g,d:d/g};}
+function rAdd(x,y){return R(x.n*y.d+y.n*x.d,x.d*y.d);}
+function rSub(x,y){return R(x.n*y.d-y.n*x.d,x.d*y.d);}
+function rMul(x,y){return R(x.n*y.n,x.d*y.d);}
+function rDiv(x,y){return R(x.n*y.d,x.d*y.n);}
+function rCmp(x,y){return x.n*y.d-y.n*x.d;}
+function rVal(x){return x.n/x.d;}
+function rIsInt(x){return x.d===1;}
+function rTxt(x){var s=(x.n<0?'−':'')+Math.abs(x.n);return x.d===1?s:s+'/'+x.d;}
+function rDec(x){if(x.d===1)return null;var v=Math.round(rVal(x)*100)/100;return (v<0?'−':'')+Math.abs(v).toFixed(2).replace('.',',');}
+function parseR(str){
+  str=(str||'').toString().trim().replace('−','-').replace(',','.');
+  if(!str)return null;
+  if(str.indexOf('/')>-1){
+    var p=str.split('/');var n=parseFloat(p[0]),d=parseFloat(p[1]);
+    if(isNaN(n)||isNaN(d)||d===0)return null;
+    return R(Math.round(n*1000),Math.round(d*1000));
+  }
+  var v=parseFloat(str);if(isNaN(v))return null;
+  return R(Math.round(v*1000),1000);
+}
+function eqTxt(a,b){
+  if(a.n===0)return 'y = '+rTxt(b);
+  var ap=(a.n===a.d)?'':((a.n===-a.d)?'−':rTxt(a)+' ');
+  var bp=b.n===0?'':(b.n<0?' − '+rTxt(R(-b.n,b.d)):' + '+rTxt(b));
+  return 'y = '+ap+'x'+bp;
+}
+function eqDecHint(a,b){
+  var da=rDec(a),db=rDec(b);
+  if(!da&&!db)return '';
+  return 'em decimal aproximado: a ≈ '+(da||rTxt(a))+' · b ≈ '+(db||rTxt(b))+' — arredondar aqui faz a conferência falhar';
+}
+
+/* ═══════════ PLANO CARTESIANO ═══════════ */
+function plot(canvasId,opts){
+  var cv=document.getElementById(canvasId);
+  var W=cv.parentElement.offsetWidth||600;
+  var xmin=opts.xmin,xmax=opts.xmax,ymin=opts.ymin,ymax=opts.ymax;
+  var aspect=(ymax-ymin)/(xmax-xmin);
+  var H=Math.min(Math.max(W*aspect*0.62,240),430);
+  var dpr=window.devicePixelRatio||1;
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  var ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  var pad={l:36,r:18,t:14,b:26};
+  var pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  function sx(x){return pad.l+(x-xmin)/(xmax-xmin)*pw;}
+  function sy(y){return pad.t+ph-(y-ymin)/(ymax-ymin)*ph;}
+  ctx.strokeStyle='#242A31';ctx.lineWidth=1;
+  for(var x=Math.ceil(xmin);x<=xmax;x++){ctx.beginPath();ctx.moveTo(sx(x),pad.t);ctx.lineTo(sx(x),H-pad.b);ctx.stroke();}
+  for(var y=Math.ceil(ymin);y<=ymax;y++){ctx.beginPath();ctx.moveTo(pad.l,sy(y));ctx.lineTo(W-pad.r,sy(y));ctx.stroke();}
+  ctx.strokeStyle='#4a545e';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(sx(0),pad.t);ctx.lineTo(sx(0),H-pad.b);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,sy(0));ctx.lineTo(W-pad.r,sy(0));ctx.stroke();
+  ctx.fillStyle='#7d848c';ctx.font='10px "JetBrains Mono",monospace';ctx.textAlign='center';
+  for(var x2=Math.ceil(xmin);x2<=xmax;x2+=2){if(x2===0)continue;ctx.fillText(x2,sx(x2),sy(0)+13);}
+  ctx.textAlign='right';
+  for(var y2=Math.ceil(ymin);y2<=ymax;y2+=2){if(y2===0)continue;ctx.fillText(y2,sx(0)-6,sy(y2)+3.5);}
+  return {ctx:ctx,sx:sx,sy:sy,W:W,H:H,xmin:xmin,xmax:xmax};
+}
+function drawShooter(p,x,y){
+  p.ctx.fillStyle='#E9B84E';p.ctx.strokeStyle='#8C2E30';p.ctx.lineWidth=1.5;
+  p.ctx.beginPath();p.ctx.arc(p.sx(x),p.sy(y),6.5,0,Math.PI*2);p.ctx.fill();p.ctx.stroke();
+}
+function drawTarget(p,x,y){
+  p.ctx.strokeStyle='#8C2E30';p.ctx.lineWidth=2;
+  p.ctx.beginPath();p.ctx.arc(p.sx(x),p.sy(y),8.5,0,Math.PI*2);p.ctx.stroke();
+  p.ctx.fillStyle='#8C2E30';p.ctx.beginPath();p.ctx.arc(p.sx(x),p.sy(y),3,0,Math.PI*2);p.ctx.fill();
+}
+function drawLabel(p,x,y,txt,color,dy){
+  p.ctx.fillStyle=color||'#c3c9d0';p.ctx.font='11px "JetBrains Mono",monospace';p.ctx.textAlign='left';
+  p.ctx.fillText(txt,p.sx(x)+11,p.sy(y)+(dy===undefined?-8:dy));
+}
+function drawSeg(p,x1,y1,x2,y2,color,w,dash){
+  p.ctx.strokeStyle=color;p.ctx.lineWidth=w;if(dash)p.ctx.setLineDash(dash);
+  p.ctx.beginPath();p.ctx.moveTo(p.sx(x1),p.sy(y1));p.ctx.lineTo(p.sx(x2),p.sy(y2));p.ctx.stroke();
+  p.ctx.setLineDash([]);
+}
+
+/* ═══════════ ESTAÇÕES 1, 2, 4 ═══════════ */
+var STATIONS={
+  '1a':{s:[0,0],t:[4,8],view:{xmin:-1,xmax:10,ymin:-1,ymax:10},stage:1},
+  '1b':{s:[0,0],t:[5,5],view:{xmin:-1,xmax:10,ymin:-1,ymax:10},stage:1},
+  '3a':{s:[0,3],t:[6,9],view:{xmin:-1,xmax:10,ymin:-1,ymax:10},stage:2},
+  '5a':{s:[2,1],t:[6,9],view:{xmin:-1,xmax:10,ymin:-2,ymax:10},stage:3},
+  '5desc':{s:[1,8],t:[7,2],view:{xmin:-1,xmax:10,ymin:-2,ymax:10},stage:3},
+  '5ras':{s:[1,5],t:[8,5],view:{xmin:-1,xmax:10,ymin:-2,ymax:10},stage:3}
+};
+var curVariant={1:'1a',3:'3a',5:'5a'};
+
+function shotOf(d){
+  var sub=R(d.t[1]-d.s[1]), av=R(d.t[0]-d.s[0]);
+  var a=rDiv(sub,av), b=rSub(R(d.s[1]),rMul(a,R(d.s[0])));
+  return {sub:sub,av:av,a:a,b:b};
+}
+function drawStation(pane,extra){
+  var key=curVariant[pane],d=STATIONS[key],p=plot('cv'+pane,d.view);
+  if(extra&&extra.ghost){
+    var g=extra.ghost;
+    drawSeg(p,d.view.xmin,rVal(g.a)*d.view.xmin+rVal(g.b),d.view.xmax,rVal(g.a)*d.view.xmax+rVal(g.b),'rgba(155,163,172,.55)',1.5,[4,4]);
+    p.ctx.fillStyle='#9BA3AC';p.ctx.font='10px "JetBrains Mono",monospace';p.ctx.textAlign='left';
+    p.ctx.fillText(g.label,p.sx(d.view.xmax-3.2),p.sy(rVal(g.a)*(d.view.xmax-3.2)+rVal(g.b))-8);
+  }
+  if(extra&&extra.full){
+    var f=extra.full;
+    drawSeg(p,d.view.xmin,rVal(f.a)*d.view.xmin+rVal(f.b),d.view.xmax,rVal(f.a)*d.view.xmax+rVal(f.b),'rgba(233,184,78,.35)',1.5,[5,4]);
+    if(f.b.n!==0&&rVal(f.b)>=d.view.ymin&&rVal(f.b)<=d.view.ymax){
+      p.ctx.strokeStyle='#E9B84E';p.ctx.lineWidth=1.5;
+      p.ctx.beginPath();p.ctx.arc(p.sx(0),p.sy(rVal(f.b)),5.5,0,Math.PI*2);p.ctx.stroke();
+      p.ctx.fillStyle='#E9B84E';p.ctx.font='bold 11px "JetBrains Mono",monospace';p.ctx.textAlign='left';
+      p.ctx.fillText('altura de origem = '+rTxt(f.b),p.sx(0)+9,p.sy(rVal(f.b))+4);
+    }
+  }
+  drawSeg(p,d.s[0],d.s[1],d.t[0],d.t[1],'#8C2E30',2.8);
+  drawShooter(p,d.s[0],d.s[1]);
+  drawTarget(p,d.t[0],d.t[1]);
+  drawLabel(p,d.s[0],d.s[1],'atirador ('+d.s[0]+','+d.s[1]+')');
+  drawLabel(p,d.t[0],d.t[1],'alvo ('+d.t[0]+','+d.t[1]+')');
+  return p;
+}
+function loadStation(pane,v){
+  curVariant[pane]=pane+v;drawStation(pane);
+  document.getElementById('eq'+pane).textContent='';
+  document.getElementById('sv'+pane).innerHTML='';
+  var h=document.getElementById(pane===1?'s1hint':'s5hint');
+  if(h)h.textContent='resolva no papel primeiro';
+}
+function runStation(pane){
+  var d=STATIONS[curVariant[pane]],r=shotOf(d);
+  drawStation(pane,{full:{a:r.a,b:r.b}});
+  var steps=[
+    {c:'SUBIDA',v:d.t[1]+' − '+d.s[1]+' = '+rTxt(r.sub)},
+    {c:'AVANÇO',v:d.t[0]+' − '+d.s[0]+' = '+rTxt(r.av)},
+    {c:'MIRA',v:'a = '+rTxt(r.sub)+' ÷ '+rTxt(r.av)+' = '+rTxt(r.a)}
+  ];
+  if(d.stage===2)steps.push({c:'ALT. ORIGEM',v:'b = '+rTxt(r.b)+' — lida no gráfico, é a altura do atirador'});
+  if(d.stage>=3)steps.push({c:'RECUO',v:'b = '+d.s[1]+' − ('+rTxt(r.a)+')·'+d.s[0]+' = '+rTxt(r.b)});
+  if(d.stage>=2)steps.push({c:'CONFERIR',v:'y = '+rTxt(r.a)+'·'+d.t[0]+(r.b.n<0?' − '+rTxt(R(-r.b.n,r.b.d)):(r.b.n>0?' + '+rTxt(r.b):''))+' = '+d.t[1]+' ✔',hit:true});
+  else steps.push({c:'CONFERIR',v:'y = '+rTxt(r.a)+'·'+d.t[0]+' = '+d.t[1]+' ✔',hit:true});
+  renderSteps('sv'+pane,steps);
+  animateEq('eq'+pane,eqTxt(r.a,r.b));
+  if(pane===1)document.getElementById('s1hint').textContent='a = '+rTxt(r.a)+' — sobe '+rTxt(r.a)+' a cada passo à frente';
+  if(pane===5){
+    var h=document.getElementById('s5hint');
+    h.textContent=r.a.n<0?'mira negativa — o tiro desce a cada passo':(r.a.n===0?'mira zero — a altura não muda, o x desaparece':'o mesmo protocolo, sem exceção');
+  }
+}
+function compareS1(){
+  var d=STATIONS['1a'],p=plot('cv1',d.view);
+  drawSeg(p,0,0,5,5,'rgba(155,163,172,.8)',2.2);
+  drawSeg(p,0,0,4,8,'#8C2E30',2.8);
+  drawShooter(p,0,0);drawTarget(p,4,8);drawTarget(p,5,5);
+  drawLabel(p,4,8,'y = 2x  (mais "em pé")','#E9B84E');
+  drawLabel(p,5,5,'y = x','#9BA3AC');
+  document.getElementById('eq1').textContent='a = 2   vs   a = 1';
+  document.getElementById('sv1').innerHTML='';
+  document.getElementById('s1hint').textContent='quanto maior o a, mais em pé é a trajetória';
+}
+function ghostS1(){
+  drawStation(3,{ghost:{a:R(1),b:R(0),label:'y = x'},full:{a:R(1),b:R(3)}});
+  document.getElementById('eq3').textContent='y = x + 3   ‖   y = x';
+  document.getElementById('sv3').innerHTML='';
+}
+function renderSteps(id,steps){
+  var c=document.getElementById(id);c.innerHTML='';
+  steps.forEach(function(s,i){
+    var el=document.createElement('div');el.className='sstep'+(s.hit?' hit':'')+(s.miss?' miss':'');
+    el.innerHTML='<span class="sc">'+s.c+'</span><span class="sv">'+s.v+'</span>';
+    c.appendChild(el);
+    setTimeout(function(){el.classList.add('on');},120+i*280);
+  });
+}
+function animateEq(id,txt){var e=document.getElementById(id);e.style.opacity='0';e.textContent=txt;setTimeout(function(){e.style.transition='opacity .4s';e.style.opacity='1';},500);}
+
+/* ═══════════ ESTAÇÃO 3 — barbante recuando ═══════════ */
+var s3view={xmin:-1,xmax:10,ymin:-5,ymax:10},s3anim=null,s3done=false;
+function drawStation3(extended){
+  var p=plot('cv4',s3view),s=[2,0],t=[6,8],b=-4;
+  if(extended){
+    drawSeg(p,s[0],s[1],0,b,'rgba(140,46,48,.6)',2,[6,4]);
+    p.ctx.strokeStyle='#E9B84E';p.ctx.lineWidth=2;
+    p.ctx.beginPath();p.ctx.arc(p.sx(0),p.sy(b),6.5,0,Math.PI*2);p.ctx.stroke();
+    p.ctx.fillStyle='#E9B84E';p.ctx.font='bold 12px "JetBrains Mono",monospace';p.ctx.textAlign='left';
+    p.ctx.fillText('altura de origem = −4',p.sx(0)+10,p.sy(b)+4);
+    p.ctx.fillText('abaixo do chão, atrás do atirador',p.sx(0)+10,p.sy(b)+19);
+  }
+  drawSeg(p,s[0],s[1],t[0],t[1],'#8C2E30',2.8);
+  drawShooter(p,s[0],s[1]);drawTarget(p,t[0],t[1]);
+  drawLabel(p,s[0],s[1],'atirador (2,0)');
+  drawLabel(p,t[0],t[1],'alvo (6,8)');
+}
+function runStation3(){
+  if(s3anim)clearInterval(s3anim);
+  var frames=0,total=30;
+  s3anim=setInterval(function(){
+    frames++;var prog=frames/total;
+    var p=plot('cv4',s3view);
+    drawSeg(p,2,0,2-2*prog,0-4*prog,'rgba(140,46,48,.6)',2,[6,4]);
+    drawSeg(p,2,0,6,8,'#8C2E30',2.8);
+    drawShooter(p,2,0);drawTarget(p,6,8);
+    if(frames>=total){
+      clearInterval(s3anim);s3anim=null;s3done=true;
+      drawStation3(true);
+      document.getElementById('s3hint').textContent='cruza o eixo vertical em −4';
+      document.getElementById('revealBtn').disabled=false;
+      renderSteps('sv4',[
+        {c:'SUBIDA',v:'8 − 0 = 8'},
+        {c:'AVANÇO',v:'6 − 2 = 4'},
+        {c:'MIRA',v:'a = 8 ÷ 4 = 2'},
+        {c:'RECUO',v:'b = 0 − 2·2 = −4'},
+        {c:'CONFERIR',v:'y = 2·6 − 4 = 8 ✔',hit:true}
+      ]);
+      animateEq('eq4','y = 2x − 4');
+    }
+  },45);
+}
+function resetStation3(){
+  if(s3anim){clearInterval(s3anim);s3anim=null;}
+  s3done=false;drawStation3(false);
+  document.getElementById('eq4').textContent='';
+  document.getElementById('sv4').innerHTML='';
+  document.getElementById('s3hint').textContent='deixe as equipes fazerem antes de projetar';
+}
+var protoRevealed=false;
+function revealProtocol(){
+  if(protoRevealed)return;
+  protoRevealed=true;
+  ['pr5','pr6','pr7'].forEach(function(id,i){
+    setTimeout(function(){document.getElementById(id).classList.remove('locked');},i*450);
+  });
+  document.getElementById('protostate').textContent='protocolo completo';
+  document.getElementById('lockmsg').textContent='protocolo revelado — a turma agora escreve a versão com as próprias palavras';
+  document.getElementById('revealBtn').textContent='✔ etapas reveladas';
+  document.getElementById('revealBtn').disabled=true;
+}
+
+/* ═══════════ ESTAÇÃO 4 — tiro impossível ═══════════ */
+function drawImpossible(tried){
+  var p=plot('cv5b',{xmin:-1,xmax:10,ymin:-1,ymax:10});
+  if(tried){
+    drawSeg(p,4,-1,4,10,'#8C2E30',2.8,[4,4]);
+    p.ctx.fillStyle='#E88';p.ctx.font='bold 12px "JetBrains Mono",monospace';p.ctx.textAlign='center';
+    p.ctx.fillText('avanço = 0',p.sx(4),p.sy(5));
+    p.ctx.fillText('divisão impossível',p.sx(4),p.sy(4.3));
+  }
+  drawShooter(p,4,0);drawTarget(p,4,9);
+  drawLabel(p,4,0,'(4,0)');drawLabel(p,4,9,'(4,9)');
+}
+function runImpossible(){
+  drawImpossible(true);
+  animateEq('eq5b','avanço = 4 − 4 = 0  →  não existe mira');
+}
+
+/* ═══════════ TORNEIO ═══════════ */
+var WALLS=[{x:3,h:2,name:'Sul'},{x:7,h:6,name:'Norte'}];
+var ALVOS=[{n:'A',x:4,y:4,p:10},{n:'B',x:8,y:4,p:15},{n:'C',x:6,y:8,p:20},{n:'D',x:10,y:6,p:25},{n:'E',x:8,y:10,p:30}];
+var POSIC=[['P1',0,0],['P2',0,2],['P3',0,6],['P4',2,0],['P5',4,0],['P6',1,1],['P7',3,2],['P8',2,6]];
+var mode='calc',lastVerdict=null,drawn=[];
+
+function setMode(m){
+  mode=m;
+  document.getElementById('mA').classList.toggle('on',m==='calc');
+  document.getElementById('mB').classList.toggle('on',m==='check');
+  document.getElementById('declRow').style.display=(m==='check')?'flex':'none';
+  arbitrate();
+}
+function drawPos(){
+  var pool=POSIC.filter(function(p){return drawn.indexOf(p[0])<0;});
+  if(!pool.length){drawn=[];pool=POSIC.slice();}
+  var p=pool[Math.floor(Math.random()*pool.length)];
+  drawn.push(p[0]);
+  document.getElementById('drawOut').textContent=p[0]+' ('+p[1]+', '+p[2]+')';
+  document.getElementById('drawSub').textContent='todas as equipes atiram desta posição nesta rodada';
+  document.getElementById('drawHist').textContent='já sorteadas: '+drawn.join(' · ');
+  document.getElementById('ax').value=p[1];document.getElementById('ay').value=p[2];
+  arbitrate();
+}
+function resetDraw(){drawn=[];document.getElementById('drawHist').textContent='';document.getElementById('drawOut').textContent='P?';}
+
+function arbitrate(){
+  var ax=parseFloat(document.getElementById('ax').value),ay=parseFloat(document.getElementById('ay').value);
+  var bx=parseFloat(document.getElementById('bx').value),by=parseFloat(document.getElementById('by').value);
+  var p=plot('cvT',{xmin:-1,xmax:11,ymin:-5,ymax:11});
+  WALLS.forEach(function(w){
+    p.ctx.strokeStyle='rgba(140,46,48,.55)';p.ctx.lineWidth=7;
+    p.ctx.beginPath();p.ctx.moveTo(p.sx(w.x),p.sy(0));p.ctx.lineTo(p.sx(w.x),p.sy(w.h));p.ctx.stroke();
+    p.ctx.fillStyle='#8b939c';p.ctx.font='10px "JetBrains Mono",monospace';p.ctx.textAlign='center';
+    p.ctx.fillText('x='+w.x,p.sx(w.x),p.sy(0)+13);
+  });
+  ALVOS.forEach(function(t){
+    p.ctx.strokeStyle='rgba(233,184,78,.45)';p.ctx.lineWidth=1.2;
+    p.ctx.beginPath();p.ctx.arc(p.sx(t.x),p.sy(t.y),7,0,Math.PI*2);p.ctx.stroke();
+    p.ctx.fillStyle='rgba(233,184,78,.6)';p.ctx.font='9px "JetBrains Mono",monospace';p.ctx.textAlign='center';
+    p.ctx.fillText(t.n,p.sx(t.x),p.sy(t.y)-11);
+  });
+  var eqEl=document.getElementById('eqT'),subEl=document.getElementById('eqTsub'),nEl=document.getElementById('narrT');
+  var apply=document.getElementById('applyBtn');apply.disabled=true;lastVerdict=null;
+  apply.textContent='lançar pontos no placar';
+  subEl.textContent='';
+  if([ax,ay,bx,by].some(isNaN)){eqEl.textContent='';nEl.textContent='preencha as quatro coordenadas';return;}
+  if(bx===ax){
+    eqEl.textContent='avanço = 0 — tiro impossível';
+    nEl.innerHTML='<b>trajetória vertical</b> — não é função: para um mesmo avanço haveria infinitas alturas. Vale 15 pts para quem provar.';
+    drawSeg(p,ax,-5,ax,11,'#8C2E30',2.8,[4,4]);
+    drawShooter(p,ax,ay);drawTarget(p,bx,by);
+    lastVerdict={pts:15,txt:'impossível provado'};apply.disabled=false;
+    return;
+  }
+  var a,b,declared=false;
+  if(mode==='check'){
+    a=parseR(document.getElementById('da').value);b=parseR(document.getElementById('db').value);
+    if(!a||!b){eqEl.textContent='';nEl.textContent='informe a mira e a altura de origem declaradas';return;}
+    declared=true;
+  }else{
+    a=rDiv(R(by-ay),R(bx-ax));b=rSub(R(ay),rMul(a,R(ax)));
+  }
+  var av=rVal(a),bv=rVal(b);
+  drawSeg(p,-1,av*-1+bv,11,av*11+bv,'rgba(233,184,78,.35)',1.5,[5,4]);
+  drawSeg(p,ax,av*ax+bv,bx,av*bx+bv,'#8C2E30',2.8);
+  drawShooter(p,ax,ay);drawTarget(p,bx,by);
+
+  var msgs=[],pts=0,blocked=false,half=false;
+  /* o tiro acerta o alvo? */
+  var yAt=rAdd(rMul(a,R(bx)),b), hit=rCmp(yAt,R(by))===0;
+  var alvo=ALVOS.filter(function(t){return t.x===bx&&t.y===by;})[0];
+  if(declared&&!hit){
+    var err=Math.abs(rVal(yAt)-by);
+    msgs.push('<b style="color:#E88">a ordem declarada não acerta o alvo</b>: em x = '+bx+' ela dá y = '+rTxt(yAt)+(rDec(yAt)?' ('+rDec(yAt)+')':'')+', e o alvo está em '+by+
+      (err<0.2?' — erro de '+err.toFixed(2).replace('.',',')+', típico de arredondamento decimal':''));
+  }else{
+    msgs.push('<b style="color:#6FCF6F">acerta o alvo</b> — em x = '+bx+' a trajetória passa por y = '+by);
+  }
+  /* muros entre atirador e alvo */
+  var lo=Math.min(ax,bx),hi=Math.max(ax,bx),nWalls=0;
+  WALLS.forEach(function(w){
+    if(lo<w.x&&w.x<hi){
+      nWalls++;
+      var yv=rAdd(rMul(a,R(w.x)),b),c=rCmp(yv,R(w.h));
+      var st=c>0?'PASSA':(c===0?'RASPÃO':'BLOQUEADO');
+      var col=c>0?'#6FCF6F':(c===0?'#E9B84E':'#E88');
+      if(c===0)half=true;if(c<0)blocked=true;
+      p.ctx.fillStyle=col;p.ctx.beginPath();p.ctx.arc(p.sx(w.x),p.sy(rVal(yv)),5.5,0,Math.PI*2);p.ctx.fill();
+      msgs.push('Muro '+w.name+' (x='+w.x+'): y = '+rTxt(yv)+(rDec(yv)?' ≈ '+rDec(yv):'')+' '+(c>0?'>':(c===0?'=':'<'))+' '+w.h+' → <b style="color:'+col+'">'+st+'</b>');
+    }
+  });
+  if(!nWalls)msgs.push('nenhum muro entre o atirador e o alvo — nada a testar');
+  /* trajetória dupla */
+  var onLine=ALVOS.filter(function(t){return rCmp(rAdd(rMul(a,R(t.x)),b),R(t.y))===0;});
+  var dbl=onLine.length>1&&(mode==='calc'||hit);
+  if(dbl)msgs.push('<b style="color:#E9B84E">trajetória dupla</b>: passa por '+onLine.map(function(t){return t.n;}).join(' e ')+' → soma + 20 de bônus');
+
+  eqEl.textContent=eqTxt(a,b);
+  var hint=eqDecHint(a,b);
+  if(hint&&mode==='calc')subEl.textContent=hint;
+  nEl.innerHTML=msgs.join('<br>');
+
+  /* pontuação sugerida */
+  if(hit&&alvo){
+    if(blocked)pts=0;
+    else{
+      var base=dbl?onLine.reduce(function(s,t){return s+t.p;},0)+20:alvo.p;
+      pts=half?base/2:base;
+    }
+    lastVerdict={pts:pts,txt:(dbl?'dupla':'alvo '+alvo.n)+(blocked?' · bloqueado':(half?' · raspão':''))};
+    document.getElementById('applyBtn').disabled=false;
+    document.getElementById('applyBtn').textContent='lançar '+pts+' pts no placar ('+lastVerdict.txt+')';
+  }
+}
+
+/* ═══════════ PLACAR ═══════════ */
+var teams=[{n:'Equipe 1',p:0},{n:'Equipe 2',p:0},{n:'Equipe 3',p:0},{n:'Equipe 4',p:0}];
+function renderScore(){
+  var c=document.getElementById('scoreList');c.innerHTML='';
+  var max=Math.max.apply(null,teams.map(function(t){return t.p;}));
+  teams.forEach(function(t,i){
+    var row=document.createElement('div');row.className='srow'+(t.p===max&&max>0?' lead':'');
+    row.innerHTML='<input class="nm" value="'+t.n.replace(/"/g,'&quot;')+'" oninput="teams['+i+'].n=this.value">'+
+      '<button class="sbtn" onclick="score('+i+',-10)">−10</button>'+
+      '<button class="sbtn" onclick="score('+i+',10)">+10</button>'+
+      '<button class="sbtn" onclick="score('+i+',15)">+15</button>'+
+      '<button class="sbtn" onclick="score('+i+',20)">+20</button>'+
+      '<button class="sbtn" onclick="score('+i+',25)">+25</button>'+
+      '<button class="sbtn" onclick="score('+i+',30)">+30</button>'+
+      '<span class="pts">'+(Math.round(t.p*10)/10)+'</span>';
+    c.appendChild(row);
+  });
+}
+function score(i,v){teams[i].p+=v;renderScore();}
+function addTeam(){teams.push({n:'Equipe '+(teams.length+1),p:0});renderScore();}
+function zeroScores(){teams.forEach(function(t){t.p=0;});renderScore();}
+function applyVerdict(){
+  if(!lastVerdict)return;
+  var name=prompt('Lançar '+lastVerdict.pts+' pts ('+lastVerdict.txt+') para qual equipe?\n\n'+teams.map(function(t,i){return (i+1)+' · '+t.n;}).join('\n'));
+  var i=parseInt(name,10)-1;
+  if(i>=0&&i<teams.length){teams[i].p+=lastVerdict.pts;renderScore();}
+}
+renderScore();
+
+/* ═══════════ DEBRIEFING ═══════════ */
+var TRANS=[
+  ['Mira','Coeficiente angular (a)','inclinação da reta'],
+  ['Altura de origem','Coeficiente linear (b)','onde a reta cruza o eixo y'],
+  ['Subida','Variação de y (Δy)','deslocamento vertical'],
+  ['Avanço','Variação de x (Δx)','deslocamento horizontal'],
+  ['Ordem de tiro','Equação da reta · função afim','a própria reta desenhada'],
+  ['Conferir o tiro','Verificar se o ponto pertence à reta','o ponto está sobre a reta'],
+  ['Testar o muro','Calcular o valor da função em x','altura da reta naquele ponto'],
+  ['Tiro impossível','Relação que não é função','dois pontos com o mesmo x']
+];
+(function(){
+  var tt=document.getElementById('transTable');
+  TRANS.forEach(function(r){
+    var el=document.createElement('div');el.className='trow';
+    el.innerHTML='<span class="trow-a">'+r[0]+'</span><span class="trow-b">'+r[1]+'</span><span class="trow-c">'+r[2]+'</span>';
+    el.addEventListener('click',function(){el.classList.toggle('on');});
+    tt.appendChild(el);
+  });
+})();
+function toggleAllTrans(){
+  var rows=[].slice.call(document.querySelectorAll('#transTable .trow'));
+  var any=rows.some(function(r){return !r.classList.contains('on');});
+  rows.forEach(function(r){r.classList.toggle('on',any);});
+}
+
+/* ═══════════ CHECKLIST / ZOOM / META ═══════════ */
+function ck(el){el.parentElement.classList.toggle('done',el.checked);}
+var zl=0;
+function cycleZoom(){zl=(zl+1)%3;document.body.classList.toggle('proj',zl===1);document.body.classList.toggle('proj2',zl===2);setTimeout(redraw,120);}
+function toggleMeta(){document.body.classList.toggle('showmeta');document.getElementById('metabtn').classList.toggle('on');}
+
+/* ═══════════ RESIZE + TECLADO ═══════════ */
+var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(redraw,150);});
+document.addEventListener('keydown',function(e){
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;
+  if(e.key==='ArrowRight'&&cur<7)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);
+  if(e.key===' '){
+    e.preventDefault();
+    var id=cur,dur=PANE_TIMER[id];
+    if(!dur)return;
+    if(TM[id]&&TM[id].iv)stopT(id);else startT(id,dur);
+  }
+});
+setTimeout(redraw,300);
+</script>
+</body>
+</html>

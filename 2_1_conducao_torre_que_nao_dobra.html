@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · A Torre que Não Dobra</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#26418F;--accent-soft:#EAEFFA;--accent-deep:#16295C;
+--h-bg:#131F42;--h-accent:#7FA0F0;--h-sub:#A9B8DE;
+--ink:#12151c;--ink-mid:#39404f;--ink-soft:#6c7484;--border:#dde2ed;--bg:#f7f9fc;--bg-card:#fff;--radius:14px;
+--rose:#B03060;--rose-s:#FBEAF0;--teal:#0E7C6B;--teal-s:#E3F5F1;--amber:#B7791F;--amber-s:#FEF7E4;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(127,160,240,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:860px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 11px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--teal)}.tab.done .tn{background:var(--teal-s);color:var(--teal);border-color:var(--teal)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#1E3268);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'"';position:absolute;left:10px;top:-8px;font-family:var(--f-head);font-size:110px;color:rgba(127,160,240,.1);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#D0DCFA;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(38,65,143,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:var(--rose-s);border:1px solid rgba(176,48,96,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7A1E42;line-height:1.6}
+.ok{background:var(--teal-s);border:1px solid rgba(14,124,107,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#08453A;line-height:1.6}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--rose)}.tm.done{color:var(--teal)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.15)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-v{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn-v:hover{filter:brightness(1.1)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ── RIG (painel escuro) ── */
+.rig{background:#111827;border:1px solid #233058;border-radius:var(--radius);padding:1.2rem 1rem 1.4rem;margin-bottom:1.2rem}
+.rig-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--h-accent);
+  border-bottom:1px solid #233058;padding-bottom:9px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.rig-h span{color:#7888A8;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+
+/* ── MACHINE LOG ── */
+.ml{display:flex;flex-direction:column;gap:6px;margin:12px 0;max-height:260px;overflow-y:auto}
+.ml-row{display:flex;gap:12px;align-items:center;padding:6px 12px;background:#1A2340;border:1px solid #2A3660;border-radius:8px;
+  animation:slideUp .25s ease both}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ml-in{font-family:var(--f-mono);font-size:16px;font-weight:600;color:#fff;min-width:50px;text-align:center}
+.ml-arrow{color:#4A5A80;font-size:14px}
+.ml-out{font-family:var(--f-mono);font-size:16px;font-weight:600;color:var(--h-accent);min-width:50px;text-align:center}
+.ml-row.bad{border-color:var(--rose);background:#2A1525}
+.ml-row.bad .ml-out{color:#FF8AAA}
+.eq-big{font-family:var(--f-mono);font-size:clamp(18px,4vw,32px);font-weight:600;color:var(--h-accent);text-align:center;margin:12px 0;min-height:40px}
+.narr{font-size:13px;color:#8898B8;text-align:center;margin:8px 0;min-height:20px;line-height:1.5}
+
+/* ── TABLE ENTRY ── */
+.dtable{width:100%;border-collapse:collapse;margin:12px 0}
+.dtable th{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7888A8;padding:6px 8px;border-bottom:1px solid #2A3660;text-align:center}
+.dtable td{font-family:var(--f-mono);font-size:15px;font-weight:600;color:#fff;padding:8px;text-align:center;border-bottom:1px solid #1E2E50}
+.dtable input{background:#1A2340;border:1px solid #2A3660;border-radius:6px;color:#fff;font-family:var(--f-mono);font-size:14px;
+  font-weight:600;width:68px;padding:6px 4px;text-align:center;outline:none;transition:border-color .2s}
+.dtable input:focus{border-color:var(--h-accent)}
+.dtable .diff{color:var(--h-accent);font-size:13px}
+.dtable .diff.mismatch{color:#FF8AAA}
+
+/* ── BET DISPLAY ── */
+.bet-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.bet-card{background:#1A2340;border:2px solid #2A3660;border-radius:var(--radius);padding:1rem 1.4rem;text-align:center;min-width:140px;transition:all .3s}
+.bet-lbl{font-size:10px;font-weight:700;color:#7888A8;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.bet-val{font-family:var(--f-mono);font-size:clamp(24px,5vw,40px);font-weight:600;color:#fff}
+.bet-card.wrong{border-color:var(--rose)}.bet-card.wrong .bet-val{color:#FF8AAA;text-decoration:line-through}
+.bet-card.right{border-color:var(--teal)}.bet-card.right .bet-val{color:#5EEACC}
+
+/* ── CHART ── */
+.chart-wrap{position:relative;margin:14px 0}
+.chart-wrap canvas{display:block;width:100%;max-height:300px}
+
+/* ── MACHINE CARDS ── */
+.mcards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}
+@media(max-width:640px){.mcards{grid-template-columns:1fr}}
+.mcard{background:#1A2340;border:2px solid #2A3660;border-radius:var(--radius);padding:1rem 1.1rem;cursor:pointer;transition:all .2s;position:relative}
+.mcard:hover{border-color:#4A5A80}
+.mcard.boa{border-color:var(--teal);background:#0E2520}
+.mcard.quebrada{border-color:var(--rose);background:#2A1525}
+.mcard-n{font-family:var(--f-mono);font-size:9px;font-weight:600;color:#5A6A8A;margin-bottom:5px;letter-spacing:.06em}
+.mcard-t{font-size:13px;color:#D0DCFA;line-height:1.55}
+.mcard-cls{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed #2A3660}
+.mcard.boa .mcard-cls,.mcard.quebrada .mcard-cls{display:block}
+.mcard-verdict{font-family:var(--f-head);font-size:14px;font-weight:600}
+.mcard.boa .mcard-verdict{color:#5EEACC}
+.mcard.quebrada .mcard-verdict{color:#FF8AAA}
+.mcard-why{font-size:11.5px;color:#8898B8;margin-top:4px;line-height:1.45}
+.mc-score{text-align:center;font-size:13px;color:#7888A8;margin:8px 0}
+
+/* ── TIMELINE ── */
+.tl-wrap{display:flex;gap:0;margin:14px 0;min-height:80px}
+.tl-col{flex:1;border:1px solid #2A3660;padding:.7rem .5rem;position:relative;min-height:120px;display:flex;flex-direction:column;gap:6px}
+.tl-col:first-child{border-radius:var(--radius) 0 0 var(--radius)}
+.tl-col:last-child{border-radius:0 var(--radius) var(--radius) 0}
+.tl-year{font-family:var(--f-head);font-size:12px;font-weight:700;color:var(--h-accent);text-align:center;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #2A3660}
+.tl-col:last-child .tl-year{color:#5EEACC}
+.tl-item{font-size:10px;color:#B0BCD8;line-height:1.35;background:#1A2340;border-radius:4px;padding:4px 6px;animation:slideUp .3s ease both}
+.tl-item b{color:var(--h-accent);font-weight:600}
+
+/* ── MÁQUINA DIGITAL ── */
+.mach{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0 4px}
+.mbox{background:#1A2340;border:2px solid #2A3660;border-radius:12px;min-width:118px;padding:.85rem 1rem;text-align:center;transition:border-color .2s}
+.mbox-l{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7888A8;margin-bottom:6px}
+.mbox-v{font-family:var(--f-mono);font-size:clamp(24px,5.5vw,40px);font-weight:600;color:#fff;line-height:1.15}
+.mbox.core{border-color:#3A4A78;background:#16224A;min-width:158px}
+.mbox.core .mbox-v{font-size:clamp(14px,2.6vw,19px);color:var(--h-accent);letter-spacing:.06em}
+.mbox.out .mbox-v{color:#5EEACC}
+.mbox.pulse{animation:pulseBox .55s ease}
+@keyframes pulseBox{0%{transform:scale(1)}45%{transform:scale(1.07);border-color:var(--h-accent)}100%{transform:scale(1)}}
+.marrow{font-size:24px;color:#4A5A80}
+.ml-row.conflict{border-color:var(--rose);background:#2A1525}
+.ml-row.conflict .ml-out{color:#FF8AAA}
+.ml-tag{font-size:10px;color:#B0708A;margin-left:auto;font-family:var(--f-body)}
+.ghost{width:26px;height:26px;border-radius:50%;border:1px solid #2A3660;background:transparent;color:#2E3C60;font-size:13px;line-height:1;cursor:pointer;padding:0}
+.ghost.on{color:#8898B8;border-color:#3A4A78}
+
+/* ── TABELA DE EQUIPES ── */
+.teamt{width:100%;border-collapse:collapse;margin:12px 0 6px}
+.teamt th{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7888A8;padding:6px 5px;border-bottom:1px solid #2A3660;text-align:center}
+.teamt td{padding:6px 5px;text-align:center;border-bottom:1px solid #1E2E50;color:#fff;font-family:var(--f-mono);font-size:14px;vertical-align:middle}
+.teamt td.name{font-family:var(--f-body);font-weight:600;font-size:13px;color:#D0DCFA;text-align:left}
+.teamt input{background:#1A2340;border:1px solid #2A3660;border-radius:6px;color:#fff;font-family:var(--f-mono);font-size:13px;width:74px;padding:5px 4px;text-align:center;outline:none;transition:border-color .2s}
+.teamt input.wide{width:104px;font-size:12px}
+.teamt input:focus{border-color:var(--h-accent)}
+.teamt .del{background:none;border:none;color:#3A4A70;cursor:pointer;font-size:15px;line-height:1;padding:2px 4px}
+.teamt .del:hover{color:var(--rose)}
+.teamt td.empty{color:#5A6A8A;font-family:var(--f-body);font-size:12.5px;padding:16px 8px}
+.dev{font-family:var(--f-mono);font-size:11.5px;line-height:1.5;display:block}
+.dev.hi{color:#FF8AAA}.dev.lo{color:#5EEACC}.dev.na{color:#4A5A80}
+.addrow{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:14px 0 4px}
+.addrow input{background:#1A2340;border:1px solid #2A3660;border-radius:8px;color:#fff;font-family:var(--f-mono);font-size:14px;padding:7px 10px;text-align:center;outline:none;transition:border-color .2s}
+.addrow input:focus{border-color:var(--h-accent)}
+
+/* ── NOTA DO FORMADOR (recolhível) ── */
+.fnote{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:var(--radius);padding:.7rem 1.1rem;margin:1rem 0}
+.fnote summary{font-family:var(--f-body);font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--amber);cursor:pointer;list-style:none;display:flex;align-items:center;gap:7px}
+.fnote summary::-webkit-details-marker{display:none}
+.fnote summary::before{content:"▸";display:inline-block;transition:transform .2s}
+.fnote[open] summary::before{transform:rotate(90deg)}
+.fnote-b{font-size:13px;color:var(--ink-mid);line-height:1.7;margin-top:9px;padding-top:9px;border-top:1px dashed var(--border)}
+.fnote-b b{color:var(--ink)}
+.fnote-b ul{list-style:none;padding:0;margin:0}
+.fnote-b li{padding-left:18px;position:relative;margin-bottom:7px}
+.fnote-b li:last-child{margin-bottom:0}
+.fnote-b li::before{content:"▸";position:absolute;left:0;color:var(--amber);font-size:10px;line-height:1.85}
+.fnote-b kbd{font-family:var(--f-mono);font-size:11px;background:#EEF1F7;border:1px solid var(--border);border-radius:4px;padding:1px 5px;color:var(--ink)}
+
+/* ── BADGE EXEMPLO ── */
+.rig-h .exbadge{display:inline-block;font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0B1020;background:var(--h-accent);padding:3px 8px;border-radius:100px;margin-right:9px}
+.rig-h .lft{display:flex;align-items:center;gap:0;color:var(--h-accent);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+
+/* ── CHIPS DE MARCOS ── */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 6px;min-height:34px}
+.chip{background:#1A2340;border:1px solid #2A3660;border-radius:100px;padding:7px 14px;font-family:var(--f-body);font-size:11.5px;color:#D0DCFA;cursor:pointer;transition:all .15s;line-height:1.35;text-align:left;animation:slideUp .25s ease both}
+.chip:hover{border-color:var(--h-accent);color:#fff;transform:translateY(-1px)}
+.chip small{display:block;color:#7888A8;font-size:9.5px;margin-top:1px}
+.chips-empty{font-family:var(--f-body);font-size:12px;color:#5A6A8A;padding:8px 2px}
+.tl-item{cursor:pointer}
+.tl-item:hover{background:#22305A}
+.tl-code{display:block;font-family:var(--f-mono);font-size:9px;color:var(--h-accent);margin-top:3px}
+.tl-tag{display:block;font-size:9px;color:#5A6A8A;margin-top:1px}
+.tl-col:last-child .tl-item{border:1px solid #17604F}
+
+/* ── TRIAGEM: MARCO × NÃO-MARCO ── */
+.chip.mk{border-left:3px solid #2A3660}
+.tl-item.ok{border:1px solid #17604F}
+.tl-col:last-child .tl-item{border:1px solid #17604F}
+.tray{border:1px dashed #6B4A2E;border-radius:var(--radius);background:#241A12;padding:.7rem .8rem;margin-top:12px;min-height:64px}
+.tray-h{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#E0A05E;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tray-h span{letter-spacing:.02em;text-transform:none;font-size:11px;font-weight:400;color:#9A7B5E}
+.tray-grid{display:flex;flex-wrap:wrap;gap:7px}
+.tray-empty{font-size:11.5px;color:#7A6250;padding:4px 2px}
+.no-item{background:#2E2016;border:1px solid #6B4A2E;border-radius:8px;padding:6px 9px;max-width:270px;cursor:pointer;animation:slideUp .3s ease both;transition:background .15s}
+.no-item:hover{background:#3A2A1C}
+.no-txt{font-size:10.5px;color:#D8BFA4;line-height:1.4}
+.no-cod{display:block;font-family:var(--f-mono);font-size:9px;color:#E0A05E;margin-top:3px}
+.no-tipo{display:inline-block;font-family:var(--f-body);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:#6B4A2E;color:#FFE6CC;padding:2px 7px;border-radius:100px;margin-top:5px}
+.verdict{border-radius:var(--radius);padding:.85rem 1rem;margin-top:12px;min-height:58px;border:1px solid #2A3660;background:#141C36}
+.verdict.yes{border-color:#17604F;background:#0F2A26}
+.verdict.no{border-color:#6B4A2E;background:#241A12}
+.verdict-h{font-family:var(--f-head);font-size:13px;font-weight:700;margin-bottom:5px;color:#8898B8}
+.verdict.yes .verdict-h{color:#5EEACC}
+.verdict.no .verdict-h{color:#E0A05E}
+.verdict-d{font-size:12.5px;line-height:1.6;color:#B0BCD8}
+.verdict-d b{color:#fff}
+.legenda{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.lgd{font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid #6B4A2E;color:#E0A05E;padding:3px 9px;border-radius:100px}
+.lgd.mk{border-color:#17604F;color:#5EEACC}
+
+/* ── NAV ── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A Torre <em>que Não Dobra</em></div>
+  <span class="top-badge">🥤 Função afim · 60 min</span>
+  <span class="top-badge">5 grupos</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Máquina</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>A aposta</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>Medição</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>Gráfico</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>Quebradas</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>Marcos</button>
+    </div>
+  </div>
+
+<!-- ══════════ FASE 1 — MÁQUINA HUMANA ══════════ -->
+<div class="pane on" id="p0">
+
+  <div class="speech">
+    <p><b>Vamos jogar.</b> Esta máquina recebe um número e devolve outro. <b>Ninguém pode perguntar a regra</b> — só testar.</p>
+    <p>A regra foi sorteada pelo computador. <b>Nem eu sei qual é.</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">MÁQUINA — regra oculta <span id="mStatus">clique em “sortear regra” para começar</span></div>
+
+    <div class="mach">
+      <div class="mbox" id="mBoxIn"><div class="mbox-l">entrada</div><div class="mbox-v" id="mVin">—</div></div>
+      <div class="marrow">→</div>
+      <div class="mbox core" id="mBoxCore"><div class="mbox-l">regra</div><div class="mbox-v" id="mRule">● ● ● ●</div></div>
+      <div class="marrow">→</div>
+      <div class="mbox out" id="mBoxOut"><div class="mbox-l">saída</div><div class="mbox-v" id="mVout">—</div></div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+      <input id="mIn" type="number" placeholder="entrada" onkeydown="if(event.key==='Enter')processar()" style="background:#1A2340;border:1px solid #2A3660;border-radius:8px;color:#fff;font-family:var(--f-mono);font-size:14px;width:92px;padding:7px 8px;text-align:center;outline:none">
+      <input id="mBet" type="number" placeholder="a turma prevê" onkeydown="if(event.key==='Enter')processar()" style="background:#1A2340;border:1px solid #2A3660;border-radius:8px;color:#fff;font-family:var(--f-mono);font-size:14px;width:140px;padding:7px 8px;text-align:center;outline:none">
+      <button class="btn btn-a" onclick="processar()">processar ▸</button>
+    </div>
+
+    <div class="narr" id="mNarr">digite a entrada dita pela turma e processe · o campo do meio é opcional: use quando alguém arriscar a regra</div>
+    <div class="ml" id="mlog"></div>
+
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="sortearRegra()">🎲 sortear regra</button>
+      <button class="btn btn-g" onclick="conferirRegistro()">conferir o registro</button>
+      <button class="btn btn-v" onclick="revelarRegra()">revelar a regra</button>
+      <button class="btn btn-g" onclick="limparMaquina()">limpar</button>
+      <button class="ghost" id="mGlitch" onclick="armarFalha()" title="ajuste">·</button>
+    </div>
+  </div>
+
+  <details class="fnote">
+    <summary>nota do formador · como operar a máquina</summary>
+    <div class="fnote-b">
+      <ul>
+        <li><b>Sortear regra:</b> o computador escolhe e mantém oculta — nem você a conhece. Isso elimina qualquer combinação prévia com voluntários.</li>
+        <li><b>Testar:</b> a turma diz um número, você digita em <i>entrada</i> e processa. Cada par fica registrado abaixo.</li>
+        <li><b>Quando alguém arriscar a regra:</b> peça a previsão para um número <i>novo</i>, digite-a em <i>a turma prevê</i> e processe. A máquina confirma ou desmente sozinha.</li>
+        <li><b>O momento decisivo:</b> clique discretamente no botão redondo <b>·</b> ao lado de "limpar" (ou tecle <kbd>Alt</kbd> + <kbd>Q</kbd>). A <i>próxima</i> resposta virá adulterada. Em seguida, peça para repetirem <b>uma entrada já testada</b>. A turma reage sozinha: "está errado!".</li>
+        <li>Só depois da reação, clique em <b>conferir o registro</b>: os pares em conflito ficam destacados. Aí faça a pergunta abaixo.</li>
+      </ul>
+    </div>
+  </details>
+
+  <div class="speech">
+    <p><b>Por que vocês dizem que está errado?</b> O que a máquina precisa garantir para funcionar?</p>
+  </div>
+
+  <div class="ok"><b>O que a turma enuncia:</b> "para a mesma entrada, a saída precisa ser sempre a mesma." Escreva no quadro — é a <b>dependência unívoca</b>. Ela fica visível o resto da oficina.</div>
+
+  <!-- <div class="tip"><b>Não use a palavra "função" ainda.</b> Ela aparece só na sistematização. O nome vem depois da ideia.</div> -->
+
+  <!-- <div class="tw">
+    <div class="tm" id="t0">10:00</div>
+    <div class="tl" id="t0l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(0,600)">▶ 10 min</button>
+      <button class="btn btn-g" onclick="stopT(0)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(0,600)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <span></span>
+    <button class="btn btn-a" onclick="go(1)">a aposta →</button>
+  </div>
+</div>
+
+<!-- ══════════ FASE 2a — A APOSTA ══════════ -->
+<div class="pane" id="p1">
+
+  <div class="speech">
+    <p>Meçam <b>um único copo</b>. SEM EMPILHAR NEM MEDIR:</p>
+    <p><b>Qual será a altura de uma pilha de 10 copos?</b></p>
+    <p>Registrem a aposta por escrito.</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Roteiro:</div>
+    <ul>
+      <li>Cada equipe mede a altura de <b>um</b> copo e anota</li>
+      <li>Registram a estimativa para 10 copos na folha — <b>antes de empilhar</b></li>
+      <li>Registrar as apostas no quadro abaixo e/ou na lousa</li>
+      <!-- <li><b>Não antecipe o resultado</b> — a surpresa é o motor da fase seguinte</li> -->
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A APOSTA — registro das equipes <span id="betCount">nenhuma aposta registrada</span></div>
+    <div class="addrow">
+      <input id="eqNome" type="text" placeholder="equipe" onkeydown="if(event.key==='Enter')addEquipe()" style="width:132px;font-family:var(--f-body);font-size:13px;text-align:left">
+      <input id="eqCopo" type="number" step="0.1" placeholder="1 copo (cm)" onkeydown="if(event.key==='Enter')addEquipe()" style="width:118px">
+      <input id="eqAposta" type="number" step="0.1" placeholder="aposta · 10 copos" onkeydown="if(event.key==='Enter')addEquipe()" style="width:158px">
+      <button class="btn btn-a" onclick="addEquipe()">registrar</button>
+    </div>
+    <table class="teamt" id="betTable"></table>
+    <div class="narr" id="betNarr">registre a aposta de cada equipe <b>antes</b> de qualquer empilhamento</div>
+  </div>
+
+  <details class="fnote">
+    <summary>nota do formador</summary>
+    <div class="fnote-b">Registre e siga. <b>Não comente as apostas</b> — nem para elogiar, nem para corrigir, nem por expressão facial. O contraste entre estes números e a medição é o motor da fase seguinte; qualquer antecipação o desarma. As apostas registradas aqui reaparecem automaticamente na etapa 4.</div>
+  </details>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t1">03:00</div>
+    <div class="tl" id="t1l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,180)">▶ 3 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,180)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← máquina</button>
+    <span class="nav-info">fase 2 de 6</span>
+    <button class="btn btn-a" onclick="go(2)">medição →</button>
+  </div>
+</div>
+
+<!-- ══════════ FASE 2b — MEDIÇÃO + PADRÃO + FÓRMULA ══════════ -->
+<div class="pane" id="p2">
+
+  <div class="speech">
+    <p>Empilhem e meçam: <b>1, 2, 3, 4</b> copos. Anotem tudo na tabela.</p>
+    <p>Vamos preencher <b>um caso aqui na projeção</b> — façam o mesmo com a torre da equipe de vocês.</p>
+    <p>Quando chegarem à quarta linha, respondam: <b>o que acontece de uma linha para a outra?</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h"><span class="lft"><span class="exbadge">exemplo</span>TABELA DA TORRE</span> <span>uma torre demonstrativa · cada equipe repete na sua folha</span></div>
+    <table class="dtable">
+      <tr><th>n (copos)</th><th>h (cm)</th><th>Δh</th></tr>
+      <tr><td>1</td><td><input id="h1" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d1">—</td></tr>
+      <tr><td>2</td><td><input id="h2" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d2"></td></tr>
+      <tr><td>3</td><td><input id="h3" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d3"></td></tr>
+      <tr><td>4</td><td><input id="h4" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d4"></td></tr>
+      <tr><td>5</td><td><input id="h5" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d5"></td></tr>
+      <tr><td>6</td><td><input id="h6" type="number" step="0.1" oninput="calcDiffs()"></td><td class="diff" id="d6"></td></tr>
+    </table>
+    <div class="eq-big" id="formula"></div>
+    <div class="narr" id="fNarr">preencha a tabela para calcular as diferenças e a fórmula</div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Escrevam a fórmula da torre de vocês.</div>
+    <ul>
+      <li>"O que vocês estão vendo acontecer de uma linha para a outra?"</li>
+      <li>"Quanto a torre cresce a cada copo?"</li>
+    </ul>
+  </div>
+
+  <!-- <div class="tip"><b>Aceite qualquer notação</b> — inclusive descrições em palavras. A formalização h = a·n + b vem na sistematização, não aqui.</div> -->
+
+  <!-- <div class="tw">
+    <div class="tm" id="t2">15:00</div>
+    <div class="tl" id="t2l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(2,900)">▶ 15 min</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(2,900)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← aposta</button>
+    <span class="nav-info">fase 3 de 6</span>
+    <button class="btn btn-a" onclick="go(3)">gráfico →</button>
+  </div>
+</div>
+
+<!-- ══════════ FASE 2c — GRÁFICO + PROVA REAL ══════════ -->
+<div class="pane" id="p3">
+
+  <div class="speech">
+    <p>Marquem os pares <b>(n, h)</b> na malha. O que os pontos formam?</p>
+    <p>E a pergunta principal: <b>por que eles não passam pela origem?</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h"><span class="lft"><span class="exbadge">exemplo</span>GRÁFICO DA TORRE</span> <span>gerado a partir da tabela demonstrativa</span></div>
+    <div class="chart-wrap"><canvas id="chart" height="280"></canvas></div>
+    <div class="narr" id="chartNarr">preencha a tabela na aba anterior para plotar os pontos</div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="drawChart()">atualizar gráfico</button>
+      <button class="btn btn-g" onclick="toggleLine()">mostrar / ocultar reta</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A prova real</div>
+    <p>Cada equipe usa a fórmula para prever a altura de <b>10 copos</b>. Compare com a aposta do início — depois empilhem e meçam de verdade.</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h"><span class="lft"><span class="exbadge">exemplo</span>FÓRMULA × MEDIDA REAL</span> <span>a torre demonstrativa não tem aposta</span></div>
+    <div class="bet-row" id="proofRow">
+      <div class="bet-card right" id="proofFormula">
+        <div class="bet-lbl">a fórmula prevê</div>
+        <div class="bet-val" id="proofFormulaV">—</div>
+      </div>
+      <div class="bet-card" id="proofMeasured" style="border-color:var(--h-accent)">
+        <div class="bet-lbl">medida real</div>
+        <div class="bet-val"><input id="realH10" type="number" step="0.1" placeholder="?" style="background:transparent;border:none;color:var(--h-accent);font-family:var(--f-mono);font-size:clamp(22px,5vw,36px);font-weight:600;text-align:center;width:100px;outline:none" oninput="updateProof()"></div>
+      </div>
+    </div>
+    <div class="narr" id="proofNarr">preencha a medida real de 10 copos para conferir a previsão da fórmula</div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">APOSTA × FÓRMULA × MEDIDA REAL — por equipe <span id="provaCount">nenhuma equipe registrada</span></div>
+    <table class="teamt" id="provaTable"></table>
+    <div class="narr" id="provaNarr">a coluna “aposta” vem da etapa 2 · preencha fórmula, previsão e medida real de cada equipe</div>
+    <div class="ctrls"><button class="btn btn-g" onclick="renderProva()">atualizar equipes</button></div>
+  </div>
+
+  <div class="tip"><b>Se houver tempo — desafio inverso:</b> "quantos copos para atingir a altura desta cadeira?" A equipe calcula e testa. É o momento em que a função deixa de descrever e passa a prever.</div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t3">07:00</div>
+    <div class="tl" id="t3l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,420)">▶ 7 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,420)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← medição</button>
+    <span class="nav-info">fase 4 de 6</span>
+    <button class="btn btn-a" onclick="go(4)">quebradas →</button>
+  </div>
+</div>
+
+<!-- ══════════ FASE 3 — MÁQUINAS QUEBRADAS ══════════ -->
+<div class="pane" id="p4">
+
+  <div class="speech">
+    <p>Oito cartões com relações do cotidiano. Separem em <b>máquina boa</b> e <b>máquina quebrada</b>.</p>
+    <p>Para classificar como quebrada, <b>apresentem um contraexemplo concreto</b> — não basta achar.</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">MÁQUINAS — 1 clique para máquina boa, 2 cliques para máquina quebrada <span id="mcScore">0 de 8 classificados</span></div>
+    <div class="mcards" id="mcGrid"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="revealAll()">revelar tudo</button>
+      <button class="btn btn-g" onclick="resetCards()">limpar</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Na partilha, priorize os pares invertidos</div>
+    <ul>
+      <li><b>Cartão 1 vs 2:</b> "estudante → altura" é boa, mas "altura → estudante" é quebrada — duas pessoas podem ter 1,65 m. Teste na própria sala!</li>
+      <li><b>Cartão 4 vs 5:</b> "produto → preço" é boa, mas "preço → produto" é quebrada — vários produtos custam R$ 10</li>
+      <li><b>Cartão 8:</b> é o único que passa pela origem (zero litro, zero real) — contraste direto com a torre</li>
+    </ul>
+  </div>
+
+  <div class="speech">
+    <p>Retomem a torre: dado o número de copos, existe uma única altura? <b>Sim.</b></p>
+    <p>E se invertermos — dada a altura, existe um único número de copos? <b>Também sim.</b> A torre é máquina boa nos dois sentidos.</p>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t4">12:00</div>
+    <div class="tl" id="t4l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(4,720)">▶ 12 min</button>
+      <button class="btn btn-g" onclick="stopT(4)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(4,720)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← gráfico</button>
+    <span class="nav-info">fase 5 de 6</span>
+    <button class="btn btn-a" onclick="go(5)">marcos →</button>
+  </div>
+</div>
+
+<!-- ══════════ FASE 4 — LINHA DO TEMPO DOS MARCOS ══════════ -->
+<div class="pane" id="p5">
+
+  <div class="speech">
+    <p><b>Para chegar até aqui, o que o estudante precisava já saber?</b></p>
+    <p>Voltem à torre, etapa por etapa, e identifiquem quais aprendizagens de anos anteriores foram mobilizadas.</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">O que cada equipe faz</div>
+    <ul>
+      <li>Escreve em <b>post-its</b> as aprendizagens mobilizadas em cada etapa da torre</li>
+      <li>Com o <b>DCRC em mãos</b> — Anos Iniciais e Anos Finais —, busca o código de cada uma</li>
+      <li>Fixa no trecho correspondente da faixa de kraft (Anos Iniciais · 6º · 7º · 8º · 9º)</li>
+      <li>A discussão sobre em que ano cada aprendizagem <b>nasce</b> é tão formativa quanto o mapeamento</li>
+    </ul>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A triagem — o que fazer com o quadro abaixo</div>
+    <p style="font-size:13.5px;line-height:1.7;color:var(--ink-mid)">O quadro traz <b>18 aprendizagens</b> mobilizadas pela oficina. <b>Nem todas são marcos.</b> Antes de clicar em cada uma, faça a pergunta do texto que acabamos de estudar: <i>esta aprendizagem apenas <b>antecede</b> a função afim, ou ela <b>sustenta e reorganiza</b> o pensamento que a torna possível?</i></p>
+    <ul style="margin-top:8px">
+      <li>Leia a habilidade em voz alta e <b>peça o voto da sala</b> — marco ou não marco — antes de clicar.</li>
+      <li>O clique revela o veredito e a justificativa. As que <b>são</b> marco vão para a linha do tempo; as que <b>não são</b> caem na bandeja de descarte, com o motivo.</li>
+      <li>Onde a sala se dividir, <b>a discordância vale mais que o veredito</b>. Estes são critérios de análise, não gabarito.</li>
+    </ul>
+    <div class="legenda">
+      <span class="lgd mk">✓ marco</span>
+      <span class="lgd">instrumental</span>
+      <span class="lgd">cronológico</span>
+      <span class="lgd">retomada</span>
+      <span class="lgd">outra trilha</span>
+    </div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">TRIAGEM — clique numa aprendizagem para julgá-la <span id="tlScore">18 por julgar</span></div>
+    <div class="chips" id="tlPool"></div>
+    <div class="tl-wrap" id="tlWrap">
+      <div class="tl-col" id="tlAI"><div class="tl-year">Anos Iniciais</div></div>
+      <div class="tl-col" id="tl6"><div class="tl-year">6.º</div></div>
+      <div class="tl-col" id="tl7"><div class="tl-year">7.º</div></div>
+      <div class="tl-col" id="tl8"><div class="tl-year">8.º</div></div>
+      <div class="tl-col" id="tl9"><div class="tl-year">9.º</div></div>
+    </div>
+
+    <div class="tray" id="tray">
+      <div class="tray-h">Bandeja de descarte — mobilizadas pela oficina, mas não estruturantes <span id="trayCount">nenhuma descartada</span></div>
+      <div class="tray-grid" id="trayGrid"></div>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <div class="verdict-h">o veredito aparece aqui</div>
+      <div class="verdict-d">Peça o voto da sala antes de cada clique. Clique de novo em qualquer carta já julgada para devolvê-la ao quadro.</div>
+    </div>
+
+    <div class="narr">pergunte <b>marco ou não marco?</b> antes de clicar · e, para as que forem marco, pergunte também <b>em que ano nascem</b></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="revealMarcos()">julgar todas</button>
+      <button class="btn btn-g" onclick="clearMarcos()">limpar</button>
+      <button class="btn btn-g" onclick="buildPool()">embaralhar</button>
+    </div>
+  </div>
+
+  <div class="tip" id="dica6" style="display:none"></div>
+
+  <!-- <div class="tip">Os códigos exibidos são os da <b>BNCC</b>. Peça às equipes que localizem a redação correspondente no <b>DCRC</b> — a comparação entre os dois documentos costuma render discussão.</div> -->
+
+  <!-- <div class="tw">
+    <div class="tm" id="t5">13:00</div>
+    <div class="tl" id="t5l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(5,780)">▶ 13 min</button>
+      <button class="btn btn-g" onclick="stopT(5)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(5,780)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="speech">
+    <p>Olhando para esta linha do tempo, em qual desses marcos vocês suspeitam que estejam <b>as maiores lacunas</b> dos seus estudantes?</p>
+    <p>O que uma turma que trava justamente ali está sinalizando?</p>
+  </div>
+
+  <div class="ok"><b>A função afim não é um conteúdo isolado do 9.º ano.</b> É o ponto de chegada de uma trilha de pensamento algébrico que começa no <b>3.º ano</b>, quando a criança descreve a regra de formação de uma sequência. Quando um estudante trava aqui, quase sempre a lacuna está atrás — e frequentemente muito atrás.</div>
+
+  <div class="tip"><b>A distinção que a triagem quis instalar:</b> quase tudo o que a oficina mobilizou era <i>necessário</i>. Só uma parte era <i>estruturante</i>. Medir com régua, operar decimais e calcular o valor numérico de uma expressão são <b>condições de execução</b> — sem elas a tarefa não roda, mas com elas ninguém entende função. Já a ideia de variável, a proporcionalidade e sua ruptura, e a leitura da natureza da variação são <b>condições de compreensão</b>. Recompor as primeiras é revisar; recompor as segundas é recompor.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← quebradas</button>
+    <span class="nav-info">fase 6 de 6 · fim da oficina</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAV ═══ */
+var tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+var cur=0;
+function go(i){
+  if(cur<i)tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on')});panes.forEach(function(p){p.classList.remove('on')});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(i===3){renderProva();setTimeout(drawChart,60);}
+  if(i===1)renderEquipes();
+}
+
+/* ═══ TIMERS ═══ */
+var TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id])TM[id]={rem:dur};
+  var el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+  el.classList.remove('done','low');lb.textContent='em andamento';
+  TM[id].iv=setInterval(function(){TM[id].rem--;var r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));
+    el.classList.toggle('low',r<=15&&r>0);
+    if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';el.classList.remove('low');el.classList.add('done');lb.textContent='tempo esgotado';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};document.getElementById('t'+id).textContent=fmtT(dur);document.getElementById('t'+id).classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* ═══ MÁQUINA DIGITAL ═══ */
+var REGRAS=[
+  {t:'multiplique por -2 e some 1',        e:'s = -2n + 1',    f:function(n){return (-2)*n+1}},
+  {t:'triplique e subtraia 2',e:'s = 3n − 2',    f:function(n){return 3*n-2}},
+  {t:'some 4 e dobre',        e:'s = 2(n + 4)',  f:function(n){return 2*(n+4)}},
+  {t:'multiplique por 5 e some 3', e:'s = 5n + 3', f:function(n){return 5*n+3}},
+  {t:'dobre e subtraia 7',    e:'s = 2n − 7',    f:function(n){return 2*n-7}},
+  {t:'multiplique por 10 e some 2', e:'s = 10n + 2', f:function(n){return 10*n+2}},
+  {t:'multiplique por -4 e subtraia 1',   e:'s = -4n − 1',  f:function(n){return (-4)*n-1}},
+  {t:'multiplique o número por ele mesmo', e:'s = n²', f:function(n){return n*n}}
+];
+var regraIdx=null, pares=[], falhaArmada=false, mostrarConflito=false;
+function fmtNum(v){
+  if(Math.abs(v-Math.round(v))<1e-9)return String(Math.round(v));
+  return (Math.round(v*100)/100).toString().replace('.',',');
+}
+function sortearRegra(silencioso){
+  var novo=regraIdx;
+  while(novo===regraIdx)novo=Math.floor(Math.random()*REGRAS.length);
+  regraIdx=novo;
+  document.getElementById('mRule').textContent='● ● ● ●';
+  document.getElementById('mBoxCore').classList.remove('pulse');
+  document.getElementById('mStatus').textContent='regra sorteada e oculta';
+  if(!silencioso){
+    pares=[];mostrarConflito=false;renderLog();
+    document.getElementById('mVin').textContent='—';
+    document.getElementById('mVout').textContent='—';
+    document.getElementById('mNarr').textContent='regra sorteada — nem o formador sabe qual é. A turma pode começar a testar.';
+  }
+  document.getElementById('mIn').focus();
+}
+function armarFalha(){
+  falhaArmada=!falhaArmada;
+  document.getElementById('mGlitch').classList.toggle('on',falhaArmada);
+}
+function processar(){
+  if(regraIdx===null)sortearRegra(true);
+  var inEl=document.getElementById('mIn'),betEl=document.getElementById('mBet');
+  var x=parseFloat(inEl.value);
+  if(isNaN(x)){inEl.focus();return;}
+  var bet=parseFloat(betEl.value);
+  inEl.value='';betEl.value='';
+  document.getElementById('mVin').textContent=fmtNum(x);
+  document.getElementById('mVout').textContent='…';
+  var core=document.getElementById('mBoxCore');
+  core.classList.add('pulse');setTimeout(function(){core.classList.remove('pulse')},560);
+  var y=REGRAS[regraIdx].f(x);
+  if(falhaArmada){
+    var passos=[3,4,5,6,7,8];
+    var d=passos[Math.floor(Math.random()*passos.length)]*(Math.random()<.5?1:-1);
+    y=y+d;falhaArmada=false;document.getElementById('mGlitch').classList.remove('on');
+  }
+  setTimeout(function(){
+    document.getElementById('mVout').textContent=fmtNum(y);
+    pares.push({x:x,y:y});
+    renderLog();
+    var n=document.getElementById('mNarr');
+    if(!isNaN(bet)){
+      if(Math.abs(bet-y)<1e-9)n.innerHTML='a turma previu <b>'+fmtNum(bet)+'</b> — a máquina devolveu <b>'+fmtNum(y)+'</b>. A previsão bateu. Testem outro número antes de cravar.';
+      else n.innerHTML='a turma previu <b>'+fmtNum(bet)+'</b> — a máquina devolveu <b>'+fmtNum(y)+'</b>. Ainda não é essa a regra.';
+    }else{
+      n.textContent=pares.length+' par(es) registrado(s) · a turma continua testando';
+    }
+    inEl.focus();
+  },620);
+}
+function conflitos(){
+  var idx=[];
+  pares.forEach(function(p,i){
+    pares.forEach(function(q,j){
+      if(i<j&&p.x===q.x&&Math.abs(p.y-q.y)>1e-9){
+        if(idx.indexOf(i)<0)idx.push(i);
+        if(idx.indexOf(j)<0)idx.push(j);
+      }
+    });
+  });
+  return idx;
+}
+function renderLog(){
+  var log=document.getElementById('mlog');log.innerHTML='';
+  var conf=mostrarConflito?conflitos():[];
+  pares.forEach(function(p,i){
+    var mark=conf.indexOf(i)>=0;
+    var row=document.createElement('div');
+    row.className='ml-row'+(mark?' conflict':'');
+    row.innerHTML='<span class="ml-in">'+fmtNum(p.x)+'</span><span class="ml-arrow">→</span><span class="ml-out">'+fmtNum(p.y)+(mark?' ✗':'')+'</span>'
+      +(mark?'<span class="ml-tag">mesma entrada · saída diferente</span>':'');
+    log.appendChild(row);
+  });
+  log.scrollTop=99999;
+}
+function conferirRegistro(){
+  mostrarConflito=true;renderLog();
+  var c=conflitos();
+  var n=document.getElementById('mNarr');
+  if(c.length){n.innerHTML='a <b>mesma entrada</b> devolveu <b>saídas diferentes</b> — é isto que a turma percebeu. Pergunte por quê antes de seguir.';}
+  else{n.textContent='nenhuma contradição no registro: cada entrada devolveu sempre a mesma saída.';}
+}
+function revelarRegra(){
+  if(regraIdx===null)return;
+  document.getElementById('mRule').textContent=REGRAS[regraIdx].e;
+  document.getElementById('mStatus').textContent='regra revelada';
+  document.getElementById('mNarr').innerHTML='a regra era: <b>'+REGRAS[regraIdx].t+'</b>';
+}
+function limparMaquina(){
+  pares=[];mostrarConflito=false;falhaArmada=false;
+  document.getElementById('mGlitch').classList.remove('on');
+  renderLog();
+  document.getElementById('mVin').textContent='—';
+  document.getElementById('mVout').textContent='—';
+  document.getElementById('mNarr').textContent='registro limpo · a regra continua a mesma (sorteie de novo para trocar)';
+}
+
+/* ═══ EQUIPES: APOSTAS E PROVA REAL ═══ */
+var EQUIPES=[];
+function addEquipe(){
+  var nome=document.getElementById('eqNome').value.trim();
+  var copo=parseFloat(document.getElementById('eqCopo').value);
+  var aposta=parseFloat(document.getElementById('eqAposta').value);
+  if(!nome)nome='Equipe '+(EQUIPES.length+1);
+  EQUIPES.push({nome:nome,copo:isNaN(copo)?null:copo,aposta:isNaN(aposta)?null:aposta,
+                formula:'',prev:null,real:null});
+  document.getElementById('eqNome').value='';
+  document.getElementById('eqCopo').value='';
+  document.getElementById('eqAposta').value='';
+  document.getElementById('eqNome').focus();
+  renderEquipes();renderProva();
+}
+function delEquipe(i){EQUIPES.splice(i,1);renderEquipes();renderProva();}
+function setEq(i,campo,valor){
+  if(campo==='nome'||campo==='formula')EQUIPES[i][campo]=valor;
+  else{var v=parseFloat(valor);EQUIPES[i][campo]=isNaN(v)?null:v;}
+  if(campo==='aposta'){
+    atualizaBetNarr();
+    var ap=document.getElementById('ap'+i);
+    if(ap)ap.textContent=num(EQUIPES[i].aposta);
+  }
+  if(campo==='copo')atualizaBetNarr();
+  updateDev(i);
+}
+function updateDev(i){
+  var cel=document.getElementById('dev'+i);
+  if(!cel)return;
+  cel.innerHTML=devHTML(EQUIPES[i]);
+}
+function devHTML(e){
+  var dA='<span class="dev na">aposta —</span>',dF='<span class="dev na">fórmula —</span>';
+  if(e.real!==null&&e.aposta!==null){
+    var da=Math.round((e.aposta-e.real)*10)/10;
+    dA='<span class="dev '+(Math.abs(da)>2?'hi':'lo')+'">aposta '+(da>0?'+':'')+fmtNum(da)+'</span>';
+  }
+  if(e.real!==null&&e.prev!==null){
+    var df=Math.round((e.prev-e.real)*10)/10;
+    dF='<span class="dev '+(Math.abs(df)>2?'hi':'lo')+'">fórmula '+(df>0?'+':'')+fmtNum(df)+'</span>';
+  }
+  return dA+dF;
+}
+function num(v){return v===null?'—':fmtNum(v)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function renderEquipes(){
+  var t=document.getElementById('betTable');
+  var h='<tr><th style="text-align:left">Equipe</th><th>1 copo (cm)</th><th>Aposta · 10 copos (cm)</th><th></th></tr>';
+  if(!EQUIPES.length){
+    h+='<tr><td class="empty" colspan="4">nenhuma equipe registrada — use o campo acima</td></tr>';
+  }else{
+    EQUIPES.forEach(function(e,i){
+      h+='<tr><td class="name">'+esc(e.nome)+'</td>'
+       +'<td><input type="number" step="0.1" value="'+(e.copo===null?'':e.copo)+'" oninput="setEq('+i+',\'copo\',this.value)"></td>'
+       +'<td><input type="number" step="0.1" value="'+(e.aposta===null?'':e.aposta)+'" oninput="setEq('+i+',\'aposta\',this.value)"></td>'
+       +'<td><button class="del" onclick="delEquipe('+i+')" title="remover">✕</button></td></tr>';
+    });
+  }
+  t.innerHTML=h;
+  document.getElementById('betCount').textContent=EQUIPES.length?EQUIPES.length+' equipe(s) registrada(s)':'nenhuma aposta registrada';
+  atualizaBetNarr();
+}
+function atualizaBetNarr(){
+  var vals=EQUIPES.map(function(e){return e.aposta}).filter(function(v){return v!==null});
+  var el=document.getElementById('betNarr');
+  if(!vals.length){el.innerHTML='registre a aposta de cada equipe <b>antes</b> de qualquer empilhamento';return;}
+  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);
+  var md=vals.reduce(function(a,b){return a+b},0)/vals.length;
+  el.innerHTML=vals.length+' aposta(s) · de <b>'+fmtNum(mn)+'</b> a <b>'+fmtNum(mx)+'</b> cm · média <b>'+fmtNum(Math.round(md*10)/10)+'</b> cm';
+}
+function renderProva(){
+  var t=document.getElementById('provaTable');
+  var h='<tr><th style="text-align:left">Equipe</th><th>Aposta</th><th>Fórmula da equipe</th><th>Previsão (10)</th><th>Medida real</th><th>Desvios</th></tr>';
+  if(!EQUIPES.length){
+    h+='<tr><td class="empty" colspan="6">nenhuma equipe registrada na etapa 2</td></tr>';
+  }else{
+    EQUIPES.forEach(function(e,i){
+      h+='<tr><td class="name">'+esc(e.nome)+'</td>'
+       +'<td id="ap'+i+'">'+num(e.aposta)+'</td>'
+       +'<td><input class="wide" type="text" placeholder="h = a·n + b" value="'+esc(e.formula)+'" oninput="setEq('+i+',\'formula\',this.value)"></td>'
+       +'<td><input type="number" step="0.1" value="'+(e.prev===null?'':e.prev)+'" oninput="setEq('+i+',\'prev\',this.value)"></td>'
+       +'<td><input type="number" step="0.1" value="'+(e.real===null?'':e.real)+'" oninput="setEq('+i+',\'real\',this.value)"></td>'
+       +'<td id="dev'+i+'">'+devHTML(e)+'</td></tr>';
+    });
+  }
+  t.innerHTML=h;
+  document.getElementById('provaCount').textContent=EQUIPES.length?EQUIPES.length+' equipe(s)':'nenhuma equipe registrada';
+}
+renderEquipes();renderProva();
+
+/* ═══ TABELA + DIFERENÇAS + FÓRMULA ═══ */
+function getH(){
+  var v=[];
+  for(var i=1;i<=6;i++){var el=document.getElementById('h'+i);var x=parseFloat(el.value);v.push(isNaN(x)?null:x);}
+  return v;
+}
+function calcDiffs(){
+  var h=getH();
+  document.getElementById('d1').textContent='—';
+  var diffs=[];
+  for(var i=1;i<6;i++){
+    var el=document.getElementById('d'+(i+1));
+    if(h[i]!==null&&h[i-1]!==null){
+      var d=Math.round((h[i]-h[i-1])*100)/100;
+      diffs.push(d);
+      el.textContent='+'+d.toFixed(1).replace('.',',');
+    }else{el.textContent='';diffs.push(null);}
+  }
+  /* auto formula */
+  var validD=diffs.filter(function(x){return x!==null;});
+  if(validD.length>=3){
+    var avg=validD.reduce(function(a,b){return a+b},0)/validD.length;
+    var a=Math.round(avg*10)/10;
+    var b=h[0]!==null?Math.round((h[0]-a)*10)/10:null;
+    if(b!==null){
+      document.getElementById('formula').innerHTML='h = '+a.toFixed(1).replace('.',',')+' · n + '+b.toFixed(1).replace('.',',');
+      document.getElementById('fNarr').textContent='a = '+a.toFixed(1).replace('.',',')+' cm (a borda) · b = '+b.toFixed(1).replace('.',',')+' cm (o que sobra do primeiro)';
+      /* propagate to proof */
+      var pred=Math.round((a*10+b)*10)/10;
+      document.getElementById('proofFormulaV').textContent=pred.toFixed(1).replace('.',',')+' cm';
+    }
+    /* check consistency */
+    var maxDev=Math.max.apply(null,validD.map(function(x){return Math.abs(x-a)}));
+    validD.forEach(function(d,i){
+      document.getElementById('d'+(i+2)).classList.toggle('mismatch',Math.abs(d-a)>0.3);
+    });
+  }else{document.getElementById('formula').textContent='';document.getElementById('fNarr').textContent='preencha ao menos 4 linhas';}
+}
+
+/* ═══ GRÁFICO ═══ */
+var showLine=false;
+function toggleLine(){showLine=!showLine;drawChart();}
+function drawChart(){
+  var canvas=document.getElementById('chart');
+  var ctx=canvas.getContext('2d');
+  var W=canvas.width=canvas.parentElement.offsetWidth;
+  var H=canvas.height=280;
+  ctx.clearRect(0,0,W,H);
+  var h=getH();
+  var pts=[];
+  h.forEach(function(v,i){if(v!==null)pts.push({n:i+1,h:v});});
+  if(pts.length<2){document.getElementById('chartNarr').textContent='preencha ao menos 2 medidas na tabela';return;}
+  var maxN=11,minH=0,maxH=Math.max.apply(null,pts.map(function(p){return p.h}))*1.15;
+  var pad={l:55,r:25,t:20,b:40};
+  var pw=W-pad.l-pad.r,ph=H-pad.t-pad.b;
+  function sx(n){return pad.l+n/maxN*pw;}
+  function sy(v){return pad.t+ph-(v-minH)/(maxH-minH)*ph;}
+  /* grid */
+  ctx.strokeStyle='#233058';ctx.lineWidth=1;
+  for(var i=0;i<=maxN;i++){var x=sx(i);ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();}
+  for(var v=0;v<=maxH;v+=5){var y=sy(v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();}
+  /* axes */
+  ctx.strokeStyle='#4A5A80';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();
+  /* axis labels */
+  ctx.fillStyle='#7888A8';ctx.font='11px "Nunito Sans"';ctx.textAlign='center';
+  for(var i=0;i<=10;i++){ctx.fillText(i,sx(i),H-pad.b+16);}
+  ctx.textAlign='right';
+  for(var v=0;v<=maxH;v+=5){if(v===0)continue;ctx.fillText(v.toFixed(0),pad.l-8,sy(v)+4);}
+  ctx.fillStyle='#5A6A8A';ctx.font='10px "Nunito Sans"';ctx.textAlign='center';
+  ctx.fillText('n (copos)',W/2,H-4);
+  ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('h (cm)',0,0);ctx.restore();
+  /* regression line */
+  if(showLine&&pts.length>=3){
+    var validD=[];
+    for(var i=1;i<pts.length;i++){if(pts[i].n===pts[i-1].n+1)validD.push(pts[i].h-pts[i-1].h);}
+    if(validD.length>=2){
+      var a=validD.reduce(function(s,v){return s+v},0)/validD.length;
+      var b=pts[0].h-a*pts[0].n;
+      ctx.strokeStyle='rgba(127,160,240,.4)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+      ctx.beginPath();ctx.moveTo(sx(0),sy(b));ctx.lineTo(sx(maxN),sy(a*maxN+b));ctx.stroke();
+      ctx.setLineDash([]);
+      /* origin marker */
+      ctx.beginPath();ctx.arc(sx(0),sy(b),5,0,Math.PI*2);ctx.strokeStyle='#B03060';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle='#B03060';ctx.font='bold 12px "JetBrains Mono"';ctx.textAlign='left';ctx.fillText('b',sx(0)+8,sy(b)+4);
+    }
+  }
+  /* points */
+  pts.forEach(function(p){
+    ctx.beginPath();ctx.arc(sx(p.n),sy(p.h),6,0,Math.PI*2);ctx.fillStyle='#7FA0F0';ctx.fill();
+    ctx.strokeStyle='#26418F';ctx.lineWidth=2;ctx.stroke();
+  });
+  /* origin check */
+  ctx.beginPath();ctx.arc(sx(0),sy(0),4,0,Math.PI*2);ctx.strokeStyle='#5A6A8A';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#5A6A8A';ctx.font='10px "JetBrains Mono"';ctx.textAlign='left';ctx.fillText('(0,0)',sx(0)+6,sy(0)-4);
+  document.getElementById('chartNarr').textContent=pts.length+' pontos plotados'+(showLine?' · reta de tendência visível':' · clique "mostrar reta" para ver a tendência');
+}
+
+function updateProof(){
+  var v=parseFloat(document.getElementById('realH10').value);
+  var el=document.getElementById('proofNarr');
+  if(isNaN(v)||v<=0){el.textContent='preencha a medida real de 10 copos para conferir a previsão da fórmula';return;}
+  var prevTxt=document.getElementById('proofFormulaV').textContent;
+  var prev=parseFloat(prevTxt.replace(',','.'));
+  if(isNaN(prev)){el.textContent='medida real: '+fmtNum(v)+' cm — preencha a tabela da etapa 3 para gerar a previsão';return;}
+  var d=Math.round((prev-v)*10)/10;
+  el.innerHTML='previsão <b>'+fmtNum(prev)+'</b> cm × medida real <b>'+fmtNum(v)+'</b> cm · diferença de <b>'+fmtNum(Math.abs(d))+'</b> cm'
+    +(Math.abs(d)<=1.5?' — a fórmula prevê a torre.':' — vale conferir a medição e os arredondamentos.');
+}
+
+/* ═══ MÁQUINAS QUEBRADAS ═══ */
+var CARTAS=[
+  {n:1,t:'Cada estudante da sala → a sua altura em cm',boa:true,why:'cada pessoa tem uma única altura'},
+  {n:2,t:'Cada altura em cm → o estudante que tem essa altura',boa:false,why:'duas pessoas podem ter 1,65 m'},
+  {n:3,t:'Cada número de copos → a altura da pilha',boa:true,why:'a nossa torre — uma única altura'},
+  {n:4,t:'Cada produto do mercado → o seu preço',boa:true,why:'cada produto tem um preço'},
+  {n:5,t:'Cada preço → o produto que custa esse valor',boa:false,why:'vários produtos custam R$ 10'},
+  {n:6,t:'Cada pessoa → o seu CPF',boa:true,why:'o CPF é único por pessoa'},
+  {n:7,t:'Cada mês do ano → os feriados desse mês',boa:false,why:'setembro tem mais de um feriado'},
+  {n:8,t:'Litros de combustível → valor pago',boa:true,why:'função linear — y = preço × litros; passa pela origem'}
+];
+var mcGrid=document.getElementById('mcGrid');
+var mcState=[];
+function buildCards(){
+  mcGrid.innerHTML='';mcState=[];
+  CARTAS.forEach(function(c,i){
+    mcState.push(0);
+    var el=document.createElement('div');el.className='mcard';el.dataset.i=i;
+    el.innerHTML='<div class="mcard-n">CARTÃO '+c.n+'</div><div class="mcard-t">'+c.t+'</div>'
+      +'<div class="mcard-cls"><div class="mcard-verdict"></div><div class="mcard-why">'+c.why+'</div></div>';
+    el.addEventListener('click',function(){
+      var idx=parseInt(this.dataset.i);
+      mcState[idx]=(mcState[idx]+1)%3;
+      this.classList.remove('boa','quebrada');
+      if(mcState[idx]===1){this.classList.add('boa');this.querySelector('.mcard-verdict').textContent='✓ MÁQUINA BOA';}
+      else if(mcState[idx]===2){this.classList.add('quebrada');this.querySelector('.mcard-verdict').textContent='✗ MÁQUINA QUEBRADA';}
+      updMcScore();
+    });
+    mcGrid.appendChild(el);
+  });
+}
+function updMcScore(){
+  var n=mcState.filter(function(s){return s>0;}).length;
+  document.getElementById('mcScore').textContent=n+' de 8 classificados';
+}
+function revealAll(){
+  var cards=[...mcGrid.children];
+  cards.forEach(function(el,i){
+    setTimeout(function(){
+      el.classList.remove('boa','quebrada');
+      if(CARTAS[i].boa){el.classList.add('boa');el.querySelector('.mcard-verdict').textContent='✓ MÁQUINA BOA';mcState[i]=1;}
+      else{el.classList.add('quebrada');el.querySelector('.mcard-verdict').textContent='✗ MÁQUINA QUEBRADA';mcState[i]=2;}
+      updMcScore();
+    },i*180);
+  });
+}
+function resetCards(){
+  mcState=mcState.map(function(){return 0;});
+  [...mcGrid.children].forEach(function(el){el.classList.remove('boa','quebrada');});
+  updMcScore();
+}
+buildCards();
+
+/* ═══ TRIAGEM: MARCO × NÃO-MARCO ═══ */
+var MARCOS=[
+  /* ───────── MARCOS ───────── */
+  {marco:true, col:'tlAI',
+   txt:'Identificar regularidade em sequência gerada por adições sucessivas de um mesmo número e <b>descrever a regra de formação</b>',
+   cod:'EF03MA10', tag:'coluna Δh',
+   por:'É a <b>origem</b> de toda a trilha. A criança do 3.º ano que descreve a regra de formação está fazendo, sem álgebra, exatamente o que a torre pede: perceber o acréscimo constante e enunciá-lo como regra. Sem esta operação, o Δh constante não vira informação — vira só uma coluna de números repetidos.'},
+  {marco:true, col:'tlAI',
+   txt:'Resolver problemas de <b>variação de proporcionalidade direta</b> entre duas grandezas',
+   cod:'EF05MA12', tag:'a aposta',
+   por:'A aposta "o dobro de copos, o dobro de altura" nasce aqui — e é uma aposta <b>correta</b> em quase tudo o que o estudante viu até o 8.º ano. É por isso que a torre é potente: ela não corrige um erro de cálculo, ela obriga a <b>reorganizar</b> um raciocínio que vinha funcionando. Reorganização qualitativa do pensamento é a definição de marco.'},
+  {marco:true, col:'tlAI',
+   txt:'Representar e interpretar a localização de objetos no <b>plano cartesiano</b> (1.º quadrante) com coordenadas',
+   cod:'EF05MA15 · EF05MA14', tag:'Passo 4 · gráfico',
+   por:'Sem par ordenado não há gráfico, e sem gráfico a função perde uma de suas três representações. É um <b>portal representacional</b>: depois de atravessado, o estudante passa a ler o plano — e não volta atrás. Note o ano: <b>5.º</b>, não 6.º.'},
+
+  {marco:true, col:'tl7',
+   txt:'Compreender a ideia de <b>variável</b> — letra que expressa relação entre grandezas, distinta de incógnita',
+   cod:'EF07MA13', tag:'n e h',
+   por:'O conceito limiar da trilha, no sentido de Meyer e Land: transformador, integrador e irreversível. Enquanto a letra for "o número que eu não sei", não há função — há equação. Função exige que a letra seja <b>o número que varia</b>. Quem não atravessa este portal decora fórmulas por três anos.'},
+  {marco:true, col:'tl7',
+   txt:'Utilizar <b>simbologia algébrica</b> para expressar a regularidade encontrada em uma sequência',
+   cod:'EF07MA15', tag:'escrita da fórmula',
+   por:'É a passagem do padrão percebido (3.º ano) para o padrão <b>escrito</b>. Foi o instante em que a equipe deixou de contar copos e escreveu h = a·n + b. Não acrescenta informação: muda o nível em que o pensamento opera.'},
+  {marco:true, col:'tl7',
+   txt:'Resolver problemas de proporcionalidade direta e inversa <b>expressando a relação por sentença algébrica</b>',
+   cod:'EF07MA17', tag:'o limite da aposta',
+   por:'É aqui que o estudante escreve y = k·x pela primeira vez. E é precisamente contra este modelo que a torre colide: h = a·n + b <b>não</b> é proporcional. Um marco não é só o que sustenta — é também o que precisa ser <b>limitado</b> para que o próximo passo exista.'},
+
+  {marco:true, col:'tl8',
+   txt:'Associar uma <b>equação linear de 1.º grau com duas incógnitas a uma reta</b> no plano cartesiano',
+   cod:'EF08MA07', tag:'os pontos alinhados',
+   por:'Costura álgebra e geometria: a expressão escrita e os pontos alinhados no papel passam a ser <b>o mesmo objeto</b>. Sem essa costura, o gráfico continua sendo um desenho ao lado da fórmula, e não uma segunda forma de dizê-la.'},
+  {marco:true, col:'tl8',
+   txt:'Identificar a <b>natureza da variação</b> entre duas grandezas — proporcional ou não — e expressá-la algebricamente e no plano',
+   cod:'EF08MA12', tag:'por que não passa pela origem',
+   por:'O marco mais subestimado da lista. É a única habilidade do currículo que autoriza explicitamente a resposta <b>"não é proporcional"</b>. Quem não a consolida chega ao 9.º ano com uma única ferramenta — a regra de três — e a aplica onde ela não vale. É exatamente o erro da aposta.'},
+
+  {marco:true, col:'tl9',
+   txt:'<b>Taxa de variação</b> constante entre duas grandezas — o valor de <b>a</b>',
+   cod:'EF09MA08', tag:'a borda do copo',
+   por:'Transforma o acréscimo repetido em <b>grandeza com significado próprio</b>: a borda do copo deixa de ser "quanto sobe" e passa a ser um número que caracteriza a relação inteira. É a ponte para taxa, velocidade, densidade e derivada.'},
+  {marco:true, col:'tl9',
+   txt:'<b>Função como dependência unívoca</b> entre duas variáveis — representações numérica, algébrica e gráfica',
+   cod:'EF09MA06', tag:'ponto de chegada',
+   por:'Ponto de chegada desta trilha e <b>ponto de partida</b> da seguinte: função quadrática, exponencial, todo o Ensino Médio. Um marco também se reconhece por aquilo que ele abre depois de si.'},
+
+  /* ───────── NÃO SÃO MARCOS ───────── */
+  {marco:false, tipo:'instrumental',
+   txt:'Medir comprimento com régua e registrar a medida em centímetros',
+   cod:'EF06MA24', tag:'Passo 2 · medição',
+   por:'Sem isso a oficina não roda — e ainda assim <b>não é marco</b>. Medir é <b>condição de execução</b>, não de compreensão: um estudante que mede mal erra os números e pode compreender a função perfeitamente; um que mede bem e não tem a ideia de variável não compreende nada. O texto é claro: marco é o que <b>reorganiza formas de pensamento</b>, não o que viabiliza a tarefa.'},
+  {marco:false, tipo:'instrumental',
+   txt:'Operar com números decimais para obter as diferenças da coluna Δh',
+   cod:'EF06MA11', tag:'coluna Δh',
+   por:'Fluência de cálculo. Se faltar, o estudante <b>erra a conta e acerta a ideia</b> — o oposto exato de um marco, cuja ausência faz acertar a conta e não entender nada. Vale como diagnóstico de aritmética, não como fundamento de função afim.'},
+  {marco:false, tipo:'instrumental',
+   txt:'Calcular o <b>valor numérico</b> de uma expressão algébrica',
+   cod:'EF08MA06', tag:'prever 10 copos',
+   por:'A carta que mais divide as salas. Substituir n por 10 e calcular é <b>procedimento</b>: não muda o que a letra significa. O que muda o significado da letra é EF07MA13. Prova disso: um estudante calcula valor numérico com perfeição e ainda assim lê a letra como incógnita.'},
+  {marco:false, tipo:'cronológico',
+   txt:'Comparar e ordenar números racionais na forma decimal, associando-os à reta numérica',
+   cod:'EF06MA01 · EF07MA10', tag:'confronto das medidas',
+   por:'Vem antes e é útil no confronto entre as medidas das equipes — mas <b>nada em função afim depende dela</b>. É pré-requisito cronológico, não estruturante. O texto adverte exatamente contra confundir as duas coisas: "certas aprendizagens não apenas precedem outras, mas organizam cognitivamente possibilidades futuras". Esta apenas precede.'},
+  {marco:false, tipo:'retomada',
+   txt:'Associar pares ordenados de números a pontos do plano cartesiano do 1.º quadrante',
+   cod:'EF06MA16', tag:'Passo 4 · gráfico',
+   por:'A habilidade é estruturante — mas <b>não nasce aqui</b>. EF05MA15 e EF05MA14 já pedem localizar e representar no plano cartesiano do 1.º quadrante, com coordenadas. O 6.º ano <b>retoma</b>. Aplique o teste de origem: se um ano anterior já diz o mesmo, o marco está no andar de baixo — e é lá que a recomposição precisa chegar.'},
+  {marco:false, tipo:'retomada',
+   txt:'Classificar sequências em <b>recursivas</b> e não recursivas',
+   cod:'EF07MA14', tag:'coluna Δh',
+   por:'Aqui o que se acrescenta é <b>nomenclatura</b>, não operação cognitiva. Perceber o acréscimo constante e descrever a regra já é exigido em EF03MA10, no 3.º ano. Saber o nome "recursiva" não faz ninguém atravessar portal nenhum — e não saber o nome não impede a compreensão.'},
+  {marco:false, tipo:'outra trilha',
+   txt:'Resolver e elaborar problemas com <b>equações polinomiais de 1.º grau</b>',
+   cod:'EF07MA18', tag:'"mas isso não é pré-requisito?"',
+   por:'A armadilha mais produtiva do quadro — quase toda sala vota "marco". Mas equação opera com <b>incógnita</b>: um valor fixo, desconhecido, a ser descoberto. Função opera com <b>variável</b>: um valor que percorre. São trilhas distintas que usam o mesmo símbolo, e <b>confundi-las é uma das causas mais comuns de travamento em função</b>. Saber resolver 3x + 2 = 17 não ajuda em nada a entender que h depende de n.'},
+  {marco:false, tipo:'outra trilha',
+   txt:'Reconhecer que <b>toda medida empírica é aproximada</b>; estimar e julgar a razoabilidade de um resultado',
+   cod:'EF06MA12 · EF07MA29', tag:'aposta × medida real',
+   por:'A melhor carta para discordar — e vale demorar nela. É <b>marco de outra dimensão</b>: da modelagem matemática, da relação entre modelo e realidade. Sustenta o momento mais rico da oficina (a fórmula prevê 27,4 e a régua diz 27,6), mas não sustenta a <b>construção conceitual</b> da função afim. Marcos são relativos à progressão que se analisa: esta é marco de outra progressão.'}
+];
+
+var colocados=[], julgadas=[];
+function chipHTML(m){return m.txt.replace(/<\/?b>/g,'')+'<small>'+m.cod+'</small>';}
+
+function buildPool(){
+  colocados=MARCOS.map(function(){return false;});
+  julgadas=MARCOS.map(function(){return false;});
+  ['tlAI','tl6','tl7','tl8','tl9'].forEach(function(id){
+    [...document.getElementById(id).querySelectorAll('.tl-item')].forEach(function(el){el.remove();});
+  });
+  document.getElementById('trayGrid').innerHTML='';
+  var ordem=MARCOS.map(function(m,i){return i;});
+  for(var k=ordem.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=ordem[k];ordem[k]=ordem[j];ordem[j]=t;}
+  var pool=document.getElementById('tlPool');pool.innerHTML='';
+  ordem.forEach(function(i){pool.appendChild(makeChip(i));});
+  resetVerdict();updTlScore();
+}
+function makeChip(i){
+  var b=document.createElement('button');
+  b.className='chip mk';b.dataset.i=i;b.innerHTML=chipHTML(MARCOS[i]);
+  b.addEventListener('click',function(){colocarMarco(i);});
+  return b;
+}
+function resetVerdict(){
+  var v=document.getElementById('verdict');
+  v.className='verdict';
+  v.innerHTML='<div class="verdict-h">o veredito aparece aqui</div><div class="verdict-d">Peça o voto da sala antes de cada clique. Clique de novo em qualquer carta já julgada para devolvê-la ao quadro.</div>';
+}
+function showVerdict(i){
+  var m=MARCOS[i],v=document.getElementById('verdict');
+  if(m.marco){
+    v.className='verdict yes';
+    v.innerHTML='<div class="verdict-h">✓ É MARCO &nbsp;·&nbsp; '+m.cod+'</div><div class="verdict-d">'+m.por+'</div>';
+  }else{
+    v.className='verdict no';
+    v.innerHTML='<div class="verdict-h">✕ NÃO É MARCO &nbsp;·&nbsp; '+m.tipo.toUpperCase()+' &nbsp;·&nbsp; '+m.cod+'</div><div class="verdict-d">'+m.por+'</div>';
+  }
+}
+function colocarMarco(i){
+  if(julgadas[i])return;
+  var chip=document.querySelector('#tlPool .chip[data-i="'+i+'"]');
+  if(chip)chip.remove();
+  var m=MARCOS[i];
+  if(m.marco){
+    var item=document.createElement('div');item.className='tl-item ok';item.dataset.i=i;
+    item.innerHTML=m.txt+'<span class="tl-code">'+m.cod+'</span><span class="tl-tag">↑ '+m.tag+'</span>';
+    item.title='clique para devolver ao quadro';
+    item.addEventListener('click',function(){devolverMarco(i);});
+    document.getElementById(m.col).appendChild(item);
+  }else{
+    var no=document.createElement('div');no.className='no-item';no.dataset.i=i;
+    no.innerHTML='<div class="no-txt">'+m.txt+'<span class="no-cod">'+m.cod+'</span></div><span class="no-tipo">'+m.tipo+'</span>';
+    no.title='clique para devolver ao quadro';
+    no.addEventListener('click',function(){devolverMarco(i);});
+    document.getElementById('trayGrid').appendChild(no);
+  }
+  julgadas[i]=true;colocados[i]=m.marco;showVerdict(i);updTlScore();
+}
+function devolverMarco(i){
+  var el=document.querySelector('.tl-item[data-i="'+i+'"]')||document.querySelector('.no-item[data-i="'+i+'"]');
+  if(el)el.remove();
+  julgadas[i]=false;colocados[i]=false;
+  document.getElementById('tlPool').appendChild(makeChip(i));
+  resetVerdict();updTlScore();
+}
+function updTlScore(){
+  var nJ=julgadas.filter(Boolean).length, pend=MARCOS.length-nJ;
+  var nM=MARCOS.filter(function(m,i){return julgadas[i]&&m.marco;}).length;
+  var nN=nJ-nM;
+  document.getElementById('tlScore').textContent = pend>0 ? (pend+' por julgar · '+nM+' marcos · '+nN+' descartadas') : (nM+' marcos · '+nN+' descartadas');
+  document.getElementById('trayCount').textContent = nN===0?'nenhuma descartada':(nN===1?'1 descartada':nN+' descartadas');
+  var grid=document.getElementById('trayGrid');
+  if(!grid.querySelector('.no-item'))grid.innerHTML='<div class="tray-empty">as aprendizagens que não forem marco aparecem aqui, com o motivo</div>';
+  else{var e=grid.querySelector('.tray-empty');if(e)e.remove();}
+  var pool=document.getElementById('tlPool');
+  if(!pool.querySelector('.chip'))pool.innerHTML='<div class="chips-empty">quadro concluído — todas as 18 aprendizagens foram julgadas</div>';
+  else{var e2=pool.querySelector('.chips-empty');if(e2)e2.remove();}
+  var d=document.getElementById('dica6');
+  if(pend===0){
+    d.style.display='block';
+    d.innerHTML='<b>Duas coisas para olhar agora que o quadro está fechado.</b> Primeiro: <b>a coluna do 6.º ano ficou vazia</b> — e isso não é falha do quadro. Na trilha da função afim, o 6.º ano <i>retoma</i> (plano cartesiano, decimais) sem inaugurar nenhuma estrutura nova; é a mesma constatação que fizemos na trilha da porcentagem. Segundo: <b>três dos dez marcos estão nos Anos Iniciais</b>. Recompor função afim no 9.º ano pode significar reconstruir uma ideia de 3.º ano — e isso é trabalho legítimo de professor de Anos Finais, não recado para o Fundamental I. Vale registrar as discordâncias da sala: elas são a parte mais formativa desta etapa.';
+  } else { d.style.display='none'; }
+}
+function revealMarcos(){
+  var pend=MARCOS.map(function(m,i){return i;}).filter(function(i){return !julgadas[i];});
+  pend.forEach(function(i,k){setTimeout(function(){colocarMarco(i);},k*240);});
+}
+function clearMarcos(){buildPool();}
+buildPool();
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',function(e){
+  /* atalho discreto: arma a falha da máquina mesmo com o cursor nos campos */
+  if(e.altKey&&(e.key==='q'||e.key==='Q')){e.preventDefault();armarFalha();return;}
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight'&&cur<5)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);
+});
+</script>
+</body>
+</html>

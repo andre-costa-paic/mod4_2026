@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · A Fábrica das Três Formas (versão aprimorada)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#B4531C;--accent-soft:#FCF0E6;--accent-deep:#7A340A;
+--h-bg:#5C2A0E;--h-accent:#F2B98A;--h-sub:#E0C3AC;--h-eye:#E09B62;
+--ink:#1c1512;--ink-mid:#443a34;--ink-soft:#7a6d64;--border:#e9ddd3;--bg:#fdfaf7;--bg-card:#fff;--radius:14px;
+--m1:#117A65;--m1s:#E4F4EF;--m2:#1A5276;--m2s:#E7F1F8;--m3:#C05A12;--m3s:#FDF0E4;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(242,185,138,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:860px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:11.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 12px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:6px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--m1)}.tab.done .tn{background:var(--m1s);color:var(--m1);border-color:var(--m1)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#8A4218);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'"';position:absolute;left:10px;top:-8px;font-family:var(--f-head);font-size:110px;color:rgba(242,185,138,.12);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#FAEADB;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(180,83,28,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:#FBEAEA;border:1px solid rgba(160,44,44,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7A1E1E;line-height:1.6}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--m3)}.tm.done{color:var(--m1)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.1)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── RIG (painel escuro das máquinas) ── */
+.rig{background:#221914;border:1px solid #3E2B22;border-radius:var(--radius);padding:1.2rem 1rem 1.4rem;margin-bottom:1.2rem;overflow:hidden}
+.rig-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  border-bottom:1px solid #3E2B22;padding-bottom:9px;margin-bottom:14px}
+.rig-h.m1{color:#4EC9A8}.rig-h.m2{color:#5BA0D1}.rig-h.m3{color:#E0944E}
+.rig-h span{color:#8A776D;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.rig .ctrls{margin-top:14px}
+
+/* ── M1: cofre de moedas ── */
+.coins{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:60px;margin:10px 0;transition:all .4s}
+.coin{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:11px;font-weight:600;border:2px solid;transition:all .3s}
+.coin.r1{background:#2E7D32;border-color:#1B5E20;color:#C8E6C9}
+.coin.r10{background:#F57F17;border-color:#E65100;color:#FFF8E1}
+.coin.r01{background:#6A1B9A;border-color:#4A148C;color:#F3E5F5}
+.coin.r001{background:#C62828;border-color:#B71C1C;color:#FFCDD2;font-size:8px;width:34px;height:34px}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.coin.pop{animation:popIn .6s ease both}
+.eq{font-family:var(--f-mono);font-size:clamp(18px,4vw,32px);font-weight:600;color:var(--h-accent);text-align:center;margin:12px 0;min-height:40px}
+.narr{font-size:13px;color:#C4A88E;text-align:center;margin:8px 0;min-height:20px;line-height:1.5}
+.persons{display:flex;gap:10px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+.person{background:#2C201A;border:1px solid #4A362C;border-radius:10px;padding:8px 12px;min-width:70px;text-align:center}
+.person-n{font-size:10px;color:#8A776D;margin-bottom:4px}
+.person-v{font-family:var(--f-mono);font-size:16px;font-weight:600;color:#fff}
+
+/* ── M2: mesa de trocas ── */
+.mesa{background:#1A120E;border:1px solid #3E2B22;border-radius:10px;padding:14px 12px;margin:10px 0;min-height:150px}
+.mesa-zonas{display:grid;grid-template-columns:auto auto auto;gap:10px;justify-content:center;align-items:flex-start}
+@media(max-width:640px){.mesa-zonas{grid-template-columns:1fr;justify-items:center}}
+.zona{background:#241A15;border:1px solid #4A362C;border-radius:8px;padding:9px 10px 11px;min-width:120px}
+.zona.pl{border-color:#4EC9A8}.zona.ba{border-color:#5BA0D1}.zona.cu{border-color:#E0944E}
+.zona-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.zona-n{font-family:var(--f-head);font-size:11px;font-weight:700;letter-spacing:.05em}
+.zona.pl .zona-n{color:#4EC9A8}.zona.ba .zona-n{color:#5BA0D1}.zona.cu .zona-n{color:#E0944E}
+.zona-et{font-family:var(--f-mono);font-size:14px;font-weight:700;color:#fff;transition:all .45s}
+.zona-et.flip{color:var(--h-accent)}
+.zona-box{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end;min-height:56px;padding:4px 0}
+.zona-ct{font-family:var(--f-mono);font-size:11px;color:#8A776D;text-align:center;margin-top:5px}
+.pc{cursor:pointer;transition:transform .18s,filter .18s;flex-shrink:0}
+.pc:hover{transform:translateY(-3px);filter:brightness(1.25)}
+@keyframes pcIn{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.pc.new{animation:pcIn .3s ease both}
+.zona-btns{display:flex;gap:4px;justify-content:center;margin-top:6px}
+.zbtn{font-family:var(--f-mono);font-size:12px;font-weight:700;width:26px;height:24px;border-radius:5px;
+  background:#2C201A;border:1px solid #4A362C;color:#C4A88E;cursor:pointer;transition:all .15s;padding:0}
+.zbtn:hover{border-color:var(--h-accent);color:#fff}
+.m2read{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+@media(max-width:560px){.m2read{grid-template-columns:1fr}}
+.m2card{background:#241A15;border:1px solid #4A362C;border-radius:8px;padding:11px 8px;text-align:center}
+.m2card-l{font-family:var(--f-body);font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8A776D;margin-bottom:6px}
+.m2card-v{font-family:var(--f-mono);font-size:clamp(22px,5.5vw,34px);font-weight:700;color:#fff;line-height:1;transition:all .45s}
+.m2card-v.flip{color:var(--h-accent)}
+.m2card-s{font-family:var(--f-mono);font-size:10.5px;color:#8A776D;margin-top:5px;min-height:14px}
+.flipbar{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0 6px;padding:11px;
+  background:#241A15;border:1px dashed #5A443A;border-radius:8px;flex-wrap:wrap}
+.flipbar.on{border-color:var(--h-accent);border-style:solid;background:rgba(224,155,98,.1)}
+.flip-l{font-family:var(--f-head);font-size:12px;font-weight:600;color:#8A776D;transition:color .35s}
+.flip-l.act{color:var(--h-accent)}
+.desafio{background:#241A15;border:1px solid #4A362C;border-left:3px solid var(--h-accent);border-radius:8px;padding:10px 13px;margin-top:12px}
+.desafio-t{font-family:var(--f-head);font-size:12.5px;font-weight:600;color:var(--h-accent);margin-bottom:5px}
+.desafio-d{font-size:12px;color:#C4A88E;line-height:1.55}
+.desafio-v{font-family:var(--f-mono);font-size:12.5px;margin-top:8px;min-height:18px}
+.desafio-v.ok{color:#4EC9A8}.desafio-v.no{color:#E08585}
+.dbtns{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.dbtn{font-family:var(--f-mono);font-size:10.5px;background:#2C201A;border:1px solid #4A362C;color:#C4A88E;
+  padding:5px 10px;border-radius:100px;cursor:pointer;transition:all .15s}
+.dbtn:hover{border-color:var(--h-accent);color:#fff}
+.dbtn.sel{background:var(--h-accent);border-color:var(--h-accent);color:#2A1610;font-weight:700}
+
+/* ── M3: compactadora ── */
+.bandeja{display:flex;justify-content:center;margin:12px 0}
+.bgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:0;background:#3E2B22;padding:2px;border-radius:6px}
+.bcell{width:clamp(20px,4.2vw,34px);height:clamp(20px,4.2vw,34px);background:#241A15;
+  border:.5px solid #3E2B22;transition:background .3s,box-shadow .3s;position:relative}
+.bcell.fill{background:#E0944E}
+.bcell.bt{border-top:2px solid #8FD4C0}
+.bcell.bb{border-bottom:2px solid #8FD4C0}
+.bcell.bl{border-left:2px solid #8FD4C0}
+.bcell.brr{border-right:2px solid #8FD4C0}
+.bcell.parcial{background:#7A2E2E}
+.bcell.parcial.fill{background:#C25151}
+.bcell.bloco-ok.fill{background:#4EC9A8}
+.m3ctl{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.m3read{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+@media(max-width:560px){.m3read{grid-template-columns:1fr}}
+.m3v{text-align:center;background:#241A15;border:1px solid #4A362C;border-radius:8px;padding:10px 6px}
+.m3v-l{font-family:var(--f-body);font-size:8.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8A776D;margin-bottom:5px}
+.m3v-n{font-family:var(--f-mono);font-size:18px;font-weight:700;color:#fff}
+.m3v-n.ok{color:#4EC9A8}.m3v-n.no{color:#E08585}
+.veredito{text-align:center;font-family:var(--f-head);font-size:clamp(17px,4vw,25px);font-weight:700;
+  padding:13px;border-radius:8px;margin-top:12px;transition:all .3s}
+.veredito.ok{background:rgba(78,201,168,.14);color:#7FE0C4;border:1px solid #4EC9A8}
+.veredito.no{background:rgba(194,81,81,.14);color:#F0A0A0;border:1px solid #C25151}
+.veredito.idle{background:#241A15;color:#8A776D;border:1px dashed #4A362C;font-size:14px;font-weight:400}
+.cadeia{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;min-height:34px}
+.celo{font-family:var(--f-mono);font-size:13px;font-weight:700;padding:6px 13px;border-radius:100px;
+  background:#241A15;border:1px solid #4A362C;color:#8A776D;transition:all .3s}
+.celo.on{border-color:#4EC9A8;color:#7FE0C4;background:rgba(78,201,168,.1)}
+.celo.best{border-color:var(--h-accent);color:var(--h-accent);background:rgba(224,155,98,.14)}
+.recorde{font-family:var(--f-mono);font-size:12px;color:#C4A88E;text-align:center;margin-top:9px;min-height:17px}
+
+/* ── TRIÂNGULO ── */
+.tri-wrap{display:flex;justify-content:center;margin:1.2rem 0}
+.tri-wrap svg{max-width:100%;height:auto}
+.tri-arrow{opacity:.25;transition:opacity .4s}
+.tri-arrow.on{opacity:1}
+.tri-label{font-family:var(--f-head);font-weight:600;fill:#fff}
+.tri-proc{font-family:var(--f-body);font-size:9px;fill:#C4A88E;opacity:0;transition:opacity .4s}
+.tri-proc.on{opacity:1}
+
+/* ── NAV ── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+
+/* ── DIÁRIO ── */
+.diario{background:var(--bg-card);border-radius:var(--radius);padding:0.8rem 1rem;margin-top:1rem;border:1px dashed var(--border);}
+.diario summary{font-weight:700;color:var(--accent-deep);cursor:pointer;font-size:14px;}
+.diario textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px;font-family:var(--f-body);font-size:13px;margin-top:8px;background:#faf8f6;resize:vertical;}
+
+/* ── CORRIDA ── */
+.carta-box{background:#2C201A;border-radius:var(--radius);padding:1rem;margin:10px 0;}
+.carta-box .carta-display{font-size:24px;font-family:var(--f-mono);color:#fff;text-align:center;padding:10px;background:#1c1512;border-radius:8px;margin:8px 0;}
+.feedback{color:#C4A88E;font-size:13px;min-height:20px;margin-top:6px;}
+.tabela-pontos{background:#2C201A;border-radius:var(--radius);padding:1rem;margin:10px 0;overflow-x:auto;}
+.tabela-pontos table{width:100%;border-collapse:collapse;font-size:14px;color:#fff;}
+.tabela-pontos th,.tabela-pontos td{padding:8px 6px;text-align:center;border-bottom:1px solid #3E2B22;}
+.tabela-pontos th{font-weight:700;color:#E09B62;border-bottom:2px solid #4A362C;}
+.tabela-pontos input[type="number"]{width:50px;padding:4px;border-radius:4px;border:1px solid #4A362C;background:#1c1512;color:#fff;font-family:var(--f-mono);font-size:13px;text-align:center;}
+.tabela-pontos input[type="number"]:focus{outline:2px solid var(--h-accent);}
+.tabela-pontos .tot{font-weight:700;font-size:16px;color:var(--h-accent);}
+.tabela-pontos .rodada-label{color:#8A776D;font-weight:400;}
+.tabela-pontos .carta-label{color:#8A776D;font-style:italic;}
+
+/* ── PLANO ── */
+.plano-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.plano-grid label{color:#C4A88E;font-size:12px;display:block;margin-bottom:4px;}
+.plano-grid textarea{width:100%;border-radius:6px;padding:6px;background:#2C201A;color:#fff;border:1px solid #4A362C;font-family:var(--f-body);resize:vertical;}
+
+/* ── PAUSA ── */
+.pausa{display:none;background:#2C201A;border:2px solid var(--h-accent);border-radius:var(--radius);padding:0.8rem;text-align:center;color:var(--h-accent);font-weight:600;margin:10px 0;animation:pisca 1s infinite alternate;}
+@keyframes pisca{from{opacity:0.6;}to{opacity:1;}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A Fábrica <em>das Três Formas</em></div>
+  <span class="top-badge">⚙ 3 máquinas manipulativas + corrida · 4 equipes</span>
+  <span class="top-badge">60 min</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Abertura</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>🪙 Cofre</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>🟫 Mesa de Trocas</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>🧱 Compactadora</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>Corrida</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>Triângulo</button>
+    </div>
+  </div>
+
+<!-- ═══════ 1 · ABERTURA ═══════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>"Na atividade passada, construímos um <b>fluxograma de procedimentos</b> de como ir de uma forma numérica para outra.</p>
+    <p>Agora vamos construir  <b>as três máquinas</b> que fazem essa conversão com <b>intencionalidade pedagógica</b>."</p>
+  </div>
+  <!-- <div class="inst">
+    <div class="inst-t">O que deve estar pronto</div>
+    <ul>
+      <li>O <b>Triângulo das Transformações</b> em branco, fixado na parede — FRAÇÃO, DECIMAL, PORCENTAGEM nos vértices, seis flechas sem legenda</li>
+      <li><b>Máquina 1:</b> moedas de brinquedo (R$ 1, R$ 0,10 e R$ 0,01) — um cofre por equipe</li>
+      <li><b>Máquina 2:</b> material dourado — placas, barras e cubinhos, um conjunto por equipe</li>
+      <li><b>Máquina 3:</b> cubos encaixáveis (ou tampinhas), 100 por equipe, sobre uma bandeja/malha 10 × 10, e tiras de papel para demarcar blocos</li>
+      <li>Cartas da Corrida em um baralho separado</li>
+    </ul>
+  </div> -->
+  <div class="inst">
+    <div class="inst-t">As três máquinas — e o obstáculo que cada uma impõe</div>
+    <ul>
+      <li><b>1 · A Divisão do Cofre</b> — fração → decimal. <i>Obstáculo:</i> as moedas não dividem. <b>É preciso trocar.</b></li>
+      <li><b>2 · A Mesa de Trocas</b> — decimal ⇄ %. <i>Obstáculo:</i> montar o número com um número exato de peças. <b>É preciso quebrar.</b></li>
+      <li><b>3 · A Compactadora</b> — % ⇄ fração. <i>Obstáculo:</i> achar o maior bloco que fecha nos dois lados. <b>É preciso agrupar.</b></li>
+    </ul>
+    <p style="margin-top:8px">As três seguem o mesmo desenho: <b>existe um problema, existe um obstáculo físico, e a regra matemática aparece como conclusão do que as mãos acabaram de fazer.</b></p>
+  </div>
+
+  <div class="tip"><b>Das cinco faces da acolhida, três são numéricas</b> — fração, decimal e porcentagem. É só entre elas que existem procedimentos de cálculo. As faces "figura" e "palavras" são apoios de sentido, não etapas de conta.</div>
+  <div class="nav">
+    <span class="nav-info">etapa 1 de 6</span>
+    <button class="btn btn-a" onclick="go(1)">máquina 1: o cofre →</button>
+  </div>
+</div>
+
+<!-- ═══════ 2 · MÁQUINA 1 — COFRE ═══════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>"O que este risco no meio da fração está mandando fazer?"</p>
+  </div>
+  <div class="inst">
+    <div class="inst-t">Como operar a máquina</div>
+    <ul>
+      <li>O <b>número de cima</b> é o valor que será guardado no cofre, sempre chega em moedas de R$ 1,00</li>
+      <li>O <b>número de baixo</b> é a quantidade de <i>slots</i> em que esse dinheiro deverá ser distribuído igualmente</li>
+      <li>Se necessário, troque uma moeda de <b>R$ 1,00</b> por 10 moedas de <b>R$ 0,10</b></li>
+      <li>Guarde as moedas de <b>R$ 0,10</b> igualmente nos <i>slots</i></li>
+      <li>Se sobrar moedas de <b>R$ 0,10</b>, troque cada uma por 10 moedas de <b>R$ 0,01</b></li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h m1">Máquina 1 · a divisão do cofre · fração → decimal <span>15 min</span></div>
+
+    <!-- Novos controles com entrada livre e passo a passo -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;align-items:center;justify-content:center;">
+      <label style="font-size:12px;color:#C4A88E;">Numerador</label>
+      <input type="number" id="m1num" value="3" min="1" max="20" style="width:60px;padding:6px;border-radius:6px;border:1px solid #4A362C;background:#2C201A;color:#fff;font-size:14px;">
+      <label style="font-size:12px;color:#C4A88E;">Denominador</label>
+      <input type="number" id="m1den" value="4" min="1" max="20" style="width:60px;padding:6px;border-radius:6px;border:1px solid #4A362C;background:#2C201A;color:#fff;font-size:14px;">
+      <button class="btn btn-a" onclick="m1Dividir()">▶ Repartir</button>
+      <button class="btn btn-g" onclick="m1Passo()" id="m1passo" disabled>Próximo passo</button>
+      <button class="btn btn-g" onclick="m1Reset()">↺</button>
+    </div>
+
+    <div class="ctrls" style="margin-top:0;margin-bottom:10px">
+      <button class="btn btn-g" onclick="m1Dividir(1,2)">1/2</button>
+      <button class="btn btn-g" onclick="m1Dividir(2,5)">2/5</button>
+      <button class="btn btn-g" onclick="m1Dividir(3,5)">3/5</button>
+      <button class="btn btn-g" onclick="m1Dividir(1,8)">⚡ 1/8</button>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;">
+      <button class="btn btn-g" id="m1milToggle" onclick="m1ToggleMil()" style="font-size:11px;">🪙 Incluir moedas de R$ 0,001 (milésimo)</button>
+      <span id="m1milStatus" style="font-size:11px;color:#8A776D;">desativado</span>
+    </div>
+
+    <div class="eq" id="m1eq">3/4 = ?</div>
+    <div id="m1coins" class="coins"></div>
+    <div class="persons" id="m1pers"></div>
+    <div class="narr" id="m1narr">clique em "Repartir" para iniciar a divisão</div>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t1">15:00</div>
+    <div class="tl" id="t1l">inclui demonstração + treino das equipes</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,900)">▶ 15 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,900)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="inst">
+    <div class="inst-t">A conclusão, dita pela turma:</div>
+    <p>"Para transformar fração em decimal, basta ____________________________."</p>
+    <!-- <p style="margin-top:8px">A palavra <b>dividir</b> não foi ensinada — foi descoberta repartindo dinheiro.</p> -->
+  </div>
+
+  <div class="warn"><b>Cartão-desafio 1/8:</b> a divisão trava no centavo — sobram 4 que não se dividem em moedas. É o gancho para mostrar que a divisão continua na casa dos milésimos: 1/8 = 0,125. <b>Ative o botão "Incluir moedas de R$ 0,001"</b> acima para que o cofre resolva fisicamente o caso, trocando cada centavo por 10 moedas de milésimo.</div>
+
+  <!-- Diário de Bordo -->
+  <details class="diario">
+    <summary>📓 Diário de Bordo — anotações da equipe</summary>
+    <textarea rows="3" placeholder="Registre aqui suas descobertas, erros evitados e marcos acionados..."></textarea>
+  </details>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← abertura</button>
+    <span class="nav-info">etapa 2 de 6</span>
+    <button class="btn btn-a" onclick="go(2)">máquina 2: a vírgula →</button>
+  </div>
+</div>
+
+<!-- ═══════ 3 · MÁQUINA 2 — MESA DE TROCAS ═══════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>"Esqueçam tudo o que vocês sabem sobre o material dourado. <b>Hoje ele vale outra coisa.</b>"</p>
+    <p>"A placa não vale mais cem. <b>A placa vale UM INTEIRO.</b> E a partir daí tudo muda."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A convenção nova — escreva no quadro antes de distribuir as peças</div>
+    <ul>
+      <li><b>PLACA</b> (o quadrado grande) = <b>1 inteiro</b></li>
+      <li><b>BARRA</b> = <b>0,1</b> — dez barras cobrem exatamente uma placa</li>
+      <li><b>CUBINHO</b> = <b>0,01</b> — cem cubinhos cobrem exatamente uma placa</li>
+    </ul>
+  </div>
+
+  <div class="warn"><b>Por que quebrar a convenção tradicional é o ponto de partida.</b> Ao dizer que agora ela vale 1, você força cada um a <b>reancorar o valor posicional</b> — e essa reancoragem é exatamente o que o estudante precisa fazer quando a vírgula entra em cena. A peça não mudou de tamanho: mudou a unidade de referência.</div>
+
+  <div class="rig">
+    <div class="rig-h m2">Máquina 2 · a mesa de trocas · decimal ⇄ porcentagem <span>15 min</span></div>
+
+    <div class="mesa">
+      <div class="mesa-zonas">
+        <div class="zona pl">
+          <div class="zona-h"><span class="zona-n">PLACA</span><span class="zona-et" id="etPl">1</span></div>
+          <div class="zona-box" id="boxPl"></div>
+          <div class="zona-ct" id="ctPl">0 peças</div>
+          <div class="zona-btns">
+            <button class="zbtn" onclick="m2Add(0,1)">+</button>
+            <button class="zbtn" onclick="m2Add(0,-1)">−</button>
+            <button class="zbtn" onclick="m2Break(0)" title="quebrar 1 placa em 10 barras">⇩</button>
+          </div>
+        </div>
+        <div class="zona ba">
+          <div class="zona-h"><span class="zona-n">BARRA</span><span class="zona-et" id="etBa">0,1</span></div>
+          <div class="zona-box" id="boxBa"></div>
+          <div class="zona-ct" id="ctBa">0 peças</div>
+          <div class="zona-btns">
+            <button class="zbtn" onclick="m2Add(1,1)">+</button>
+            <button class="zbtn" onclick="m2Add(1,-1)">−</button>
+            <button class="zbtn" onclick="m2Break(1)" title="quebrar 1 barra em 10 cubinhos">⇩</button>
+          </div>
+        </div>
+        <div class="zona cu">
+          <div class="zona-h"><span class="zona-n">CUBINHO</span><span class="zona-et" id="etCu">0,01</span></div>
+          <div class="zona-box" id="boxCu"></div>
+          <div class="zona-ct" id="ctCu">0 peças</div>
+          <div class="zona-btns">
+            <button class="zbtn" onclick="m2Add(2,1)">+</button>
+            <button class="zbtn" onclick="m2Add(2,-1)">−</button>
+            <button class="zbtn" onclick="m2Join()" title="juntar 10 cubinhos em 1 barra">⇧</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="m2read">
+      <div class="m2card">
+        <div class="m2card-l" id="lblVal">valor na mesa</div>
+        <div class="m2card-v" id="m2val">0</div>
+        <div class="m2card-s" id="m2sub">nenhuma peça</div>
+      </div>
+      <div class="m2card">
+        <div class="m2card-l">peças usadas</div>
+        <div class="m2card-v" id="m2pcs">0</div>
+        <div class="m2card-s" id="m2min">—</div>
+      </div>
+    </div>
+
+    <div class="flipbar" id="flipbar">
+      <span class="flip-l act" id="flipA">etiqueta: INTEIRO</span>
+      <button class="btn btn-a" onclick="m2Flip()" id="flipBtn">⇄ virar a etiqueta</button>
+      <span class="flip-l" id="flipB">etiqueta: PORCENTAGEM</span>
+    </div>
+    <div class="narr" id="m2narr">monte um número com as peças — depois vire a etiqueta e observe o que acontece</div>
+
+    <div class="desafio">
+      <div class="desafio-t" id="desT">Desafio — clique em um cartão abaixo</div>
+      <div class="desafio-d" id="desD">Os desafios pedem um valor E um número exato de peças. Há mais de um jeito de montar o mesmo número.</div>
+      <div class="dbtns">
+        <button class="dbtn" onclick="m2Des(0)">0,63 · mínimo</button>
+        <button class="dbtn" onclick="m2Des(1)">0,63 · 18 peças</button>
+        <button class="dbtn" onclick="m2Des(2)">0,4 · mínimo</button>
+        <button class="dbtn" onclick="m2Des(3)">0,4 · 22 peças</button>
+        <button class="dbtn" onclick="m2Des(4)">0,25 · 16 peças</button>
+        <button class="dbtn" onclick="m2Des(5)">1,05 · mínimo</button>
+        <button class="dbtn" onclick="m2Des(-1)">livre</button>
+      </div>
+      <div class="desafio-v" id="desV"></div>
+    </div>
+
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="m2Set(0,6,3)">montar 0,63</button>
+      <button class="btn btn-g" onclick="m2Set(0,4,0)">montar 0,4</button>
+      <button class="btn btn-g" onclick="m2Set(1,0,5)">montar 1,05</button>
+      <button class="btn btn-g" onclick="m2Clear()">↺ limpar</button>
+    </div>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t2">15:00</div>
+    <div class="tl" id="t2l">3 desafios + a virada da etiqueta</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(2,900)">▶ 15 min</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(2,900)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="inst">
+    <div class="inst-t">A sequência de condução — três desafios, nesta ordem</div>
+    <ul>
+      <li><b>1 · O desafio mudo.</b> Cada equipe monta um número secreto na mesa e a equipe vizinha precisa <b>ler o número sem que ninguém fale</b>. Quem monta não pode dizer nada; quem lê escreve o palpite num papel. É a primeira vez que as peças são lidas como decimal.</li>
+      <li><b>2 · O desafio de restrição.</b> "Montem 0,63 usando <b>exatamente 18 peças</b>." Com 6 barras e 3 cubinhos dá 9 peças — não serve. É preciso <b>quebrar uma barra em dez cubinhos</b>. O obstáculo obriga à troca.</li>
+      <li><b>3 · A virada da etiqueta.</b> Só depois que as mesas estiverem montadas, anuncie a nova regra e observe.</li>
+    </ul>
+  </div>
+
+  <div class="tip"><b>A virada da etiqueta.</b> Com as peças de 0,63 na mesa, diga: "não toquem em nada. Vou só trocar as etiquetas. A placa agora se chama <b>100%</b>. A barra se chama <b>10%</b>. O cubinho se chama <b>1%</b>." Espere. Alguém vai ler em voz alta: seis barras e três cubinhos, sessenta por cento mais três por cento, <b>63%</b>. <b>Nenhuma peça se moveu. Nenhuma vírgula andou.</b> Só o nome da unidade mudou.</div>
+
+  <!-- <div class="warn"><b>O que isto substitui — e por quê.</b> A "vírgula que anda" é um truque que o estudante decora e troca na prova. Aqui, converter decimal em porcentagem é <b>mudar a unidade de medida</b>: 0,63 inteiros são 63 centésimos, e "por cento" é o nome do centésimo. É exatamente o mesmo gesto de dizer que 0,63 m são 63 cm — <b>a mesma operação que a turma fez em "Deslizando na Medida"</b>. Não é um truque novo: é uma conversão de unidade que eles já dominam.</div> -->
+
+  <div class="inst">
+    <div class="inst-t">💎 Desafio bônus</div>
+    <p>Peça que montem 0,63 de <b>todos</b> os jeitos possíveis e anotem quantas peças cada montagem usa: <b>9, 18, 27, 36, 45, 54, 63</b>.</p>
+    <p style="margin-top:7px">Duas perguntas: <b>por que o mínimo é 9?</b> Porque 6 + 3 = 9 — o mínimo de peças é sempre a <b>soma dos algarismos</b>. E <b>por que os totais saltam de 9 em 9?</b> Porque cada troca substitui 1 peça por 10, acrescentando exatamente 9.</p>
+    <p style="margin-top:7px">É por isso que o critério de divisibilidade por 9 funciona somando algarismos: <b>trocar de casa nunca altera o resto na divisão por 9</b>. A mesa de trocas acabou de demonstrar, com as mãos, um teorema que quase ninguém sabe justificar.</p>
+  </div>
+
+  <details class="diario">
+    <summary>📓 Diário de Bordo — anotações da equipe</summary>
+    <textarea rows="3" placeholder="O que mudou quando a placa passou a valer 1? Que erro esta máquina evita?"></textarea>
+  </details>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← cofre</button>
+    <span class="nav-info">etapa 3 de 6</span>
+    <button class="btn btn-a" onclick="go(3)">máquina 3: a compactadora →</button>
+  </div>
+</div>
+
+<!-- ═══════ 4 · MÁQUINA 3 — A COMPACTADORA ═══════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>"A missão é <b>compactar</b>: agrupar tudo em blocos iguais, o maior bloco que vocês conseguirem. </p>
+    <p>A máquina só consegue compactar em blocos de <b>2, 4, 5, 10, 20, 25 e 50.</b> "</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A missão do operador da máquina</div>
+    <ul>
+      <li>O operador precisa escolher o <b>modelo correto</b> da máquina compactadora</li>
+      <li>A máquina <b>só funciona</b> se preencher compartimentos completos da máquina escolhida, <b>não pode sobrar nem faltar bloquinhos</b> </li>
+      <li>O <b>melhor modelo</b> da máquina é a que funcionar e tiver o <b>maior compartimento possível</b></li>
+    </ul>
+    <p style="margin-top:8px">Não diga "MDC". Não diga "simplificar". <b>Diga "compactar" e deixe acontecer.</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h m3">Máquina 3 · a compactadora · porcentagem ⇄ fração <span>15 min</span></div>
+
+    <div class="m3ctl">
+      <div style="display:flex;align-items:center;gap:7px;background:#2C201A;border:1px solid #4A362C;border-radius:6px;padding:5px 11px">
+        <label style="font-size:10px;color:#8A776D;font-weight:700;letter-spacing:.09em;text-transform:uppercase">cubinhos</label>
+        <input type="number" id="m3n" value="75" min="0" max="100" style="width:56px;padding:4px;border-radius:5px;border:1px solid #4A362C;background:#1c1512;color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:700;text-align:center">
+      </div>
+      <button class="btn btn-g" onclick="m3Carta(75)">75%</button>
+      <button class="btn btn-g" onclick="m3Carta(40)">40%</button>
+      <button class="btn btn-g" onclick="m3Carta(60)">60%</button>
+      <button class="btn btn-g" onclick="m3Carta(64)">⚡ 64%</button>
+      <button class="btn btn-g" onclick="m3Carta(33)">⚡ 33%</button>
+    </div>
+
+    <div class="bandeja"><div class="bgrid" id="bgrid"></div></div>
+
+    <div class="m3ctl">
+      <span style="font-size:10px;color:#8A776D;font-weight:700;letter-spacing:.09em;text-transform:uppercase;align-self:center">testar bloco de</span>
+      <button class="dbtn" onclick="m3Bloco(1)">1</button>
+      <button class="dbtn" onclick="m3Bloco(2)">2</button>
+      <button class="dbtn" onclick="m3Bloco(4)">4</button>
+      <button class="dbtn" onclick="m3Bloco(5)">5</button>
+      <button class="dbtn" onclick="m3Bloco(10)">10</button>
+      <button class="dbtn" onclick="m3Bloco(20)">20</button>
+      <button class="dbtn" onclick="m3Bloco(25)">25</button>
+      <button class="dbtn" onclick="m3Bloco(50)">50</button>
+      <button class="btn btn-g" onclick="m3Reset()">↺</button>
+    </div>
+
+    <div class="veredito idle" id="m3verd">escolha um tamanho de bloco e teste</div>
+
+    <div class="m3read">
+      <div class="m3v"><div class="m3v-l">blocos na bandeja</div><div class="m3v-n" id="m3nb">—</div></div>
+      <div class="m3v"><div class="m3v-l">blocos cheios</div><div class="m3v-n" id="m3nc">—</div></div>
+      <div class="m3v"><div class="m3v-l">fração</div><div class="m3v-n" id="m3fr">—</div></div>
+    </div>
+
+    <div class="cadeia" id="m3cad"></div>
+    <div class="recorde" id="m3rec">maior bloco conseguido até agora: —</div>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t3">15:00</div>
+    <div class="tl" id="t3l">tentativa e erro + a revelação do maior bloco</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,900)">▶ 15 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,900)">↺</button>
+    </div>
+  </div> -->
+
+  <!-- <div class="inst">
+    <div class="inst-t">Como a descoberta acontece — deixe errar primeiro</div>
+    <ul>
+      <li>Quase toda equipe tenta <b>blocos de 10</b> primeiro, porque a bandeja tem 10 colunas. Com 75 cubinhos dá 7 blocos e meio — <b>não fecha</b></li>
+      <li>Alguém tenta <b>blocos de 2</b>: funciona? 75 é ímpar, então não. <b>Blocos de 5</b>: funciona, 15 blocos cheios de 20 → 15/20</li>
+      <li>A equipe que chega a <b>25</b> ganha: 3 blocos cheios de 4 → <b>3/4</b>. E não há bloco maior que funcione</li>
+      <li>Pergunte então: <b>"por que 50 não funcionou, se 50 cabe na bandeja?"</b> Porque 75 não preenche blocos de 50 por inteiro. <b>O bloco precisa servir aos dois números ao mesmo tempo</b></li>
+    </ul>
+  </div> -->
+
+  <div class="warn"><b>As duas cartas-armadilha, e o que cada uma ensina.</b><br>
+  <b>64%</b> — números grandes, mas o maior bloco é só 4 (resultado 16/25). Desmonta a intuição de que "número grande simplifica muito".<br>
+  <b>33%</b> — <b>a compactadora não comprime nada</b>. O único bloco que funciona é o de 1, e a resposta é 33/100. É assim, fisicamente, que uma fração irredutível se apresenta: <b>não existe agrupamento maior possível</b>.</div>
+
+  <div class="inst">
+    <div class="inst-t">O caminho de volta — fração vira porcentagem, na mesma bandeja</div>
+    <p>Agora inverta: dê a fração <b>3/5</b> e peça a porcentagem. "Dividam a bandeja em 5 blocos iguais — cada bloco tem 20 espaços. Encham 3 desses blocos." São 60 cubinhos em 100 → <b>60%</b>.</p>
+    <p style="margin-top:7px">A mesma bandeja, o mesmo gesto, a seta no sentido contrário. <b>Comprimir e descomprimir são a mesma máquina.</b></p>
+  </div>
+
+
+  <details class="diario">
+    <summary>📓 Diário de Bordo — anotações da equipe</summary>
+    <textarea rows="3" placeholder="Qual bloco vocês tentaram primeiro? Por que ele falhou? Como chegaram ao maior?"></textarea>
+  </details>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← mesa de trocas</button>
+    <span class="nav-info">etapa 4 de 6</span>
+    <button class="btn btn-a" onclick="go(4)">a corrida →</button>
+  </div>
+</div>
+
+<!-- ═══════ 5 · A CORRIDA (TABELA DE PONTUAÇÃO) ═══════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>"As três máquinas estão dominadas. Agora <b>a corrida</b>."</p>
+    <p>"Cada equipe saca uma carta com o número em uma só forma. A missão: produzir as outras duas e afixar o trio no mural."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Pontuação · na tela ou no quadro</div>
+    <ul>
+      <li><b>Trio completo e correto:</b> 10 pontos</li>
+      <li>Primeira equipe a concluir na rodada: <b>+5</b></li>
+      <li>Registrar o caminho, não só a resposta: <b>+3</b></li>
+      <li>Validação cruzada: a equipe à direita confere. Erro comprovado <b>transfere</b> os 10 pontos</li>
+    </ul>
+  </div>
+
+  <!-- Sorteio da carta -->
+  <div class="carta-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="color:#E09B62;font-weight:700;">Carta sorteada:</span>
+      <span id="cartaDisplay" style="font-size:24px;font-family:var(--f-mono);color:#fff;">—</span>
+      <button class="btn btn-a" onclick="sortearCarta()">🃏 Sacar</button>
+    </div>
+    <div class="feedback" id="feedbackValidacao" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- Tabela de pontuação -->
+  <div class="tabela-pontos">
+    <table id="tabelaPontos">
+      <thead>
+        <tr>
+          <th>Rodada</th>
+          <th>Carta</th>
+          <th>E1</th>
+          <th>E2</th>
+          <th>E3</th>
+          <th>E4</th>
+        </tr>
+      </thead>
+      <tbody id="corpoTabela">
+        <!-- linhas geradas por JS -->
+      </tbody>
+      <tfoot>
+        <tr style="border-top:2px solid #4A362C;background:#241A15;">
+          <td style="font-weight:700;color:var(--h-accent);">TOTAL</td>
+          <td></td>
+          <td id="totE1" class="tot">0</td>
+          <td id="totE2" class="tot">0</td>
+          <td id="totE3" class="tot">0</td>
+          <td id="totE4" class="tot">0</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;">
+      <button class="btn btn-g" onclick="adicionarRodada()">➕ Nova rodada</button>
+      <button class="btn btn-g" onclick="reiniciarTabela()">↺ Reiniciar</button>
+    </div>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t4">03:00</div>
+    <div class="tl" id="t4l">tempo por rodada</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(4,180)">▶ rodada 3 min</button>
+      <button class="btn btn-g" onclick="stopT(4)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(4,180)">↺ próxima rodada</button>
+    </div>
+  </div> -->
+
+  <div class="tip"><b>3 a 4 rodadas bastam.</b> Garanta que o baralho tenha cartas começando nas três formas, para que todas as seis flechas do triângulo sejam percorridas.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← compactadora</button>
+    <span class="nav-info">etapa 5 de 6</span>
+    <button class="btn btn-a" onclick="go(5)">triângulo →</button>
+  </div>
+</div>
+
+<!-- ═══════ 6 · TRIÂNGULO ═══════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <p>"A acolhida provou que são iguais. A fábrica mostrou como viajar. <b>O triângulo é o mapa.</b>"</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h m3">O Triângulo das Transformações <span>clique em cada flecha para preencher</span></div>
+    <div class="tri-wrap">
+      <svg viewBox="0 0 440 340" width="440" xmlns="http://www.w3.org/2000/svg" id="triSvg">
+        <!-- vértices -->
+        <circle cx="220" cy="42" r="38" fill="#2C201A" stroke="#E09B62" stroke-width="2"/>
+        <text x="220" y="38" class="tri-label" text-anchor="middle" font-size="11">FRAÇÃO</text>
+        <text x="220" y="52" class="tri-label" text-anchor="middle" font-size="10" fill="#C4A88E">a/b</text>
+
+        <circle cx="60" cy="298" r="38" fill="#2C201A" stroke="#5BA0D1" stroke-width="2"/>
+        <text x="60" y="294" class="tri-label" text-anchor="middle" font-size="11">DECIMAL</text>
+        <text x="60" y="308" class="tri-label" text-anchor="middle" font-size="10" fill="#C4A88E">0,xx</text>
+
+        <circle cx="380" cy="298" r="38" fill="#2C201A" stroke="#E0944E" stroke-width="2"/>
+        <text x="380" y="294" class="tri-label" text-anchor="middle" font-size="11">PORCENT.</text>
+        <text x="380" y="308" class="tri-label" text-anchor="middle" font-size="10" fill="#C4A88E">xx%</text>
+
+        <!-- flechas -->
+        <g id="a0" class="tri-arrow" onclick="triClick(0)" style="cursor:pointer">
+          <line x1="185" y1="72" x2="90" y2="262" stroke="#4EC9A8" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="80" y="155" class="tri-proc" id="ap0" transform="rotate(-63.5 110 155)">÷ numerador pelo denominador</text>
+        </g>
+        <g id="a1" class="tri-arrow" onclick="triClick(1)" style="cursor:pointer">
+          <line x1="70" y1="258" x2="170" y2="68" stroke="#4EC9A8" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+          <text x="120" y="175" class="tri-proc" id="ap1" transform="rotate(-63.5 155 175)">ler casas e simplificar</text>
+        </g>
+        <g id="a2" class="tri-arrow" onclick="triClick(2)" style="cursor:pointer">
+          <line x1="100" y1="300" x2="338" y2="300" stroke="#5BA0D1" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="220" y="292" class="tri-proc" id="ap2" text-anchor="middle">trocar a etiqueta da unidade</text>
+        </g>
+        <g id="a3" class="tri-arrow" onclick="triClick(3)" style="cursor:pointer">
+          <line x1="338" y1="315" x2="100" y2="315" stroke="#5BA0D1" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+          <text x="220" y="330" class="tri-proc" id="ap3" text-anchor="middle">trocar a etiqueta de volta</text>
+        </g>
+        <g id="a4" class="tri-arrow" onclick="triClick(4)" style="cursor:pointer">
+          <line x1="350" y1="262" x2="255" y2="72" stroke="#E0944E" stroke-width="2.5" marker-end="url(#ah)"/>
+          <text x="295" y="155" class="tri-proc" id="ap4" transform="rotate(64 325 155)">sobre 100 e compactar em blocos</text>
+        </g>
+        <g id="a5" class="tri-arrow" onclick="triClick(5)" style="cursor:pointer">
+          <line x1="270" y1="68" x2="365" y2="258" stroke="#E0944E" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#ah)"/>
+          <text x="255" y="175" class="tri-proc" id="ap5" transform="rotate(64 285 175)">descompactar até a bandeja de 100</text>
+        </g>
+        <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C4A88E"/></marker></defs>
+      </svg>
+    </div>
+    <div id="triErro" style="margin-top:12px;padding:8px 12px;background:#2C201A;border-radius:6px;color:#E09B62;font-size:13px;min-height:30px;">Clique em uma flecha para ver o erro que ela evita.</div>
+    <div class="ctrls">
+      <button class="btn btn-a" id="triAll">revelar todas</button>
+      <button class="btn btn-g" id="triNone">fechar todas</button>
+    </div>
+    <div class="narr" id="triNarr">clique em cada flecha para preencher com o procedimento</div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Recomposição — a pergunta para os formadores</div>
+    <p style="font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--accent-deep)">"Em qual das três máquinas seus estudantes mais tropeçam? E que marco anterior esse tropeço está denunciando?"</p>
+    <ul style="margin-top:10px">
+      <li><b>Significado da divisão</b> (6º ano) → sustenta a <b>Divisão do Cofre</b></li>
+      <li><b>Valor posicional e SND</b> (6º ano) → sustenta a <b>Mesa de Trocas</b></li>
+      <li><b>Equivalência e simplificação</b> (6º/7º ano) → sustenta a <b>Compactadora</b></li>
+    </ul>
+  </div>
+
+  <!-- Plano de adaptação -->
+  <details class="diario" style="margin-top:1rem;">
+    <summary>📌 Plano de adaptação (por ano escolar)</summary>
+    <div class="plano-grid">
+      <div>
+        <label>8º ano:</label>
+        <textarea rows="2" placeholder=""></textarea>
+      </div>
+      <div>
+        <label>9º ano:</label>
+        <textarea rows="2" placeholder=""></textarea>
+      </div>
+    </div>
+  </details>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← corrida</button>
+    <span class="nav-info">etapa 6 de 6 · fim da oficina</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAV ═══ */
+const tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+let cur=0;
+function go(i){if(cur<i)tabs[cur].classList.add('done');tabs.forEach(t=>t.classList.remove('on'));panes.forEach(p=>p.classList.remove('on'));tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ═══ TIMERS ═══ */
+const TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){if(TM[id]&&TM[id].iv)return;const el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');if(!TM[id])TM[id]={rem:dur};el.classList.remove('done');lb.textContent='em andamento';TM[id].iv=setInterval(()=>{TM[id].rem--;const r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));el.classList.toggle('low',r<=30&&r>0);
+  // Lembrete de pausa
+  if(r===600||r===300||r===60){mostrarPausa(r);}
+  if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';el.classList.remove('low');el.classList.add('done');lb.textContent='tempo esgotado';}},1000);}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};document.getElementById('t'+id).textContent=fmtT(dur);document.getElementById('t'+id).classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+function mostrarPausa(segundos){const p=document.createElement('div');p.className='pausa';p.textContent='🧘 Pausa de 1 minuto para alongamento!';document.querySelector('.container').prepend(p);setTimeout(()=>p.remove(),60000);}
+
+/* ═══ M1 — COFRE (versão passo a passo) ═══ */
+let m1Passos=[], m1Index=0, m1Timer=null, m1Milesimo=false;
+const m1c=document.getElementById('m1coins'),m1e=document.getElementById('m1eq'),m1n=document.getElementById('m1narr'),m1p=document.getElementById('m1pers');
+
+function m1ToggleMil(){
+  m1Milesimo=!m1Milesimo;
+  const btn=document.getElementById('m1milToggle');
+  const st=document.getElementById('m1milStatus');
+  if(m1Milesimo){
+    btn.classList.remove('btn-g');btn.classList.add('btn-a');
+    st.textContent='✓ ativado — o cofre agora tem moedas de R$ 0,001';
+    st.style.color='#4EC9A8';
+  } else {
+    btn.classList.remove('btn-a');btn.classList.add('btn-g');
+    st.textContent='desativado';
+    st.style.color='#8A776D';
+  }
+}
+
+function m1Reset(){
+  if(m1Timer){clearTimeout(m1Timer);m1Timer=null;}
+  m1Passos=[];m1Index=0;
+  m1c.innerHTML='';m1p.innerHTML='';m1e.textContent='';m1n.textContent='';
+  document.getElementById('m1passo').disabled=true;
+}
+
+function m1Dividir(num,den){
+  if(!num||!den){num=parseInt(document.getElementById('m1num').value);den=parseInt(document.getElementById('m1den').value);}
+  if(isNaN(num)||isNaN(den)||num<1||den<1){alert('Digite números válidos (>=1)');return;}
+  m1Reset();
+  m1e.innerHTML=num+'/'+den+' = ?';
+  m1n.textContent='Preparando divisão de R$ '+num+' entre '+den+' pessoas. Clique em "Próximo passo".';
+  m1p.innerHTML='';
+  for(let i=0;i<den;i++){const p=document.createElement('div');p.className='person';p.innerHTML='<div class="person-n">slot '+(i+1)+'</div><div class="person-v" id="pv_'+i+'">R$ 0</div>';m1p.appendChild(p);}
+  const passos=[];
+  let stepNum=0;
+  // acumuladores para valor de cada pessoa
+  let acumCada10=0, acumCada01=0, acumCada001=0;
+
+  // Passo: mostrar moedas de R$1
+  passos.push(()=>{
+    stepNum++;
+    m1c.innerHTML='';for(let i=0;i<num;i++)m1c.appendChild(coin('r1','R$1',i*100));
+    m1n.textContent='Passo '+stepNum+': '+num+' moeda(s) de R$ 1 para dividir entre '+den+' pessoas.';
+  });
+  // Passo: trocar por décimos
+  passos.push(()=>{
+    stepNum++;
+    m1c.innerHTML='';for(let i=0;i<num*10;i++)m1c.appendChild(coin('r10','10¢',i*70));
+    m1n.textContent='Passo '+stepNum+': trocar cada R$1 por 10 moedas de R$0,10. Total: '+num*10+' moedas de 10¢.';
+  });
+  // Passo: distribuir décimos
+  const total10=num*10;
+  const cada10=Math.floor(total10/den), sobra10=total10%den;
+  acumCada10=cada10;
+  passos.push(()=>{
+    stepNum++;
+    m1c.innerHTML='';for(let i=0;i<sobra10;i++)m1c.appendChild(coin('r10','10¢',i*70));
+    m1n.textContent='Passo '+stepNum+': distribuir '+total10+' moedas de 10¢ → '+cada10+' para cada, sobram '+sobra10;
+    for(let i=0;i<den;i++){const el=document.getElementById('pv_'+i);if(el)el.textContent='R$ '+(cada10/10).toFixed(2).replace('.',',');}
+  });
+  if(sobra10>0){
+    // Passo: trocar sobra por centavos
+    passos.push(()=>{
+      stepNum++;
+      m1c.innerHTML='';for(let i=0;i<sobra10*10;i++)m1c.appendChild(coin('r01','1¢',i*50));
+      m1n.textContent='Passo '+stepNum+': trocar '+sobra10+' moedas de 10¢ por '+(sobra10*10)+' moedas de 1¢.';
+    });
+    // Passo: distribuir centavos
+    const total01=sobra10*10;
+    const cada01=Math.floor(total01/den), sobra01=total01%den;
+    acumCada01=cada01;
+    passos.push(()=>{
+      stepNum++;
+      m1c.innerHTML='';for(let i=0;i<sobra01;i++)m1c.appendChild(coin('r01','1¢',i*50));
+      m1n.textContent='Passo '+stepNum+': distribuir '+total01+' moedas de 1¢ → '+cada01+' para cada, sobram '+sobra01;
+      const base=acumCada10/10+cada01/100;
+      for(let i=0;i<den;i++){const el=document.getElementById('pv_'+i);if(el)el.textContent='R$ '+base.toFixed(2).replace('.',',');}
+    });
+    if(sobra01>0){
+      if(m1Milesimo){
+        // === MILÉSIMOS: trocar centavos restantes por moedas de 0,001 ===
+        passos.push(()=>{
+          stepNum++;
+          const totalMil=sobra01*10;
+          m1c.innerHTML='';for(let i=0;i<totalMil;i++)m1c.appendChild(coin('r001','0,1¢',i*40));
+          m1n.textContent='Passo '+stepNum+': trocar '+sobra01+' moedas de 1¢ por '+totalMil+' moedas de R$ 0,001 (milésimo).';
+        });
+        // distribuir milésimos
+        const totalMil=sobra01*10;
+        const cadaMil=Math.floor(totalMil/den), sobraMil=totalMil%den;
+        acumCada001=cadaMil;
+        passos.push(()=>{
+          stepNum++;
+          m1c.innerHTML='';for(let i=0;i<sobraMil;i++)m1c.appendChild(coin('r001','0,1¢',i*40));
+          m1n.textContent='Passo '+stepNum+': distribuir '+totalMil+' moedas de milésimo → '+cadaMil+' para cada, sobram '+sobraMil;
+          const base=acumCada10/10+acumCada01/100+cadaMil/1000;
+          for(let i=0;i<den;i++){const el=document.getElementById('pv_'+i);if(el)el.textContent='R$ '+base.toFixed(3).replace('.',',');}
+        });
+        if(sobraMil>0){
+          // ainda sobra — informar que a divisão continua
+          passos.push(()=>{
+            stepNum++;
+            m1c.innerHTML='';
+            const final4=num/den;
+            m1n.textContent='Passo '+stepNum+': Ainda sobram '+sobraMil+' milésimos. A divisão continua em casas menores: '+num+'/'+den+' = '+final4.toFixed(4).replace('.',',')+'…';
+            m1e.innerHTML=num+'/'+den+' = <b>'+final4.toFixed(4).replace('.',',')+'…</b>';
+            for(let i=0;i<den;i++){const el=document.getElementById('pv_'+i);if(el)el.textContent='R$ '+final4.toFixed(4).replace('.',',')+'…';}
+          });
+        } else {
+          // milésimos fecharam exato!
+          passos.push(()=>{
+            stepNum++;
+            const final3=acumCada10/10+acumCada01/100+acumCada001/1000;
+            m1e.innerHTML=num+'/'+den+' = <b>'+final3.toFixed(3).replace('.',',')+'</b>';
+            m1n.textContent='Divisão concluída com milésimos! Cada pessoa recebeu R$ '+final3.toFixed(3).replace('.',',')+' — a barra da fração é uma divisão!';
+            m1c.innerHTML='';
+          });
+        }
+      } else {
+        // SEM milésimos: mostrar que a divisão continua (comportamento original)
+        passos.push(()=>{
+          stepNum++;
+          m1c.innerHTML='';m1n.textContent='Passo '+stepNum+': Ainda sobram '+sobra01+' centavos. A divisão continua nos milésimos: '+num+'/'+den+' = '+(num/den).toFixed(3).replace('.',',');
+          const final=num/den;
+          m1e.innerHTML=num+'/'+den+' = <b>'+final.toFixed(3).replace('.',',')+'</b>';
+          for(let i=0;i<den;i++){const el=document.getElementById('pv_'+i);if(el)el.textContent='R$ '+final.toFixed(3).replace('.',',');}
+        });
+      }
+    } else {
+      // centavos fecharam exato
+      passos.push(()=>{
+        stepNum++;
+        const final=num/den;
+        m1e.innerHTML=num+'/'+den+' = <b>'+final.toFixed(2).replace('.',',')+'</b>';
+        m1n.textContent='Divisão concluída: cada pessoa recebeu R$ '+final.toFixed(2).replace('.',',')+' — a barra da fração é uma divisão!';
+        m1c.innerHTML='';
+      });
+    }
+  } else {
+    // décimos fecharam exato
+    passos.push(()=>{
+      stepNum++;
+      const final=num/den;
+      m1e.innerHTML=num+'/'+den+' = <b>'+final.toFixed(2).replace('.',',')+'</b>';
+      m1n.textContent='Divisão concluída: cada pessoa recebeu R$ '+final.toFixed(2).replace('.',',')+' — a barra da fração é uma divisão!';
+      m1c.innerHTML='';
+    });
+  }
+  m1Passos=passos;
+  m1Index=0;
+  document.getElementById('m1passo').disabled=false;
+  m1n.textContent='Clique em "Próximo passo" para iniciar.';
+}
+
+function m1Passo(){
+  if(m1Index>=m1Passos.length){m1n.textContent='Divisão já concluída.';document.getElementById('m1passo').disabled=true;return;}
+  m1Passos[m1Index]();
+  m1Index++;
+  if(m1Index>=m1Passos.length)document.getElementById('m1passo').disabled=true;
+}
+
+function coin(cls,txt,delay){
+  const d=document.createElement('div');d.className='coin '+cls+(delay?' pop':'');d.textContent=txt;
+  if(delay)d.style.animationDelay=delay+'ms';return d;
+}
+
+// Garantir que os botões de exemplo chamem m1Dividir com parâmetros
+document.querySelectorAll('#p1 .ctrls .btn-g').forEach(b=>{
+  const txt=b.textContent.trim();
+  if(txt.includes('1/2')){b.onclick=()=>m1Dividir(1,2);}
+  else if(txt.includes('2/5')){b.onclick=()=>m1Dividir(2,5);}
+  else if(txt.includes('3/5')){b.onclick=()=>m1Dividir(3,5);}
+  else if(txt.includes('1/8')){b.onclick=()=>m1Dividir(1,8);}
+});
+
+/* ═══ M2 — MESA DE TROCAS ═══ */
+var m2q=[0,0,0];          /* placas, barras, cubinhos */
+var m2flip=false;         /* etiqueta virada para porcentagem */
+var m2des=-1;             /* desafio ativo */
+var U2=5;                 /* unidade visual em px: cubinho = U, barra = U x 10U, placa = 10U x 10U */
+
+var DESAFIOS=[
+ {v:63,p:9,  t:'Montem 0,63 com o MENOR número de peças possível.'},
+ {v:63,p:18, t:'Montem 0,63 usando EXATAMENTE 18 peças.'},
+ {v:40,p:4,  t:'Montem 0,4 com o MENOR número de peças possível.'},
+ {v:40,p:22, t:'Montem 0,4 usando EXATAMENTE 22 peças.'},
+ {v:25,p:16, t:'Montem 0,25 usando EXATAMENTE 16 peças.'},
+ {v:105,p:6, t:'Montem 1,05 com o MENOR número de peças possível.'}
+];
+
+function m2Peca(tipo){
+  var d=document.createElement('div');
+  d.className='pc new';
+  var w,h,bg,bd;
+  if(tipo===0){w=10*U2;h=10*U2;bg='#2E8B72';bd='#4EC9A8';}
+  else if(tipo===1){w=U2;h=10*U2;bg='#2A6A94';bd='#5BA0D1';}
+  else {w=U2;h=U2;bg='#A56A2E';bd='#E0944E';}
+  d.style.cssText='width:'+w+'px;height:'+h+'px;background:'+bg+';border:1px solid '+bd+';border-radius:1px';
+  if(tipo===0){
+    d.style.backgroundImage='repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 1px,transparent 1px '+U2+'px),repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px '+U2+'px)';
+  } else if(tipo===1){
+    d.style.backgroundImage='repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px '+U2+'px)';
+  }
+  d.title=(tipo===0?'placa':tipo===1?'barra':'cubinho')+' — clique para quebrar';
+  d.onclick=function(){ if(tipo<2) m2Break(tipo); };
+  return d;
+}
+function m2Render(){
+  var boxes=[document.getElementById('boxPl'),document.getElementById('boxBa'),document.getElementById('boxCu')];
+  var cts=[document.getElementById('ctPl'),document.getElementById('ctBa'),document.getElementById('ctCu')];
+  for(var t=0;t<3;t++){
+    boxes[t].innerHTML='';
+    var n=Math.min(m2q[t],120);
+    for(var i=0;i<n;i++)boxes[t].appendChild(m2Peca(t));
+    cts[t].textContent=m2q[t]+(m2q[t]===1?' peça':' peças');
+  }
+  var cent=m2q[0]*100+m2q[1]*10+m2q[2];
+  var pcs=m2q[0]+m2q[1]+m2q[2];
+  var val=document.getElementById('m2val'),sub=document.getElementById('m2sub');
+  if(m2flip){
+    val.textContent=brNum(cent)+'%';
+    val.classList.add('flip');
+    sub.textContent=m2q[0]+'×100% + '+m2q[1]+'×10% + '+m2q[2]+'×1%';
+  } else {
+    val.textContent=brDec(cent);
+    val.classList.remove('flip');
+    sub.textContent=m2q[0]+'×1 + '+m2q[1]+'×0,1 + '+m2q[2]+'×0,01';
+  }
+  if(pcs===0)sub.textContent='nenhuma peça';
+  document.getElementById('m2pcs').textContent=pcs;
+  var minP=digitSum(cent);
+  var mn=document.getElementById('m2min');
+  if(pcs===0)mn.textContent='—';
+  else if(pcs===minP)mn.textContent='✓ é o mínimo possível';
+  else mn.textContent='mínimo para este valor: '+minP+'  ( +'+(pcs-minP)+' )';
+  m2Check();
+}
+function digitSum(cent){
+  var s=String(cent).split('');
+  var t=0;for(var i=0;i<s.length;i++)t+=parseInt(s[i],10);
+  return t;
+}
+function brDec(cent){
+  var neg=cent<0;cent=Math.abs(cent);
+  var i=Math.floor(cent/100),f=cent%100;
+  var s=String(i);
+  if(f>0){var fs=String(f).padStart(2,'0').replace(/0$/,'');s+=','+fs;}
+  return (neg?'-':'')+s;
+}
+function brNum(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');}
+function m2Add(t,d){
+  m2q[t]=Math.max(0,Math.min(150,m2q[t]+d));
+  m2Render();
+  m2Narr(d>0?'peça adicionada':'peça retirada');
+}
+function m2Break(t){
+  if(m2q[t]<1){m2Narr('não há peça deste tipo para quebrar');return;}
+  if(t>1)return;
+  m2q[t]--;m2q[t+1]+=10;
+  m2Render();
+  m2Narr(t===0?'1 placa virou 10 barras — o valor não mudou, o número de peças subiu 9'
+                :'1 barra virou 10 cubinhos — o valor não mudou, o número de peças subiu 9');
+}
+function m2Join(){
+  if(m2q[2]>=10){m2q[2]-=10;m2q[1]++;m2Render();m2Narr('10 cubinhos viraram 1 barra — 9 peças a menos');return;}
+  if(m2q[1]>=10){m2q[1]-=10;m2q[0]++;m2Render();m2Narr('10 barras viraram 1 placa — 9 peças a menos');return;}
+  m2Narr('não há 10 peças iguais para juntar');
+}
+function m2Set(p,b,c){m2q=[p,b,c];m2Render();m2Narr('mesa montada');}
+function m2Clear(){m2q=[0,0,0];m2Render();m2Narr('mesa limpa');}
+function m2Narr(txt){document.getElementById('m2narr').textContent=txt;}
+function m2Flip(){
+  m2flip=!m2flip;
+  document.getElementById('etPl').textContent=m2flip?'100%':'1';
+  document.getElementById('etBa').textContent=m2flip?'10%':'0,1';
+  document.getElementById('etCu').textContent=m2flip?'1%':'0,01';
+  ['etPl','etBa','etCu'].forEach(function(id){
+    document.getElementById(id).classList.toggle('flip',m2flip);
+  });
+  document.getElementById('lblVal').textContent=m2flip?'valor na mesa (em %)':'valor na mesa';
+  document.getElementById('flipA').classList.toggle('act',!m2flip);
+  document.getElementById('flipB').classList.toggle('act',m2flip);
+  document.getElementById('flipbar').classList.toggle('on',m2flip);
+  m2Render();
+  m2Narr(m2flip
+    ? 'nenhuma peça se moveu — só o nome da unidade mudou. o decimal virou porcentagem sozinho.'
+    : 'etiqueta de volta ao inteiro. as peças continuam exatamente as mesmas.');
+}
+function m2Des(i){
+  m2des=i;
+  var t=document.getElementById('desT'),d=document.getElementById('desD');
+  document.querySelectorAll('.dbtns .dbtn').forEach(function(b){b.classList.remove('sel');});
+  if(i<0){
+    t.textContent='Modo livre';
+    d.textContent='Monte o que quiser. O painel mostra o valor, o total de peças e o mínimo possível.';
+    document.getElementById('desV').textContent='';
+    return;
+  }
+  var D=DESAFIOS[i];
+  document.querySelectorAll('.dbtns .dbtn')[i].classList.add('sel');
+  t.textContent='Desafio '+(i+1);
+  d.textContent=D.t;
+  m2Check();
+}
+function m2Check(){
+  var out=document.getElementById('desV');
+  if(!out)return;
+  if(m2des<0){out.textContent='';out.className='desafio-v';return;}
+  var D=DESAFIOS[m2des];
+  var cent=m2q[0]*100+m2q[1]*10+m2q[2];
+  var pcs=m2q[0]+m2q[1]+m2q[2];
+  if(pcs===0){out.textContent='';out.className='desafio-v';return;}
+  if(cent!==D.v){
+    out.className='desafio-v no';
+    out.textContent='✗ valor na mesa: '+brDec(cent)+' — precisa ser '+brDec(D.v);
+    return;
+  }
+  if(pcs!==D.p){
+    out.className='desafio-v no';
+    out.textContent='✓ valor certo, mas com '+pcs+' peças — o desafio pede '+D.p+
+      (pcs<D.p?' · quebre uma peça (⇩)':' · junte peças (⇧)');
+    return;
+  }
+  out.className='desafio-v ok';
+  out.textContent='✓ desafio cumprido: '+brDec(cent)+' com exatamente '+pcs+' peças';
+}
+m2Des(-1);m2Render();
+
+/* ═══ M3 — COMPACTADORA ═══ */
+var m3N=75, m3K=0, m3Best=0, m3Chain=[];
+var BLOCOS=[1,2,4,5,10,20,25,50];
+var FORMA={1:[1,1],2:[1,2],4:[2,2],5:[1,5],10:[1,10],20:[2,10],25:[5,5],50:[5,10]};
+
+function m3Build(){
+  var g=document.getElementById('bgrid');
+  g.innerHTML='';
+  for(var i=0;i<100;i++){
+    var c=document.createElement('div');
+    c.className='bcell';c.id='bc'+i;
+    g.appendChild(c);
+  }
+}
+function m3BlocoIdx(i,k){
+  var f=FORMA[k],rh=f[0],rw=f[1];
+  var r=Math.floor(i/10),c=i%10;
+  var br=Math.floor(r/rh),bc=Math.floor(c/rw);
+  var porLinha=10/rw;
+  return br*porLinha+bc;
+}
+function m3Render(){
+  var nb=m3K?100/m3K:0;
+  var cheios=m3K?Math.floor(m3N/m3K):0;
+  var ok=m3K&&(m3N%m3K===0);
+  for(var i=0;i<100;i++){
+    var cell=document.getElementById('bc'+i);
+    if(!cell)continue;
+    cell.className='bcell';
+    if(!m3K){ if(i<m3N)cell.classList.add('fill'); continue; }
+    var b=m3BlocoIdx(i,m3K);
+    var f=FORMA[m3K],rh=f[0],rw=f[1];
+    var r=Math.floor(i/10),c=i%10;
+    if(r%rh===0)cell.classList.add('bt');
+    if(r%rh===rh-1)cell.classList.add('bb');
+    if(c%rw===0)cell.classList.add('bl');
+    if(c%rw===rw-1)cell.classList.add('brr');
+    var preenchido = b<cheios;
+    var resto = m3N-cheios*m3K;
+    var posNoBloco = i - m3PrimeiraCelula(b,m3K);
+    var parcial = (b===cheios && resto>0);
+    if(preenchido){cell.classList.add('fill');cell.classList.add('bloco-ok');}
+    else if(parcial){
+      cell.classList.add('parcial');
+      if(m3OrdemNoBloco(i,m3K)<resto)cell.classList.add('fill');
+    }
+  }
+  document.getElementById('m3nb').textContent=m3K?nb:'—';
+  var nc=document.getElementById('m3nc');
+  nc.textContent=m3K?(ok?cheios:(m3N/m3K).toFixed(2).replace('.',',')):'—';
+  nc.className='m3v-n'+(m3K?(ok?' ok':' no'):'');
+  var fr=document.getElementById('m3fr');
+  fr.textContent=(m3K&&ok)?(cheios+'/'+nb):'—';
+  fr.className='m3v-n'+((m3K&&ok)?' ok':'');
+  var v=document.getElementById('m3verd');
+  if(!m3K){v.className='veredito idle';v.textContent='escolha um tamanho de bloco e teste';}
+  else if(ok){
+    v.className='veredito ok';
+    v.textContent='COMPACTOU! '+m3N+'/100 = '+cheios+'/'+nb;
+    if(m3K>m3Best)m3Best=m3K;
+    if(m3Chain.indexOf(m3K)<0){m3Chain.push(m3K);m3Chain.sort(function(a,b){return a-b;});}
+  } else {
+    v.className='veredito no';
+    var resto=m3N-cheios*m3K;
+    v.textContent='NÃO FECHA — sobra um bloco com só '+resto+' de '+m3K;
+  }
+  m3Cadeia();
+  var g=m3mdc(m3N,100);
+  document.getElementById('m3rec').innerHTML = m3Best
+    ? ('maior bloco conseguido: <b style="color:var(--h-accent)">'+m3Best+'</b>'
+       + (m3Best===g?' — não existe bloco maior que funcione' : ' · ainda há bloco maior possível'))
+    : 'maior bloco conseguido até agora: —';
+}
+function m3PrimeiraCelula(b,k){
+  var f=FORMA[k],rh=f[0],rw=f[1],porLinha=10/rw;
+  var br=Math.floor(b/porLinha),bc=b%porLinha;
+  return br*rh*10+bc*rw;
+}
+function m3OrdemNoBloco(i,k){
+  var f=FORMA[k],rh=f[0],rw=f[1];
+  var r=Math.floor(i/10),c=i%10;
+  return (r%rh)*rw+(c%rw);
+}
+function m3mdc(a,b){while(b){var t=a%b;a=b;b=t;}return a;}
+function m3Cadeia(){
+  var box=document.getElementById('m3cad');
+  box.innerHTML='';
+  if(!m3Chain.length){box.innerHTML='<span style="color:#5A443A;font-size:12px">a cadeia de compactação aparece aqui</span>';return;}
+  var g=m3mdc(m3N,100);
+  m3Chain.forEach(function(k){
+    var s=document.createElement('span');
+    s.className='celo on'+(k===g?' best':'');
+    s.textContent=(m3N/k)+'/'+(100/k)+(k===g?'  ★':'');
+    s.title='bloco de '+k;
+    box.appendChild(s);
+  });
+}
+function m3Bloco(k){
+  if(m3N<0||m3N>100)return;
+  m3K=k;m3Render();
+}
+function m3Carta(n){
+  document.getElementById('m3n').value=n;
+  m3N=n;m3K=0;m3Best=0;m3Chain=[];
+  m3Render();
+}
+function m3Reset(){
+  m3K=0;m3Best=0;m3Chain=[];
+  m3Render();
+}
+document.getElementById('m3n').addEventListener('input',function(e){
+  var v=parseInt(e.target.value,10);
+  if(isNaN(v))return;
+  m3N=Math.max(0,Math.min(100,v));
+  m3K=0;m3Best=0;m3Chain=[];
+  m3Render();
+});
+m3Build();m3Render();
+
+/* ═══ CORRIDA — SORTEIO DA CARTA ═══ */
+const baralho=[
+  {tipo:'FRAÇÃO', valor:'3/4', decimal:'0,75', pct:'75%'},
+  {tipo:'FRAÇÃO', valor:'2/5', decimal:'0,4', pct:'40%'},
+  {tipo:'FRAÇÃO', valor:'7/10', decimal:'0,7', pct:'70%'},
+  {tipo:'DECIMAL', valor:'0,25', frac:'1/4', pct:'25%'},
+  {tipo:'DECIMAL', valor:'0,6', frac:'3/5', pct:'60%'},
+  {tipo:'DECIMAL', valor:'0,9', frac:'9/10', pct:'90%'},
+  {tipo:'PORCENTAGEM', valor:'50%', frac:'1/2', decimal:'0,5'},
+  {tipo:'PORCENTAGEM', valor:'20%', frac:'1/5', decimal:'0,2'},
+  {tipo:'PORCENTAGEM', valor:'12,5%', frac:'1/8', decimal:'0,125'},
+];
+let cartaAtual=null;
+
+function sortearCarta(){
+  const idx=Math.floor(Math.random()*baralho.length);
+  cartaAtual=baralho[idx];
+  document.getElementById('cartaDisplay').textContent=cartaAtual.valor+' ('+cartaAtual.tipo+')';
+  document.getElementById('feedbackValidacao').textContent='Carta sorteada! Registre a pontuação na tabela.';
+}
+
+/* ═══ CORRIDA — TABELA DE PONTUAÇÃO ═══ */
+let rodadas = 0;
+const MAX_EQUIPES = 4;
+
+function adicionarRodada() {
+  rodadas++;
+  const tbody = document.getElementById('corpoTabela');
+  const tr = document.createElement('tr');
+  tr.dataset.rodada = rodadas;
+
+  // Rodada
+  const tdRod = document.createElement('td');
+  tdRod.textContent = rodadas;
+  tdRod.style.fontWeight = '700';
+  tdRod.style.color = '#E09B62';
+  tr.appendChild(tdRod);
+
+  // Carta (campo editável para o formador anotar)
+  const tdCarta = document.createElement('td');
+  const inputCarta = document.createElement('input');
+  inputCarta.type = 'text';
+  inputCarta.placeholder = 'ex: 3/4';
+  inputCarta.style.width = '70px';
+  inputCarta.style.padding = '4px';
+  inputCarta.style.borderRadius = '4px';
+  inputCarta.style.border = '1px solid #4A362C';
+  inputCarta.style.background = '#1c1512';
+  inputCarta.style.color = '#C4A88E';
+  inputCarta.style.fontSize = '12px';
+  inputCarta.style.textAlign = 'center';
+  tdCarta.appendChild(inputCarta);
+  tr.appendChild(tdCarta);
+
+  // Campos de pontuação para cada equipe
+  for (let e = 1; e <= MAX_EQUIPES; e++) {
+    const td = document.createElement('td');
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = 0;
+    input.step = 1;
+    input.value = 0;
+    input.dataset.equipe = e;
+    input.dataset.rodada = rodadas;
+    input.addEventListener('input', atualizarTotais);
+    td.appendChild(input);
+    tr.appendChild(td);
+  }
+
+  tbody.appendChild(tr);
+  atualizarTotais();
+}
+
+function atualizarTotais() {
+  const totais = [0, 0, 0, 0];
+  const inputs = document.querySelectorAll('#corpoTabela input[type="number"]');
+  inputs.forEach(inp => {
+    const val = parseInt(inp.value, 10) || 0;
+    const eq = parseInt(inp.dataset.equipe, 10) - 1;
+    totais[eq] += val;
+  });
+  for (let i = 0; i < MAX_EQUIPES; i++) {
+    document.getElementById('totE' + (i+1)).textContent = totais[i];
+  }
+}
+
+function reiniciarTabela() {
+  rodadas = 0;
+  document.getElementById('corpoTabela').innerHTML = '';
+  for (let i = 0; i < MAX_EQUIPES; i++) {
+    document.getElementById('totE' + (i+1)).textContent = '0';
+  }
+  document.getElementById('cartaDisplay').textContent = '—';
+  document.getElementById('feedbackValidacao').textContent = '';
+  cartaAtual = null;
+  // Adiciona uma rodada vazia
+  adicionarRodada();
+}
+
+// Inicializa com uma rodada
+adicionarRodada();
+
+/* ═══ TRIÂNGULO (com erros) ═══ */
+const erros=[
+  "Inverter a divisão (dividir denominador pelo numerador).",
+  "Esquecer de simplificar ou ler as casas erradas.",
+  "Trocar só uma etiqueta e não as três (ex: 0,6 = 6%).",
+  "Desfazer a troca pela metade — voltar só uma casa em vez de duas.",
+  "Parar num bloco pequeno e não procurar o maior possível.",
+  "Não conseguir achar a fração equivalente de denominador 100."
+];
+function triClick(i){
+  const a=document.getElementById('a'+i);
+  a.classList.toggle('on');
+  document.getElementById('ap'+i).classList.toggle('on');
+  const n=[...document.querySelectorAll('.tri-arrow.on')].length;
+  document.getElementById('triNarr').textContent=n+' de 6 flechas preenchidas';
+  document.getElementById('triErro').textContent='⚠️ Erro comum: '+erros[i];
+}
+document.getElementById('triAll').addEventListener('click',()=>{
+  for(let i=0;i<6;i++){document.getElementById('a'+i).classList.add('on');document.getElementById('ap'+i).classList.add('on');}
+  document.getElementById('triNarr').textContent='6 de 6 — o mapa completo';
+  document.getElementById('triErro').textContent='Todos os procedimentos revelados.';
+});
+document.getElementById('triNone').addEventListener('click',()=>{
+  for(let i=0;i<6;i++){document.getElementById('a'+i).classList.remove('on');document.getElementById('ap'+i).classList.remove('on');}
+  document.getElementById('triNarr').textContent='clique em cada flecha para preencher';
+  document.getElementById('triErro').textContent='Clique em uma flecha para ver o erro que ela evita.';
+});
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight'&&cur<5)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);
+});
+</script>
+</body>
+</html>

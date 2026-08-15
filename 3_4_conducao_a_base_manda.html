@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · A Base Manda</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--h-bg:#191411;--h-hot:#F08A62;--h-sub:#A3948C;--h-line:#3A2B23;
+--accent:#A8412A;--accent-soft:#FBEAE4;--accent-deep:#5E2315;
+--alto:#4E86B8;--alto-s:#E5EEF6;--alto-b:#A7C4DC;--alto-hi:#8FBEE4;
+--largo:#C25A2E;--largo-s:#FCEBE1;--largo-b:#EFB795;--largo-hi:#F5A279;
+--rice:#E3CE95;--rice-d:#C4A85E;
+--olive:#5E7C2E;--olive-s:#EEF4E3;--olive-b:#B5CE8C;--olive-hi:#B4D77E;
+--ink:#191411;--ink-mid:#4A403B;--ink-soft:#7A6E68;--border:#E4DDD8;--bg:#FAF8F6;--bg-card:#fff;--radius:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ══ REGRA MESTRA ══ */
+body:not(.fmode) .fonly{display:none !important}
+
+.fkey{font-family:var(--f-body);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--h-sub);
+  background:rgba(255,255,255,.05);border:1px solid var(--h-line);border-radius:100px;padding:7px 15px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fkey:hover{border-color:var(--h-copper);color:var(--h-copper)}
+body.fmode .fkey{background:var(--h-copper);border-color:var(--h-copper);color:#1A0E08}
+.fbar{background:#FDF5E4;border-bottom:1px solid #E0C87A;color:#5C3F08;font-size:11.5px;font-weight:600;
+  padding:7px 1.5rem;letter-spacing:.02em;position:relative;z-index:39}
+.fbar b{font-weight:800}
+.fnote{background:#FFFDF6;border:1px solid rgba(160,100,20,.35);border-left:5px solid #A07030;border-radius:var(--radius);
+  padding:.95rem 1.2rem;margin:1rem 0}
+.fnote.alerta{background:#FFF8F9;border-color:rgba(176,38,74,.35);border-left-color:#B0264A}
+.fnote.chave{background:#E9F5EC;border-color:rgba(46,125,50,.3);border-left-color:#2E7D32}
+.fnote-h{font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:#A07030;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.fnote.alerta .fnote-h{color:#B0264A}
+.fnote.chave .fnote-h{color:#2E7D32}
+.fnote-h::before{content:"◆";font-size:8px}
+.fnote-b{font-size:13.5px;color:var(--ink-mid);line-height:1.72}
+.fnote-b b{color:var(--ink);font-weight:700}
+.fnote-b p+p{margin-top:9px}
+.fnote-b ul{list-style:none;padding:0;margin:0}
+.fnote-b li{padding-left:19px;position:relative;margin-bottom:8px}
+.fnote-b li:last-child{margin-bottom:0}
+.fnote-b li::before{content:"▸";position:absolute;left:0;color:#A07030;font-size:10px;line-height:1.85}
+.fnote.alerta .fnote-b li::before{color:#B0264A}
+.tab.fonly{color:#A07030}
+.tab.fonly .tn{background:#FDF5E4;color:#A07030;border-color:rgba(160,100,20,.35)}
+.tab.fonly.on{color:#A07030;border-bottom-color:#A07030;background:#FDF5E4}
+.tab.fonly.on .tn{background:#A07030;color:#fff}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-hot)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(240,138,98,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:900px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:10.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 10px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--olive)}.tab.done .tn{background:var(--olive-s);color:var(--olive);border-color:var(--olive)}
+.tab.aux .tn{background:#EFEAE6;color:var(--ink-soft);border-color:var(--border)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#2A1D16);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'';position:absolute;right:-30px;top:-30px;width:150px;height:150px;border:1px solid rgba(240,138,98,.13);border-radius:50%}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#E4DAD4;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-hot);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst.a{border-left-color:var(--alto)}.inst.l{border-left-color:var(--largo)}.inst.o{border-left-color:var(--olive)}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst.a .inst-t{color:#26506F}.inst.l .inst-t{color:#7A3415}.inst.o .inst-t{color:#3D5418}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst.a li::before{color:var(--alto)}.inst.l li::before{color:var(--largo)}.inst.o li::before{color:var(--olive)}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(168,65,42,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:#FDF2E3;border:1px solid #E5C48C;border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#6B4A12;line-height:1.6}
+.ok{background:var(--olive-s);border:1px solid rgba(94,124,46,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#3D5418;line-height:1.6}
+.bluebox{background:var(--alto-s);border:1px solid var(--alto-b);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#26506F;line-height:1.6}
+.tip b,.warn b,.ok b,.bluebox b{font-weight:700}
+
+/* ── GOLD/FORMULA ── */
+.gold{background:#FDF6EC;border:1px solid #E5C48C;border-left:4px solid #B5822A;border-radius:var(--radius);padding:1.15rem 1.3rem;margin-bottom:1.2rem;text-align:center}
+.gold-t{font-family:var(--f-head);font-size:clamp(18px,3.8vw,26px);font-weight:700;color:#6B4A12;margin-bottom:8px}
+.gold-d{font-size:13px;color:#7A5A1C;line-height:1.65;font-style:italic}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--accent)}.tm.done{color:var(--olive)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.14)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-o{background:var(--olive);border-color:var(--olive);color:#fff}
+.btn-o:hover{filter:brightness(1.12)}
+.btn-l{background:var(--largo);border-color:var(--largo);color:#fff}
+.btn-l:hover{filter:brightness(1.1)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ══════ RIG ══════ */
+.rig{background:#221914;border:1px solid var(--h-line);border-radius:var(--radius);padding:1.15rem 1rem 1.35rem;margin-bottom:1.2rem}
+.rig.palco{position:fixed;inset:0;z-index:300;border-radius:0;border:none;margin:0;overflow-y:auto;padding:3vh 4vw;display:flex;flex-direction:column;justify-content:center}
+.rig-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--h-hot);
+  border-bottom:1px solid var(--h-line);padding-bottom:10px;margin-bottom:15px}
+.rig-h span{color:#8A776D;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.fs-btn{background:none;border:1px solid var(--h-line);color:var(--h-sub);font-family:var(--f-mono);font-size:10px;padding:5px 11px;border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.fs-btn:hover{border-color:var(--h-hot);color:var(--h-hot)}
+.svgwrap{display:flex;justify-content:center;align-items:flex-end}
+.svgwrap svg{max-width:100%;height:auto}
+.rig.palco .svgwrap svg{max-height:56vh}
+.fld{display:flex;align-items:center;gap:7px;background:#2C201A;border:1px solid #4A3830;border-radius:5px;padding:6px 11px}
+.fld label{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8A776D}
+.fld input,.fld select{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:13px;font-weight:700;outline:none}
+.fld input[type=text]{width:74px}
+.fld input[type=range]{width:190px;accent-color:var(--h-hot);cursor:pointer;padding:0}
+.fld select option{background:#2C201A;color:#fff}
+.oc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:520px){.oc-grid{grid-template-columns:1fr}}
+.oc{text-align:center;background:#150F0C;border:1px solid var(--h-line);border-radius:5px;padding:9px 6px}
+.ol{font-family:var(--f-body);font-size:8.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8A776D;margin-bottom:5px}
+.ov{font-family:var(--f-mono);font-size:17px;font-weight:700;color:#fff}
+.ov.a{color:var(--alto-hi)}.ov.l{color:var(--largo-hi)}.ov.o{color:var(--olive-hi)}
+.rig-out{margin-top:15px;background:#150F0C;border:1px solid var(--h-line);border-radius:6px;padding:14px 15px}
+.oeq{text-align:center;font-family:var(--f-mono);font-size:clamp(14px,3.3vw,20px);font-weight:600;color:var(--h-hot);
+  padding:12px 6px;background:#221914;border:1px solid var(--h-line);border-radius:5px;line-height:1.5}
+.oeq b{color:#fff}
+.ocap{text-align:center;font-size:12.5px;color:#A3948C;font-style:italic;margin-top:11px;min-height:19px;line-height:1.5}
+.rig.palco .ocap{font-size:clamp(13px,1.9vw,19px)}
+.rig-pre{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:13px}
+.pre{font-family:var(--f-mono);font-size:11.5px;background:#2C201A;border:1px solid #4A3830;color:#B5A29A;padding:5px 12px;border-radius:100px;cursor:pointer;transition:all .15s}
+.pre:hover{border-color:var(--h-hot);color:#fff}
+.pre.sel{background:var(--h-hot);border-color:var(--h-hot);color:#2A1610;font-weight:700}
+.rig-tip{text-align:center;font-size:11.5px;color:#6E5B52;margin-top:12px;font-style:italic}
+
+/* ── VOTAÇÃO ── */
+.vote{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+@media(max-width:560px){.vote{grid-template-columns:1fr}}
+.vc{background:#150F0C;border:1px solid var(--h-line);border-radius:6px;padding:12px 10px;text-align:center}
+.vc-t{font-family:var(--f-head);font-size:11.5px;font-weight:700;letter-spacing:.05em;margin-bottom:9px}
+.vc.alto .vc-t{color:var(--alto-hi)}.vc.largo .vc-t{color:var(--largo-hi)}.vc.igual .vc-t{color:#C9B7AE}
+.vc-n{font-family:var(--f-mono);font-size:30px;font-weight:700;color:#fff;line-height:1;margin-bottom:9px}
+.vc-btns{display:flex;gap:5px;justify-content:center}
+.vc-b{width:30px;height:26px;border-radius:4px;background:#2C201A;border:1px solid #4A3830;color:#B5A29A;font-family:var(--f-mono);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.vc-b:hover{border-color:var(--h-hot);color:#fff}
+.vc.win{box-shadow:0 0 0 2px var(--h-hot)}
+.vbar{height:8px;background:#0F0A08;border-radius:4px;overflow:hidden;margin-top:9px}
+.vbar-f{height:100%;width:0;transition:width .5s cubic-bezier(.3,.05,.25,1)}
+.vc.alto .vbar-f{background:var(--alto)}.vc.largo .vbar-f{background:var(--largo)}.vc.igual .vbar-f{background:#8A776D}
+
+/* ── CASCATA DAS FORMAS ── */
+.shapes{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:620px){.shapes{grid-template-columns:repeat(2,1fr)}}
+.sh{background:#150F0C;border:1px solid var(--h-line);border-radius:5px;padding:11px 8px 13px;text-align:center;transition:box-shadow .25s}
+.sh.act{box-shadow:0 0 0 2px var(--h-hot),0 0 16px rgba(240,138,98,.3)}
+.sh-n{font-family:var(--f-head);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#9A857A;margin-bottom:7px}
+.sh-svg{height:84px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.vessel{margin:0 auto;height:112px;border:2px solid #6D5648;border-top:none;border-radius:0 0 3px 3px;position:relative;background:#0F0A08;overflow:hidden}
+.vfill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(180deg,var(--rice),var(--rice-d));transition:height .9s cubic-bezier(.3,.05,.25,1)}
+.sh-a{font-family:var(--f-mono);font-size:11px;color:#9A857A;margin-top:8px;line-height:1.6}
+.sh-a b{color:#fff;font-size:12.5px}
+
+/* ── PLACAR DO CAMPEÃO ── */
+.board{width:100%;border-collapse:collapse;margin-top:11px;font-family:var(--f-mono);font-size:12.5px}
+.board th{font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8A776D;padding:7px 8px;border-bottom:1px solid var(--h-line);text-align:left}
+.board td{padding:8px;border-bottom:1px solid #2C201A;color:#B5A29A}
+.board td.w{color:#fff;font-weight:700}
+.board td.o{color:var(--olive-hi);font-weight:700}
+.board td.d{color:var(--largo-hi)}
+.board tr.top1 td.rk{color:var(--h-hot);font-weight:700}
+
+/* ── cartas ── */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+@media(max-width:600px){.cards{grid-template-columns:1fr}}
+.cd{background:#221914;border:1px solid var(--h-line);border-radius:8px;padding:.85rem 1rem;cursor:pointer;transition:all .2s}
+.cd:hover{border-color:var(--h-hot)}
+.cd-top{display:flex;gap:10px;align-items:baseline}
+.cd-n{font-family:var(--f-mono);font-size:10px;font-weight:700;color:#7A6259;min-width:14px}
+.cd-q{flex:1;font-size:12px;color:#D6C7C0;line-height:1.45}
+.cd-a{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--h-line)}
+.cd.open .cd-a{display:block}
+.cd-r{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--h-hot);margin-bottom:4px}
+.cd-b{font-family:var(--f-mono);font-size:10.5px;color:#8FBEE4}
+
+/* ── comparação de cilindros ── */
+.cmp{width:100%;border-collapse:collapse;font-size:12.5px;color:#B5A29A;margin-top:4px}
+.cmp th{font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px;border-bottom:1px solid var(--h-line);text-align:left;color:#8A776D}
+.cmp th.a{color:var(--alto-hi)}.cmp th.l{color:var(--largo-hi)}
+.cmp td{padding:8px;border-bottom:1px solid #2C201A;font-family:var(--f-mono)}
+.cmp td:first-child{font-family:var(--f-body);color:#8A776D}
+.cmp td.hl{color:#fff;font-weight:700}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A Base <em>Manda</em></div>
+  <span class="top-badge">📄 Área da base × altura</span>
+  <span class="top-badge fonly">EF09MA19 · ≈ 100 min</span>
+  <span class="top-badge fonly">condução ao vivo</span>
+  <button class="fkey" id="fkey" onclick="toggleF()" title="notas do formador (tecla F)">notas do formador</button>
+</div>
+<div class="fbar fonly"><b>MODO FORMADOR ATIVO.</b> As notas em âmbar são só suas. Tecle <b>F</b> para voltar ao modo projeção.</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Abertura · a aposta</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>A pilha</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>Os dois cilindros</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>Por que o largo ganha</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>O Campeão</button>
+      <button class="tab aux fonly" onclick="go(5)"><span class="tn">+</span>Apoio · as formas</button>
+      <button class="tab aux fonly" onclick="go(6)"><span class="tn">+</span>Apoio · cartas</button>
+    </div>
+  </div>
+
+<!-- ══════════ ABERTURA ══════════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>Duas folhas A4 idênticas. Enrolo uma pelo lado curto, a outra pelo lado longo. <b>Mesmo papel, mesma fita.</b></p>
+    <p><b>Qual dos dois guarda mais arroz — ou guardam o mesmo?</b> Braço levantado. Vamos descobrir, e vamos descobrir sem calculadora primeiro.</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A VOTAÇÃO DA ABERTURA <span>registre aqui — ela volta no fechamento</span></div>
+    <div class="vote">
+      <div class="vc alto" id="vcAlto">
+        <div class="vc-t">O ALTO</div><div class="vc-n" id="nAlto">0</div>
+        <div class="vc-btns"><button class="vc-b" onclick="vote('alto',-1)">−</button><button class="vc-b" onclick="vote('alto',1)">+</button></div>
+        <div class="vbar"><div class="vbar-f" id="bAlto"></div></div>
+      </div>
+      <div class="vc largo" id="vcLargo">
+        <div class="vc-t">O LARGO</div><div class="vc-n" id="nLargo">0</div>
+        <div class="vc-btns"><button class="vc-b" onclick="vote('largo',-1)">−</button><button class="vc-b" onclick="vote('largo',1)">+</button></div>
+        <div class="vbar"><div class="vbar-f" id="bLargo"></div></div>
+      </div>
+      <div class="vc igual" id="vcIgual">
+        <div class="vc-t">OS DOIS IGUAIS</div><div class="vc-n" id="nIgual">0</div>
+        <div class="vc-btns"><button class="vc-b" onclick="vote('igual',-1)">−</button><button class="vc-b" onclick="vote('igual',1)">+</button></div>
+        <div class="vbar"><div class="vbar-f" id="bIgual"></div></div>
+      </div>
+    </div>
+    <div class="ocap" id="voteCap">Registre a votação antes de qualquer teste. Não corrija ninguém.</div>
+    <div class="ctrls"><button class="btn btn-g" onclick="voteReset()">↺ zerar votação</button></div>
+  </div>
+
+  <div class="inst fonly">
+    <div class="inst-t">Como conduzir a abertura</div>
+    <ul>
+      <li>Levante os dois cilindros lado a lado e <b>fique alguns segundos em silêncio</b> — deixe que a diferença de formato seja notada</li>
+      <li>A maioria votará em "o mesmo", com o argumento pronto: <b>é a mesma folha, é a mesma quantidade de papel</b></li>
+      <li><b>Não corrija, não dê pistas.</b> É um raciocínio razoável, difundido e errado — e é por ser razoável que ele sobrevive à escola inteira</li>
+      <li>A votação fica registrada e <b>a correção virá do arroz, não de você</b></li>
+    </ul>
+  </div>
+
+  <div class="warn fonly"><b>📎 Emendar sem sobrepor é o único ponto técnico que pode arruinar o experimento.</b> As bordas devem se encostar, e a fita passa por fora unindo-as. Com sobreposição, a circunferência real fica menor que a medida do papel e a comparação perde o sentido. Faça uma montagem demonstrativa devagar, diante de todos, antes de distribuir as folhas.</div>
+
+  <div class="tip fonly"><b>Versão de 100 min para formadores:</b> Abertura (5) · Etapa 1 abreviada (12) · Etapa 2 completa (25) · Etapa 3 (20) · Fechamento (35). As Etapas 4 e 5 ficam como material de apoio para a replicação na regional — estão nas duas últimas abas.</div>
+
+  <div class="tw fonly">
+    <div class="tm" id="t0">05:00</div><div class="tl" id="t0l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(0,300)">▶ 5 min</button>
+      <button class="btn btn-g" onclick="stopT(0)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(0,300)">↺</button>
+    </div>
+  </div>
+  <div class="nav"><span></span><button class="btn btn-a" onclick="go(1)">a pilha →</button></div>
+</div>
+
+<!-- ══════════ ETAPA 1 — A PILHA ══════════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>Antes de qualquer cilindro. <b>Juntem um bloco de folhas e alinhem batendo na mesa</b> até formar um bloco bem retangular.</p>
+    <p>Que sólido é este? <b>Um prisma — e é fácil aceitar isso porque ele foi construído, não desenhado.</b></p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">As perguntas, nesta ordem</div>
+    <ul>
+      <li>Qual é a área de uma folha? <b>21 × 29,7 = 623,7 cm²</b></li>
+      <li>Meçam a altura da pilha com a régua. <b>Cem folhas dão cerca de 1 cm</b> — confiram na sua pilha</li>
+      <li>Então qual é o volume do bloco? <b>E por quê?</b></li>
+    </ul>
+  </div>
+
+  <div class="gold"><div class="gold-t">V = área da base × altura</div><div class="gold-d">uma pilha de camadas idênticas: a área de uma camada, repetida altura vezes</div></div>
+
+  <div class="inst o">
+    <div class="inst-t">A pergunta que faz a fórmula virar geral</div>
+    <p>E se as folhas <b>não fossem retangulares</b>? Se cada camada fosse um triângulo, um hexágono, um círculo — a conta mudaria?</p>
+    <p style="margin-top:8px">Deixe a turma concluir sozinha. <b>Não mudaria:</b> continuaria sendo a área de uma camada, repetida altura vezes. A forma da base entra apenas dentro do cálculo da área — <b>nunca na estrutura da fórmula.</b></p>
+  </div>
+
+  <div class="ok"><b>💡 O empurrão que vale uma ideia sofisticada.</b> Empurre a pilha de lado, deixando-a inclinada como um baralho espalhado. Pergunte: <b>o volume mudou?</b> Não — são as mesmas folhas, o mesmo papel. A turma acaba de encontrar o <b>princípio de Cavalieri</b> sem que ninguém tenha pronunciado o nome. Vale escrevê-lo no quadro depois, como quem apresenta alguém que já estava na sala.</div>
+
+  <div class="bluebox"><b>🔗 Continuidade com "O Litro Tem Aresta".</b> Na Caixa de Mil, a camada era um quadrado de 10 × 10 e havia dez delas: 100 × 10 = 1000. Era <b>exatamente esta fórmula</b>, num caso particular. Agora a camada pode ter qualquer forma — e é só isso que muda.</div>
+
+  <div class="tw fonly">
+    <div class="tm" id="t1">12:00</div><div class="tl" id="t1l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,720)">▶ 12 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,720)">↺</button>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-g" onclick="go(0)">← abertura</button><span class="nav-info">a ancoragem · V = A × h para qualquer base</span><button class="btn btn-a" onclick="go(2)">os dois cilindros →</button></div>
+</div>
+
+<!-- ══════════ ETAPA 2 — OS DOIS CILINDROS ══════════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>Registrem a aposta da dupla <b>antes de qualquer teste</b>. Depois: ponham o LARGO de pé, o ALTO dentro dele, encham o ALTO de arroz e <b>levantem devagar.</b></p>
+  </div>
+
+  <div class="rig" id="rigCyl">
+    <div class="rig-h">TESTE DO DESPEJO <span id="cyState">os dois vazios</span>
+      <button class="fs-btn" onclick="palco('rigCyl')">⛶ modo palco</button></div>
+    <div class="svgwrap"><svg id="cySvg" viewBox="0 -14 340 320" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="rig-pre">
+      <button class="pre sel" data-fmt="0">A4 · 21 × 29,7</button>
+      <button class="pre" data-fmt="1">A3 · 29,7 × 42</button>
+      <button class="pre" data-fmt="2">Carta · 21,6 × 27,9</button>
+      <button class="pre" data-fmt="3">Quadrada · 21 × 21</button>
+    </div>
+    <div class="ctrls">
+      <button class="btn btn-a" id="cyPlay">▶ encher o ALTO e despejar no LARGO</button>
+      <button class="btn btn-g" id="cyFull">encher os dois</button>
+      <button class="btn btn-g" id="cyReset">↺ esvaziar</button>
+    </div>
+    <div class="rig-out">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">alto</div><div class="ov a" id="oA">—</div></div>
+        <div class="oc"><div class="ol">largo</div><div class="ov l" id="oL">—</div></div>
+        <div class="oc"><div class="ol">razão</div><div class="ov o" id="oR">—</div></div>
+      </div>
+      <div class="oeq" id="oEq">—</div>
+      <div class="ocap" id="oCap">Registre a aposta da dupla antes de qualquer teste.</div>
+    </div>
+    <div class="rig-tip">a folha quadrada é o caso limite — o único formato em que a intuição da abertura acerta</div>
+  </div>
+
+  <div class="inst l">
+    <div class="inst-t">A verificação sem contas, em quatro movimentos</div>
+    <ul>
+      <li>Ponham o cilindro <b>LARGO</b> de pé sobre a bandeja</li>
+      <li>Coloquem o <b>ALTO dentro dele</b>, encostado no fundo. Cabe com folga — 6,7 cm de diâmetro contra 9,5 cm</li>
+      <li>Encham o <b>ALTO</b> de arroz até a borda, com cuidado</li>
+      <li>Levantem devagar o ALTO. <b>O arroz cai e se espalha dentro do LARGO</b></li>
+    </ul>
+  </div>
+
+  <div class="gold"><div class="gold-t">o arroz para em 14,8 cm dos 21 cm</div><div class="gold-d">falta quase 30% — mesma folha, mesma fita, mesma superfície, capacidades diferentes</div></div>
+
+  <div class="ok"><b>Volte à votação da abertura</b> (aba 1) e deixe que comentem. É importante que <b>a correção venha do arroz, e não do professor</b>. A sala inteira vê, ao mesmo tempo, que a intuição estava errada.</div>
+
+  <div class="warn fonly"><b>⚠️ O que este experimento derruba.</b> A crença de que "mais superfície significa mais volume", ou que a mesma superfície garante o mesmo volume. Não é ingenuidade de estudante: é um <b>erro estrutural sobre como área e volume se relacionam</b> — a mesma confusão que faz alguém escrever 1 m³ = 100 dm³. <b>Quem viu o arroz não escreve mais.</b></div>
+
+  <div class="tip fonly"><b>🧯 Manejo do arroz.</b> Uma bandeja por mesa e um pano à mão resolvem. Se preferir zero sujeira, faça a demonstração em uma mesa central com duas duplas voluntárias, enquanto as demais observam de pé por dois minutos — é o único momento da oficina em que alguém precisa se levantar.</div>
+
+  <div class="tw fonly">
+    <div class="tm" id="t2">25:00</div><div class="tl" id="t2l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(2,1500)">▶ 25 min</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(2,1500)">↺</button>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-g" onclick="go(1)">← a pilha</button><span class="nav-info">a investigação central</span><button class="btn btn-a" onclick="go(3)">por que o largo ganha →</button></div>
+</div>
+
+<!-- ══════════ ETAPA 3 — POR QUE O LARGO GANHA ══════════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>Agora sim, a conta. Deduzam o raio a partir da <b>circunferência</b> — que é a medida que vocês conhecem: o lado da folha.</p>
+    <p><b>C = 2πr &nbsp;→&nbsp; r = C ÷ 2π &nbsp;·&nbsp; A = πr² &nbsp;·&nbsp; V = A × h</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O GABARITO DOS DOIS CILINDROS <span>π ≈ 3,14 · folha A4</span></div>
+    <div style="overflow-x:auto">
+      <table class="cmp">
+        <tr><th></th><th class="a">Cilindro ALTO</th><th class="l">Cilindro LARGO</th></tr>
+        <tr><td>Circunferência da base</td><td>21 cm</td><td>29,7 cm</td></tr>
+        <tr><td>Raio (C ÷ 6,28)</td><td>3,34 cm</td><td>4,73 cm</td></tr>
+        <tr><td>Área da base (πr²)</td><td>35,1 cm²</td><td>70,2 cm²</td></tr>
+        <tr><td>Altura</td><td>29,7 cm</td><td>21 cm</td></tr>
+        <tr><td>Volume (A × h)</td><td class="hl">1042,8 cm³</td><td class="hl">1474,8 cm³</td></tr>
+        <tr><td>Em mililitros</td><td>≈ 1043 mL</td><td>≈ 1475 mL</td></tr>
+      </table>
+    </div>
+    <div class="oeq" style="margin-top:13px">diferença: <b>432 cm³</b> &nbsp;—&nbsp; quase meio litro, com a mesma folha</div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">DE ONDE VEM O 1,41 <span>toque para revelar cada passo</span></div>
+    <div id="explTable" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="revealExpl()">revelar próximo passo</button>
+      <button class="btn btn-g" onclick="resetExpl()">↺</button>
+    </div>
+  </div>
+
+  <div class="ok"><b>Peça que procurem de onde vem o número.</b> A razão 1474,8 ÷ 1042,8 = 1,414 é <b>exatamente 29,7 ÷ 21</b> — a proporção da folha. E como toda a série A tem proporção √2, o A3 dá vantagem idêntica. Teste no widget da aba anterior.</div>
+
+  <div class="gold"><div class="gold-t">V = a²b ÷ 4π &nbsp;ou&nbsp; ab² ÷ 4π</div><div class="gold-d">uma folha de lados a e b enrolada pelo lado a dá a²b ÷ 4π; pelo lado b, ab² ÷ 4π. A razão é simplesmente a ÷ b — nada mais. <b>Enrolar pelo lado maior é sempre melhor</b>, e a vantagem é exatamente a proporção da folha.</div></div>
+
+  <div class="warn fonly"><b>⚠️ A assimetria que explica tudo.</b> A área depende do <b>quadrado</b> da medida linear; a altura entra <b>uma única vez</b>. É a mesma assimetria da oficina anterior, em que um passo de comprimento valia 10, um de área valia 100 e um de volume valia 1000. <b>Duas oficinas, o mesmo fato: as dimensões não entram todas do mesmo jeito.</b></div>
+
+  <div class="tip fonly"><b>Erro a vigiar:</b> usar o diâmetro no lugar do raio (A = πd² em vez de πr²). O resultado dá quatro vezes maior e <b>não bate com o despejo</b> — o arroz é o árbitro.</div>
+
+  <div class="tw fonly">
+    <div class="tm" id="t3">20:00</div><div class="tl" id="t3l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,1200)">▶ 20 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,1200)">↺</button>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-g" onclick="go(2)">← os cilindros</button><span class="nav-info">a área cresce ao quadrado; a altura, não</span><button class="btn btn-a" onclick="go(4)">o Campeão →</button></div>
+</div>
+
+<!-- ══════════ FECHAMENTO — O CAMPEÃO ══════════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>Cada equipe recebe uma folha A4 e fita. <b>Construam o recipiente de maior capacidade possível.</b></p>
+    <p>Vale qualquer formato, desde que se sustente de pé e segure arroz. Mas há uma condição: <b>antes de cortar qualquer coisa, entreguem o projeto desenhado e o volume previsto, calculado.</b></p>
+  </div>
+
+  <div class="inst o">
+    <div class="inst-t">As quatro rodadas</div>
+    <ul>
+      <li><b>1 · Projeto (12 min)</b> — desenham o molde e calculam o volume previsto. <b>Nada é cortado ainda</b></li>
+      <li><b>2 · Construção (10 min)</b> — recortar, dobrar, montar. O projeto entregue <b>não pode mais ser alterado</b></li>
+      <li><b>3 · Verificação (10 min)</b> — encher de arroz e despejar na garrafa medidora. Anota-se o volume real</li>
+      <li><b>4 · Revelação (8 min)</b> — o ranking, a comparação entre previsto e medido, e a tabela do ótimo</li>
+    </ul>
+  </div>
+
+  <div class="rig" id="rigOpt">
+    <div class="rig-h">A CAIXA ABERTA · V(x) = x(21 − 2x)(29,7 − 2x) <span id="opState">x = 4,00 cm</span>
+      <button class="fs-btn" onclick="palco('rigOpt')">⛶ modo palco</button></div>
+    <div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap">
+      <svg id="netSvg" viewBox="-14 -20 178 240" width="150" xmlns="http://www.w3.org/2000/svg"></svg>
+      <svg id="grSvg" viewBox="0 0 330 200" width="330" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="ctrls">
+      <div class="fld"><label>corte x</label><input type="range" id="opX" min="0.2" max="10.2" step="0.02" value="4"><span id="opOut" style="font-family:var(--f-mono);color:#fff;font-size:13px;font-weight:700">4,00 cm</span></div>
+      <button class="btn btn-o" id="opMax">ir ao máximo</button>
+      <button class="btn btn-a" id="opSweep">▶ varrer</button>
+    </div>
+    <div class="rig-out">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">base</div><div class="ov" id="opB">—</div></div>
+        <div class="oc"><div class="ol">altura</div><div class="ov" id="opH">—</div></div>
+        <div class="oc"><div class="ol">volume</div><div class="ov o" id="opV">—</div></div>
+      </div>
+      <div class="oeq" id="opEq">—</div>
+      <div class="ocap" id="opCap">—</div>
+    </div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">PLACAR DA REVELAÇÃO <span>digite o x e o volume medido de cada equipe</span></div>
+    <div class="ctrls" style="margin-top:0">
+      <div class="fld"><label>equipe</label><input type="text" id="eqName" placeholder="nome" style="width:96px"></div>
+      <div class="fld"><label>x (cm)</label><input type="text" id="eqX" placeholder="4" style="width:52px"></div>
+      <div class="fld"><label>medido (mL)</label><input type="text" id="eqM" placeholder="1050" style="width:64px"></div>
+      <button class="btn btn-a" onclick="addTeam()">registrar</button>
+      <button class="btn btn-g" onclick="clearBoard()">↺</button>
+    </div>
+    <div class="ocap" id="eqMsg"></div>
+    <table class="board" id="boardTbl" style="display:none"></table>
+  </div>
+
+  <div class="ok"><b>🏆 A discussão que fecha a oficina.</b> Alguém perguntará pelo cilindro largo, que na Etapa 2 deu 1475 cm³ — mais que a caixa. A pergunta é ótima e a resposta é o ponto: <b>aquele cilindro não tinha fundo.</b> Se o fundo precisa sair da mesma folha, o disco consome papel demais e o melhor cilindro fechado cai para cerca de <b>850 cm³</b>. A caixa vence. Ou seja: <b>a resposta depende do que se conta como custo</b> — e essa é uma lição de modelagem, não de geometria.</div>
+
+  <div class="tip fonly"><b>💡 Sobre previsto e medido.</b> O volume despejado costuma ficar 5% a 10% abaixo do calculado, por causa das dobras, da fita e do arroz que não assenta nos cantos. <b>Não trate isso como erro da equipe</b> — trate como o que é: a diferença entre o modelo e o objeto. Perguntar de onde vem a diferença vale mais do que acertá-la.</div>
+
+  <div class="warn fonly"><b>O topo da curva é achatado.</b> Entre x = 3,5 e x = 4,5 o volume varia menos de 1,5% — por isso várias equipes chegarão muito perto do ótimo por tentativa. Esse achatamento é, em si, um bom assunto: <b>perto de um máximo, erros de estimativa custam pouco.</b></div>
+
+  <div class="rig">
+    <div class="rig-h">ENCERRAMENTO · a votação da abertura <span>retome o que a sala apostou</span></div>
+    <div class="vote">
+      <div class="vc alto"><div class="vc-t">O ALTO</div><div class="vc-n" id="fAlto">0</div></div>
+      <div class="vc largo"><div class="vc-t">O LARGO</div><div class="vc-n" id="fLargo">0</div></div>
+      <div class="vc igual"><div class="vc-t">OS DOIS IGUAIS</div><div class="vc-n" id="fIgual">0</div></div>
+    </div>
+    <div class="oeq" style="margin-top:12px">não é o papel que decide, <b>é a base</b></div>
+    <div class="ocap" id="fCap">—</div>
+  </div>
+
+  <div class="tw fonly">
+    <div class="tm" id="t4">35:00</div><div class="tl" id="t4l">pronto</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(4,2100)">▶ 35 min</button>
+      <button class="btn btn-a" onclick="startT(41,720)">▶ 12 min projeto</button>
+      <button class="btn btn-g" onclick="stopT(4)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(4,2100)">↺</button>
+    </div>
+    <div class="tm" id="t41" style="font-size:clamp(26px,7vw,48px);margin-top:6px">12:00</div>
+    <div class="tl" id="t41l">cronômetro da rodada</div>
+  </div>
+  <div class="nav"><button class="btn btn-g" onclick="go(3)">← por que o largo ganha</button><span class="nav-info">a fórmula vira função — e funções têm máximo</span><button class="btn btn-a" onclick="go(5)">material de apoio →</button></div>
+</div>
+
+<!-- ══════════ APOIO — AS FORMAS ══════════ -->
+<div class="pane fonly" id="p5">
+  <div class="speech">
+    <p><b>Material de apoio para a replicação na regional</b> — Etapa 4 da versão completa (30 min).</p>
+    <p>Quatro tiras idênticas de 24 cm de perímetro e 7 cm de altura. <b>Quatro capacidades diferentes.</b></p>
+  </div>
+
+  <div class="rig" id="rigCasc">
+    <div class="rig-h">A CASCATA DO DESPEJO <span id="csState">quatro tiras idênticas de 24 cm</span>
+      <button class="fs-btn" onclick="palco('rigCasc')">⛶ modo palco</button></div>
+    <div class="shapes" id="shapes"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" id="csPlay">▶ a cascata do despejo</button>
+      <button class="btn btn-g" id="csAll">encher todos</button>
+      <button class="btn btn-g" id="csReset">↺</button>
+    </div>
+    <div class="rig-out">
+      <div class="oeq" id="csEq">todas as tiras têm 24 cm de perímetro e 7 cm de altura</div>
+      <div class="ocap" id="csCap">A largura de cada recipiente é proporcional à área da sua base — a área colorida é, literalmente, o volume.</div>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">O fundo, que também é a medição</div>
+    <p>Cada equipe apoia seu prisma sobre uma folha e <b>contorna a base a lápis</b>. Esse contorno é, literalmente, o polígono da base — meçam-no e calculem sua área. Depois desenhem um segundo contorno 2 cm maior por fora, recortem por ele, façam cortes da borda até a linha interna a cada 1,5 cm, dobrem as abas para cima e fixem com fita.</p>
+  </div>
+
+  <div class="ok"><b>🌍 Por que quase tudo que guarda coisa é redondo.</b> Latas, canos, caixas d'água, tanques, garrafas, troncos de árvore, bolhas de sabão. Para uma dada quantidade de material na lateral, <b>o círculo entrega a maior capacidade</b> — e a natureza e a indústria chegaram à mesma conclusão por caminhos diferentes. Pergunte à turma por que, então, a caixa de leite é retangular. <b>A resposta está no transporte:</b> caixas se encaixam sem deixar vão, latas não.</div>
+
+  <div class="tip fonly"><b>💡 Se o tempo apertar.</b> Monte apenas duas formas — o <b>triângulo e o cilindro</b> — e faça um único despejo. A diferença de 65% é a mais dramática das quatro e sustenta sozinha a conclusão da etapa.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(4)">← o Campeão</button><span class="nav-info">apoio · mais lados, mais área</span><button class="btn btn-a" onclick="go(6)">cartas →</button></div>
+</div>
+
+<!-- ══════════ APOIO — CARTAS ══════════ -->
+<div class="pane fonly" id="p6">
+  <div class="speech">
+    <p><b>Material de apoio</b> — Etapa 5 da versão completa (25 min). Todas usam a mesma fórmula; o que muda é a base e o contexto.</p>
+  </div>
+
+  <div class="inst"><div class="inst-t">Leitor de gabarito — clique em cada carta</div><p>π ≈ 3,14. As cartas trazem metros e centímetros <b>de propósito</b>, para expor o erro de somar dimensões em unidades diferentes.</p></div>
+  <div class="cards" id="cardList"></div>
+
+  <div class="warn fonly"><b>🥫 A carta da lata guarda a melhor discussão da etapa.</b> O volume medido quase nunca coincide com o rótulo, e há três razões possíveis: (1) o rótulo pode estar <b>em gramas</b>, e massa não é volume; (2) há um <b>espaço de ar deliberado</b> no topo; (3) se o conteúdo é pó ou grão, há <b>ar entre as partículas</b>. Uma equipe que separa essas três causas fez mais matemática do que se tivesse acertado um número.</div>
+
+  <div class="ok"><b>⚠️ A carta do copo é a mais importante.</b> Um copo descartável <b>não é um cilindro</b>: é um tronco de cone, mais largo em cima. Calcular como se fosse cilindro dá errado — e reconhecer isso é <b>o que separa aplicar uma fórmula de entender uma fórmula</b>. Deixe a equipe descobrir o desvio antes de comentar.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(5)">← as formas</button><span class="nav-info">apoio · a mesma fórmula no mundo</span><span></span></div>
+</div>
+
+</div>
+
+<script>
+"use strict";
+/* ═══ MODO FORMADOR ═══ */
+var FONLY=[false,false,false,false,false,true,true];
+function fmodeOn(){return document.body.classList.contains('fmode');}
+function toggleF(){
+  var on=document.body.classList.toggle('fmode');
+  document.getElementById('fkey').textContent=on?'ocultar notas':'notas do formador';
+  if(!on&&FONLY[cur])go(0);
+}
+function step(d){
+  var i=cur+d;
+  while(i>=0&&i<panes.length&&FONLY[i]&&!fmodeOn())i+=d;
+  if(i>=0&&i<panes.length)go(i);
+}
+
+/* ═══ NAV ═══ */
+var tabs=[].slice.call(document.querySelectorAll('#tabs .tab'));
+var panes=[].slice.call(document.querySelectorAll('.pane'));
+var cur=0;
+function go(i){
+  if(i<0||i>=panes.length)return;
+  if(FONLY[i]&&!fmodeOn())return;
+  if(cur<i&&i<=4&&!FONLY[cur])tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on')});panes.forEach(function(p){p.classList.remove('on')});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(function(){if(i===4){drawGraph();syncFinalVote();}},60);
+}
+
+/* ═══ TIMERS ═══ */
+var TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id])TM[id]={rem:dur};
+  var e1=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+  e1.classList.remove('done','low');lb.textContent='em andamento';
+  TM[id].iv=setInterval(function(){TM[id].rem--;var r=TM[id].rem;e1.textContent=fmtT(Math.max(0,r));
+    e1.classList.toggle('low',r<=15&&r>0);
+    if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;e1.textContent='00:00';e1.classList.remove('low');e1.classList.add('done');lb.textContent='tempo esgotado';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};document.getElementById('t'+id).textContent=fmtT(dur);document.getElementById('t'+id).classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* ═══ PALCO ═══ */
+function palco(id){var r=document.getElementById(id);r.classList.toggle('palco');
+  document.body.style.overflow=r.classList.contains('palco')?'hidden':'';
+  if(id==='rigOpt')setTimeout(drawGraph,60);}
+function sairPalco(){document.querySelectorAll('.rig.palco').forEach(function(r){r.classList.remove('palco');});document.body.style.overflow='';}
+
+/* ═══ helpers ═══ */
+var NS='http://www.w3.org/2000/svg';
+function elx(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function br(n,d){
+  if(n===null||n===undefined||!isFinite(n))return '—';
+  var s=(d===0?Math.round(n):n.toFixed(d)).toString().replace('.',',');
+  var p=s.split(',');
+  if(p[0].replace('-','').length>4)p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');
+  return p[1]?p[0]+','+p[1]:p[0];
+}
+function pnum(s){var t=String(s).trim().replace(',','.');return (t===''||isNaN(Number(t)))?null:parseFloat(t);}
+var PI=3.14;
+
+/* ═══ VOTAÇÃO ═══ */
+var V={alto:0,largo:0,igual:0};
+function vote(k,d){V[k]=Math.max(0,V[k]+d);paintVote();}
+function voteReset(){V={alto:0,largo:0,igual:0};paintVote();}
+function paintVote(){
+  var tot=V.alto+V.largo+V.igual;
+  ['alto','largo','igual'].forEach(function(k){
+    var cap=k.charAt(0).toUpperCase()+k.slice(1);
+    document.getElementById('n'+cap).textContent=V[k];
+    document.getElementById('b'+cap).style.width=(tot?100*V[k]/tot:0)+'%';
+  });
+  var maxk=null,maxv=-1;
+  ['alto','largo','igual'].forEach(function(k){if(V[k]>maxv){maxv=V[k];maxk=k;}});
+  ['alto','largo','igual'].forEach(function(k){
+    var cap=k.charAt(0).toUpperCase()+k.slice(1);
+    document.getElementById('vc'+cap).classList.toggle('win',tot>0&&k===maxk&&maxv>0);
+  });
+  document.getElementById('voteCap').textContent = tot===0
+    ? 'Registre a votação antes de qualquer teste. Não corrija ninguém.'
+    : tot+' voto'+(tot>1?'s':'')+' · a maioria apostou em "'+(maxk==='igual'?'os dois iguais':'o '+maxk)+'"'+(maxk==='igual'?' — a resposta mais comum, e a errada.':'.');
+  syncFinalVote();
+}
+function syncFinalVote(){
+  var tot=V.alto+V.largo+V.igual;
+  document.getElementById('fAlto').textContent=V.alto;
+  document.getElementById('fLargo').textContent=V.largo;
+  document.getElementById('fIgual').textContent=V.igual;
+  document.getElementById('fCap').textContent = tot===0
+    ? 'Nenhum voto registrado na abertura.'
+    : 'Na abertura, '+V.igual+' de '+tot+' apostaram que os dois guardavam o mesmo. O arroz respondeu: o largo guarda 432 cm³ a mais.';
+}
+paintVote();
+
+/* ═══════ W1 — OS DOIS CILINDROS ═══════ */
+var FMT=[{n:'A4',a:21,b:29.7},{n:'A3',a:29.7,b:42},{n:'Carta',a:21.6,b:27.9},{n:'Quadrada',a:21,b:21}];
+var fi=0,cyT=null;
+var cySvg=document.getElementById('cySvg');
+function cylData(f){
+  var rA=f.a/(2*PI),rL=f.b/(2*PI);
+  return {alto:{C:f.a,h:f.b,r:rA,A:PI*rA*rA,V:PI*rA*rA*f.b},
+          largo:{C:f.b,h:f.a,r:rL,A:PI*rL*rL,V:PI*rL*rL*f.a}};
+}
+function cylPath(cx,gy,w,h,ry){
+  var l=cx-w/2,r=cx+w/2,tt=gy-h;
+  return 'M '+l+' '+tt+' L '+l+' '+gy+' A '+(w/2)+' '+ry+' 0 0 0 '+r+' '+gy+' L '+r+' '+tt;
+}
+function fillPath(cx,gy,w,hf,ry){
+  var l=cx-w/2,r=cx+w/2,tt=gy-hf;
+  return 'M '+l+' '+tt+' L '+l+' '+gy+' A '+(w/2)+' '+ry+' 0 0 0 '+r+' '+gy+' L '+r+' '+tt
+       +' A '+(w/2)+' '+ry+' 0 0 1 '+l+' '+tt+' Z';
+}
+var geo=null;
+function buildCyl(){
+  var f=FMT[fi],d=cylData(f);
+  var S=228/Math.max(f.a,f.b);
+  var wA=2*d.alto.r*S,hA=d.alto.h*S,wL=2*d.largo.r*S,hL=d.largo.h*S;
+  var gy=268,cxA=95,cxL=238,ryA=wA/6,ryL=wL/6;
+  geo={S:S,wA:wA,hA:hA,wL:wL,hL:hL,gy:gy,cxA:cxA,cxL:cxL,ryA:ryA,ryL:ryL,d:d};
+  cySvg.innerHTML='';
+  cySvg.appendChild(elx('line',{x1:20,y1:gy,x2:320,y2:gy,stroke:'#5A443A','stroke-width':1.5}));
+  var gA=elx('g',{}),gL=elx('g',{});
+  cySvg.appendChild(gA);cySvg.appendChild(gL);
+  gA.appendChild(elx('path',{id:'fA',d:fillPath(cxA,gy,wA,0,ryA),fill:'#E3CE95'}));
+  gA.appendChild(elx('path',{d:cylPath(cxA,gy,wA,hA,ryA),fill:'none',stroke:'#4E86B8','stroke-width':2.2,'stroke-linejoin':'round'}));
+  gA.appendChild(elx('ellipse',{cx:cxA,cy:gy-hA,rx:wA/2,ry:ryA,fill:'none',stroke:'#4E86B8','stroke-width':2.2}));
+  gL.appendChild(elx('path',{id:'fL',d:fillPath(cxL,gy,wL,0,ryL),fill:'#E3CE95'}));
+  gL.appendChild(elx('path',{d:cylPath(cxL,gy,wL,hL,ryL),fill:'none',stroke:'#DC7247','stroke-width':2.2,'stroke-linejoin':'round'}));
+  gL.appendChild(elx('ellipse',{cx:cxL,cy:gy-hL,rx:wL/2,ry:ryL,fill:'none',stroke:'#DC7247','stroke-width':2.2}));
+  var la=elx('text',{x:cxA,y:gy+21,fill:'#4E86B8','font-size':11.5,'font-family':'Fraunces,serif','font-weight':700,'text-anchor':'middle'});
+  la.textContent='ALTO';cySvg.appendChild(la);
+  var la2=elx('text',{x:cxA,y:gy+35,fill:'#8A776D','font-size':9.5,'font-family':'JetBrains Mono,monospace','text-anchor':'middle'});
+  la2.textContent='C '+br(f.a,1)+' · h '+br(f.b,1);cySvg.appendChild(la2);
+  var ll=elx('text',{x:cxL,y:gy+21,fill:'#DC7247','font-size':11.5,'font-family':'Fraunces,serif','font-weight':700,'text-anchor':'middle'});
+  ll.textContent='LARGO';cySvg.appendChild(ll);
+  var ll2=elx('text',{x:cxL,y:gy+35,fill:'#8A776D','font-size':9.5,'font-family':'JetBrains Mono,monospace','text-anchor':'middle'});
+  ll2.textContent='C '+br(f.b,1)+' · h '+br(f.a,1);cySvg.appendChild(ll2);
+  var lvl=d.alto.V/d.largo.A;
+  var my=gy-lvl*S;
+  var mg=elx('g',{id:'mark',opacity:0});
+  mg.appendChild(elx('line',{x1:cxL-wL/2-14,y1:my,x2:cxL+wL/2+8,y2:my,stroke:'#B5822A','stroke-width':1.4,'stroke-dasharray':'5 4'}));
+  var mt=elx('text',{x:cxL+wL/2+11,y:my-5,fill:'#B5822A','font-size':9.5,'font-family':'JetBrains Mono,monospace'});
+  mt.textContent=br(lvl,1)+' cm';mg.appendChild(mt);
+  cySvg.appendChild(mg);
+  setFill('fA',0);setFill('fL',0);
+  document.getElementById('cyState').textContent='os dois vazios';
+  readout();
+}
+function setFill(id,hcm){
+  var p=document.getElementById(id);if(!p)return;
+  var isA=(id==='fA');
+  var w=isA?geo.wA:geo.wL,cx=isA?geo.cxA:geo.cxL,ry=isA?geo.ryA:geo.ryL;
+  var hf=hcm*geo.S;
+  p.setAttribute('d',hf<=0.4?'':fillPath(cx,geo.gy,w,hf,ry));
+}
+function readout(){
+  var f=FMT[fi],d=geo.d;
+  document.getElementById('oA').textContent=br(d.alto.V,0)+' cm³';
+  document.getElementById('oL').textContent=br(d.largo.V,0)+' cm³';
+  var R=d.largo.V/d.alto.V;
+  document.getElementById('oR').textContent=br(R,2);
+  document.getElementById('oEq').textContent=Math.abs(R-1)<0.005
+    ? 'folha quadrada: os dois lados são iguais, logo os dois volumes são iguais'
+    : 'a razão é exatamente '+br(f.b,1)+' ÷ '+br(f.a,1)+' — a proporção da folha';
+  document.getElementById('oCap').textContent=Math.abs(R-1)<0.005
+    ? 'O caso limite: sem lado maior, não há vantagem. É o único formato de papel em que a intuição da abertura acerta.'
+    : (fi===1?'A3 tem a mesma proporção do A4 — toda a série A vale √2 ≈ 1,41. Por isso a vantagem é idêntica.'
+             :'Enrole sempre pelo lado maior: a base ganha mais do que a altura perde.');
+}
+function cyStop(){if(cyT){clearInterval(cyT);cyT=null;}}
+function cyReset(){cyStop();setFill('fA',0);setFill('fL',0);
+  var m=document.getElementById('mark');if(m)m.setAttribute('opacity',0);
+  document.getElementById('cyState').textContent='os dois vazios';
+  document.getElementById('oCap').textContent='Registre a aposta da dupla antes de qualquer teste.';}
+document.getElementById('cyReset').addEventListener('click',function(){cyReset();readout();});
+document.querySelectorAll('button[data-fmt]').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('button[data-fmt]').forEach(function(x){x.classList.remove('sel');});
+    b.classList.add('sel');fi=+b.dataset.fmt;cyStop();buildCyl();
+  });
+});
+document.getElementById('cyFull').addEventListener('click',function(){
+  cyStop();var d=geo.d;
+  setFill('fA',d.alto.h);setFill('fL',d.largo.h);
+  document.getElementById('mark').setAttribute('opacity',0);
+  document.getElementById('cyState').textContent='os dois cheios até a borda';
+  document.getElementById('oCap').textContent='Cheios, o largo guarda '+br(d.largo.V-d.alto.V,0)+' cm³ a mais — com a mesma folha.';
+});
+document.getElementById('cyPlay').addEventListener('click',function(){
+  cyStop();cyReset();
+  var d=geo.d,hA=d.alto.h,lvl=d.alto.V/d.largo.A;
+  var t=0,phase=1;
+  document.getElementById('cyState').textContent='enchendo o ALTO';
+  cyT=setInterval(function(){
+    if(phase===1){
+      t+=hA/45;
+      if(t>=hA){t=hA;phase=2;
+        document.getElementById('cyState').textContent='despejando no LARGO';
+        document.getElementById('oCap').textContent='O cilindro alto está cheio: '+br(d.alto.V,0)+' cm³ de arroz.';
+        t=0;}
+      setFill('fA',Math.min(t,hA));
+    }else{
+      t+=1/45;
+      var k=Math.min(1,t);
+      setFill('fA',hA*(1-k));setFill('fL',lvl*k);
+      if(k>=1){cyStop();
+        document.getElementById('mark').setAttribute('opacity',1);
+        document.getElementById('cyState').textContent='o largo não encheu';
+        document.getElementById('oCap').textContent='O arroz parou em '+br(lvl,1)+' cm dos '+br(d.largo.h,1)+' cm. Faltam '+br(d.largo.h-lvl,1)+' cm — ou '+br(d.largo.V-d.alto.V,0)+' cm³.';
+      }
+    }
+  },26);
+});
+buildCyl();
+
+/* ═══ ETAPA 3 — explicação passo a passo ═══ */
+var EXPL=[
+  {t:'O raio cresce',d:'de 3,34 para 4,73 cm',v:'× 1,41'},
+  {t:'A área da base cresce ao QUADRADO',d:'1,41 × 1,41 — de 35,1 para 70,2 cm²',v:'× 2,00'},
+  {t:'A altura cai',d:'de 29,7 para 21 cm',v:'× 0,71'},
+  {t:'Resultado líquido',d:'o ganho na base supera a perda na altura',v:'× 1,41'}
+];
+var explShown=0;
+function revealExpl(){
+  if(explShown>=EXPL.length)return;
+  var d=EXPL[explShown];
+  var last=(explShown===EXPL.length-1);
+  var e2=document.createElement('div');
+  e2.style.cssText='display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#150F0C;border:1px solid '+(last?'#B4D77E':'#3A2B23')+';border-radius:6px;padding:10px 13px';
+  e2.innerHTML='<div><div style="font-family:var(--f-head);font-size:12.5px;font-weight:600;color:'+(last?'#B4D77E':'#fff')+'">'+d.t+'</div>'
+    +'<div style="font-size:11px;color:#8A776D;margin-top:3px">'+d.d+'</div></div>'
+    +'<div style="font-family:var(--f-mono);font-size:17px;font-weight:700;color:'+(last?'#B4D77E':'#F08A62')+'">'+d.v+'</div>';
+  document.getElementById('explTable').appendChild(e2);explShown++;
+}
+function resetExpl(){explShown=0;document.getElementById('explTable').innerHTML='';}
+
+/* ═══════ W2 — A CASCATA DAS FORMAS ═══════ */
+var SH=[
+  {n:'Triângulo',k:3,L:8,A:0.433*64},
+  {n:'Quadrado',k:4,L:6,A:36},
+  {n:'Hexágono',k:6,L:4,A:2.598*16},
+  {n:'Círculo',k:0,L:24,A:PI*Math.pow(24/(2*PI),2)}
+];
+var HH=7,MAXA=SH[3].A;
+var shapesEl=document.getElementById('shapes');
+SH.forEach(function(s,i){
+  s.V=s.A*HH;
+  var d=document.createElement('div');d.className='sh';d.id='sh'+i;
+  var R=s.k===0?24/(2*Math.PI):s.L/(2*Math.sin(Math.PI/s.k));
+  var SC=8.0;
+  var inner;
+  if(s.k===0){inner='<circle cx="0" cy="0" r="'+(R*SC).toFixed(1)+'" fill="rgba(227,206,149,.28)" stroke="#E3CE95" stroke-width="2"/>';}
+  else{
+    var pts=[];
+    for(var j=0;j<s.k;j++){
+      var ang=-Math.PI/2+2*Math.PI*j/s.k+(s.k===4?Math.PI/4:0);
+      pts.push((R*SC*Math.cos(ang)).toFixed(1)+','+(R*SC*Math.sin(ang)).toFixed(1));
+    }
+    inner='<polygon points="'+pts.join(' ')+'" fill="rgba(227,206,149,.28)" stroke="#E3CE95" stroke-width="2"/>';
+  }
+  var vw=Math.round(84*s.A/MAXA);
+  d.innerHTML='<div class="sh-n">'+s.n+'</div>'
+    +'<div class="sh-svg"><svg viewBox="-46 -46 92 92" width="78" height="78">'+inner+'</svg></div>'
+    +'<div class="vessel" style="width:'+vw+'px"><div class="vfill" id="vf'+i+'"></div></div>'
+    +'<div class="sh-a">área '+br(s.A,1)+' cm²<br><b>'+br(s.V,0)+' cm³</b></div>';
+  shapesEl.appendChild(d);
+});
+var csT=[];
+function csStop(){csT.forEach(function(t){clearTimeout(t);});csT=[];}
+function setV(i,frac){document.getElementById('vf'+i).style.height=Math.max(0,Math.min(1,frac))*100+'%';}
+function csClear(){
+  csStop();
+  [0,1,2,3].forEach(function(i){setV(i,0);document.getElementById('sh'+i).classList.remove('act');});
+  document.getElementById('csState').textContent='quatro tiras idênticas de 24 cm';
+  document.getElementById('csEq').textContent='todas as tiras têm 24 cm de perímetro e 7 cm de altura';
+  document.getElementById('csCap').textContent='A largura de cada recipiente é proporcional à área da sua base — a área colorida é, literalmente, o volume.';
+}
+document.getElementById('csReset').addEventListener('click',csClear);
+document.getElementById('csAll').addEventListener('click',function(){
+  csStop();
+  [0,1,2,3].forEach(function(i){setV(i,1);document.getElementById('sh'+i).classList.remove('act');});
+  document.getElementById('csState').textContent='todos cheios';
+  document.getElementById('csEq').textContent='194 · 252 · 291 · 321 cm³ — com a mesma tira de papel';
+  document.getElementById('csCap').textContent='Do triângulo ao círculo, 65% a mais de capacidade sem um centímetro a mais de papel.';
+});
+document.getElementById('csPlay').addEventListener('click',function(){
+  csClear();
+  var acts=[];
+  for(var i=0;i<3;i++){acts.push({t:'fill',i:i});acts.push({t:'pour',from:i,to:i+1});}
+  var dl=0;
+  acts.forEach(function(a){
+    csT.push(setTimeout(function(){
+      [0,1,2,3].forEach(function(k){document.getElementById('sh'+k).classList.remove('act');});
+      if(a.t==='fill'){
+        setV(a.i,1);document.getElementById('sh'+a.i).classList.add('act');
+        document.getElementById('csState').textContent=SH[a.i].n+' cheio';
+        document.getElementById('csEq').textContent=SH[a.i].n+' cheio até a borda: '+br(SH[a.i].V,0)+' cm³';
+        document.getElementById('csCap').textContent='Agora despeje tudo no próximo.';
+      }else{
+        setV(a.from,0);
+        var frac=SH[a.from].V/SH[a.to].V;
+        setV(a.to,frac);
+        document.getElementById('sh'+a.to).classList.add('act');
+        document.getElementById('csState').textContent=SH[a.to].n+' não encheu';
+        document.getElementById('csEq').textContent=br(SH[a.from].V,0)+' cm³ dentro de um recipiente de '+br(SH[a.to].V,0)+' cm³';
+        document.getElementById('csCap').textContent='Faltam '+br(SH[a.to].V-SH[a.from].V,0)+' cm³ — e o papel usado foi exatamente o mesmo.';
+      }
+    },dl));
+    dl+=1500;
+  });
+  csT.push(setTimeout(function(){
+    [0,1,2,3].forEach(function(i){setV(i,1);document.getElementById('sh'+i).classList.remove('act');});
+    document.getElementById('csState').textContent='a conclusão';
+    document.getElementById('csEq').textContent='mesmo perímetro: quanto mais lados, maior a área da base';
+    document.getElementById('csCap').textContent='O círculo é o caso limite — nenhuma forma de perímetro 24 cm tem área maior que 45,9 cm².';
+  },dl+400));
+});
+csClear();
+
+/* ═══════ W3 — O RECIPIENTE CAMPEÃO ═══════ */
+var A4W=21,A4H=29.7;
+function Vx(x){return x*(A4W-2*x)*(A4H-2*x);}
+var netSvg=document.getElementById('netSvg'),grSvg=document.getElementById('grSvg');
+var NS_S=5.0;
+var XMAX=0,VMAX=0;
+for(var xq=0.01;xq<10.5;xq+=0.001){var vq=Vx(xq);if(vq>VMAX){VMAX=vq;XMAX=xq;}}
+function drawNet(x){
+  netSvg.innerHTML='';
+  var W=A4W*NS_S,H=A4H*NS_S,s=x*NS_S;
+  netSvg.appendChild(elx('rect',{x:0,y:0,width:W,height:H,fill:'#2C201A',stroke:'#6D5648','stroke-width':1.4}));
+  netSvg.appendChild(elx('rect',{x:s,y:s,width:Math.max(0,W-2*s),height:Math.max(0,H-2*s),
+    fill:'rgba(110,143,58,.32)',stroke:'#B4D77E','stroke-width':1.6,'stroke-dasharray':'4 3'}));
+  [[0,0],[W-s,0],[0,H-s],[W-s,H-s]].forEach(function(c){
+    netSvg.appendChild(elx('rect',{x:c[0],y:c[1],width:s,height:s,fill:'rgba(220,114,71,.42)',stroke:'#DC7247','stroke-width':1.2}));
+  });
+  var t1=elx('text',{x:W/2,y:H+15,fill:'#8A776D','font-size':9,'font-family':'JetBrains Mono,monospace','text-anchor':'middle'});
+  t1.textContent='folha A4 · corte x = '+br(x,2)+' cm';netSvg.appendChild(t1);
+  var t2=elx('text',{x:s/2,y:-5,fill:'#DC7247','font-size':8.5,'font-family':'JetBrains Mono,monospace','text-anchor':'middle'});
+  t2.textContent='x';netSvg.appendChild(t2);
+}
+function drawGraph(){
+  grSvg.innerHTML='';
+  var X0=40,X1=310,Y0=168,Y1=18;
+  var px=function(x){return X0+(x/10.5)*(X1-X0);};
+  var py=function(v){return Y0-(v/1200)*(Y0-Y1);};
+  grSvg.appendChild(elx('line',{x1:X0,y1:Y0,x2:X1,y2:Y0,stroke:'#5A443A','stroke-width':1.2}));
+  grSvg.appendChild(elx('line',{x1:X0,y1:Y0,x2:X0,y2:Y1,stroke:'#5A443A','stroke-width':1.2}));
+  [0,300,600,900,1200].forEach(function(v){
+    grSvg.appendChild(elx('line',{x1:X0,y1:py(v),x2:X1,y2:py(v),stroke:'#3A2B23','stroke-width':.8}));
+    var t=elx('text',{x:X0-6,y:py(v)+3.5,fill:'#8A776D','font-size':8.5,'font-family':'JetBrains Mono,monospace','text-anchor':'end'});
+    t.textContent=v;grSvg.appendChild(t);
+  });
+  [0,2,4,6,8,10].forEach(function(x){
+    var t=elx('text',{x:px(x),y:Y0+13,fill:'#8A776D','font-size':8.5,'font-family':'JetBrains Mono,monospace','text-anchor':'middle'});
+    t.textContent=x;grSvg.appendChild(t);
+  });
+  var dd='';
+  for(var x2=0;x2<=10.5;x2+=0.05){dd+=(dd?' L ':'M ')+px(x2).toFixed(1)+' '+py(Math.max(0,Vx(x2))).toFixed(1);}
+  grSvg.appendChild(elx('path',{d:dd,fill:'none',stroke:'#6E8F3A','stroke-width':2.4,'stroke-linejoin':'round'}));
+  grSvg.appendChild(elx('line',{id:'gvl',x1:0,y1:Y1,x2:0,y2:Y0,stroke:'#F08A62','stroke-width':1.2,'stroke-dasharray':'4 3',opacity:.8}));
+  grSvg.appendChild(elx('circle',{id:'gdot',cx:0,cy:0,r:5.5,fill:'#F08A62',stroke:'#221914','stroke-width':2}));
+  grSvg.appendChild(elx('circle',{cx:px(XMAX),cy:py(VMAX),r:3,fill:'none',stroke:'#B4D77E','stroke-width':1.6}));
+  var mt=elx('text',{x:px(XMAX)+8,y:py(VMAX)-7,fill:'#B4D77E','font-size':9,'font-family':'JetBrains Mono,monospace'});
+  mt.textContent='máx 1128,5';grSvg.appendChild(mt);
+  var yt=elx('text',{x:X0-4,y:Y1-6,fill:'#8A776D','font-size':8.5,'font-family':'Fraunces,serif','text-anchor':'start'});
+  yt.textContent='V (cm³)';grSvg.appendChild(yt);
+  var xt=elx('text',{x:X1,y:Y0+13,fill:'#8A776D','font-size':8.5,'font-family':'Fraunces,serif','text-anchor':'end'});
+  xt.textContent='x (cm)';grSvg.appendChild(xt);
+  grSvg._px=px;grSvg._py=py;
+  moveDot(+document.getElementById('opX').value);
+}
+function moveDot(x){
+  if(!grSvg._px)return;
+  var dot=document.getElementById('gdot'),vl=document.getElementById('gvl');
+  if(!dot)return;
+  var cx=grSvg._px(x),cy=grSvg._py(Math.max(0,Vx(x)));
+  dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);
+  vl.setAttribute('x1',cx);vl.setAttribute('x2',cx);
+}
+function opUpdate(){
+  var x=+document.getElementById('opX').value;
+  var b1=A4W-2*x,b2=A4H-2*x,v=Math.max(0,Vx(x));
+  document.getElementById('opOut').textContent=br(x,2)+' cm';
+  document.getElementById('opState').textContent='x = '+br(x,2)+' cm';
+  document.getElementById('opB').textContent=br(b1,1)+' × '+br(b2,1);
+  document.getElementById('opH').textContent=br(x,2)+' cm';
+  document.getElementById('opV').textContent=br(v,0)+' cm³';
+  document.getElementById('opEq').textContent=br(x,2)+' × '+br(b1,1)+' × '+br(b2,1)+' = '+br(v,0)+' cm³';
+  var dif=VMAX-v;
+  document.getElementById('opCap').textContent=dif<1
+    ? 'Este é o ponto ótimo: nenhuma outra caixa aberta feita desta folha guarda mais.'
+    : (x<XMAX?'Cortando pouco: a base é grande, mas a caixa é rasa. Faltam '+br(dif,0)+' cm³ para o máximo.'
+             :'Cortando muito: a caixa é alta, mas a base encolheu. Faltam '+br(dif,0)+' cm³ para o máximo.');
+  drawNet(x);moveDot(x);
+}
+document.getElementById('opX').addEventListener('input',opUpdate);
+document.getElementById('opMax').addEventListener('click',function(){
+  var e3=document.getElementById('opX');var x=+e3.value;
+  var iv=setInterval(function(){
+    x+=(XMAX-x)*0.18;
+    if(Math.abs(XMAX-x)<0.005){x=XMAX;clearInterval(iv);}
+    e3.value=x.toFixed(2);opUpdate();
+  },30);
+});
+document.getElementById('opSweep').addEventListener('click',function(){
+  var e4=document.getElementById('opX');var x=0.2;
+  var iv=setInterval(function(){
+    x+=0.14;if(x>=10.2){x=10.2;clearInterval(iv);}
+    e4.value=x.toFixed(2);opUpdate();
+  },28);
+});
+drawNet(4);opUpdate();drawGraph();
+
+/* ═══ PLACAR DA REVELAÇÃO ═══ */
+var teams=[];
+function addTeam(){
+  var nm=(document.getElementById('eqName').value||'').trim();
+  var x=pnum(document.getElementById('eqX').value);
+  var m=pnum(document.getElementById('eqM').value);
+  if(x===null||x<=0||x>=10.5){document.getElementById('eqMsg').textContent='informe um valor de x entre 0 e 10,5 cm';return;}
+  if(!nm)nm='Equipe '+(teams.length+1);
+  var prev=Vx(x);
+  teams.push({nome:nm,x:x,prev:prev,med:m});
+  teams.sort(function(a,b){
+    var av=(a.med!==null&&a.med!==undefined)?a.med:a.prev;
+    var bv=(b.med!==null&&b.med!==undefined)?b.med:b.prev;
+    return bv-av;
+  });
+  document.getElementById('eqName').value='';document.getElementById('eqX').value='';document.getElementById('eqM').value='';
+  document.getElementById('eqMsg').textContent=nm+' registrada · previsto '+br(prev,0)+' cm³'+(m!==null?' · medido '+br(m,0)+' mL':'');
+  drawBoard();
+}
+function clearBoard(){teams=[];drawBoard();document.getElementById('eqMsg').textContent='';}
+function drawBoard(){
+  var t=document.getElementById('boardTbl');
+  if(!teams.length){t.style.display='none';t.innerHTML='';return;}
+  t.style.display='';
+  var rows='<tr><th>#</th><th>Equipe</th><th>x</th><th>Previsto</th><th>Medido</th><th>Dif.</th><th>Do ótimo</th></tr>';
+  teams.forEach(function(q,i){
+    var dif=(q.med!==null&&q.med!==undefined)?(100*(q.med-q.prev)/q.prev):null;
+    var doOt=100*q.prev/VMAX;
+    rows+='<tr'+(i===0?' class="top1"':'')+'><td class="rk">'+(i+1)+'</td>'
+      +'<td class="w">'+q.nome.replace(/[<>]/g,'')+'</td>'
+      +'<td>'+br(q.x,2)+'</td>'
+      +'<td class="o">'+br(q.prev,0)+'</td>'
+      +'<td>'+(q.med!==null&&q.med!==undefined?br(q.med,0):'—')+'</td>'
+      +'<td class="d">'+(dif!==null?(dif>0?'+':'')+br(dif,1)+'%':'—')+'</td>'
+      +'<td>'+br(doOt,1)+'%</td></tr>';
+  });
+  t.innerHTML=rows;
+}
+
+/* ═══ CARTAS DE INVESTIGAÇÃO ═══ */
+var CARDS=[
+  {n:'A',q:'A lata — meçam diâmetro e altura de uma lata cilíndrica e calculem a capacidade. Bate com o rótulo?',r:'Não há resposta única. O valor está nas três explicações do descompasso.',b:'rótulo em gramas · espaço de ar · ar entre grãos'},
+  {n:'B',q:'A caixa d\'água cilíndrica de 500 L tem 1 m de altura. Qual o diâmetro?',r:'A = 0,5 m³ ÷ 1 m = 0,5 m²; r² = 0,5 ÷ 3,14 = 0,159; r = 0,399 m',b:'diâmetro ≈ 0,80 m'},
+  {n:'C',q:'Um cano de 100 mm de diâmetro tem 6 m. Quantos litros cheio?',r:'r = 0,05 m; A = 0,00785 m²; V = 0,00785 × 6',b:'0,0471 m³ = 47,1 L'},
+  {n:'D',q:'Piscina redonda de 3 m de diâmetro com 0,8 m de água. Quantos litros?',r:'r = 1,5 m; A = 7,065 m²; V = 7,065 × 0,8 = 5,652 m³',b:'5652 L ≈ 6 caixas de 1000 L'},
+  {n:'E',q:'O copo descartável — meçam e calculem como cilindro. Ele é um cilindro?',r:'NÃO é cilindro: é tronco de cone, mais largo em cima. Calculado como cilindro, o valor sai alto.',b:'V = (πh ÷ 3)(R² + Rr + r²)'},
+  {n:'F',q:'Cisterna cilíndrica de 3,5 m de diâmetro e 1,7 m de altura. Quantos litros?',r:'r = 1,75 m; A = 9,616 m²; V = 9,616 × 1,7 = 16,35 m³',b:'≈ 16 350 L — confere com os 16 000 L'},
+  {n:'G',q:'Trocar uma caixa 10 × 10 × 20 cm por uma lata de mesma altura e capacidade. Qual o diâmetro?',r:'V = 2000 cm³; A = 2000 ÷ 20 = 100 cm²; r² = 100 ÷ 3,14 = 31,85; r = 5,64',b:'diâmetro ≈ 11,3 cm'},
+  {n:'H',q:'Poço cilíndrico de 1,2 m de diâmetro com 3 m de coluna d\'água. Quantos litros?',r:'r = 0,6 m; A = 1,1304 m²; V = 1,1304 × 3 = 3,391 m³',b:'3391 L = 3,39 m³'}
+];
+var cardList=document.getElementById('cardList');
+CARDS.forEach(function(c){
+  var e5=document.createElement('div');e5.className='cd';
+  e5.innerHTML='<div class="cd-top"><span class="cd-n">'+c.n+'</span><span class="cd-q">'+c.q+'</span></div>'
+    +'<div class="cd-a"><div class="cd-r">'+c.r+'</div><div class="cd-b">'+c.b+'</div></div>';
+  e5.addEventListener('click',function(){e5.classList.toggle('open');});
+  cardList.appendChild(e5);
+});
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){sairPalco();return;}
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')){
+    if(e.key==='Enter'&&(e.target.id==='eqName'||e.target.id==='eqX'||e.target.id==='eqM'))addTeam();
+    return;
+  }
+  if(document.querySelector('.rig.palco'))return;
+  if(e.key==='f'||e.key==='F'){toggleF();return;}
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · A Escavação — marcos de desenvolvimento da aprendizagem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#B4531C;--accent-soft:#FCF0E6;--accent-deep:#7A340A;
+--h-bg:#5C2A0E;--h-accent:#F2B98A;--h-sub:#E0C3AC;--h-eye:#E09B62;
+--ink:#1c1512;--ink-mid:#443a34;--ink-soft:#7a6d64;--border:#e9ddd3;--bg:#fdfaf7;--bg-card:#fff;--radius:14px;
+--m1:#117A65;--m1s:#E4F4EF;--m2:#1A5276;--m2s:#E7F1F8;--m3:#C05A12;--m3s:#FDF0E4;
+--y9:#E0944E;--y8:#5BA0D1;--y7:#8E7BC4;--y6:#4EC9A8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(242,185,138,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:880px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:11.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 12px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:6px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--m1)}.tab.done .tn{background:var(--m1s);color:var(--m1);border-color:var(--m1)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#8A4218);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'"';position:absolute;left:10px;top:-8px;font-family:var(--f-head);font-size:110px;color:rgba(242,185,138,.12);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#FAEADB;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst ul li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst ul li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst ol{padding-left:20px}
+.inst ol li{margin-bottom:7px}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(180,83,28,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:#FBEAEA;border:1px solid rgba(160,44,44,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7A1E1E;line-height:1.6}
+.cite{background:#F3F1EC;border:1px solid var(--border);border-left:3px solid var(--ink-soft);border-radius:8px;padding:.8rem 1.1rem;margin:1rem 0;font-family:var(--f-head);font-size:13.5px;font-style:italic;color:var(--ink-mid);line-height:1.6}
+.cite b{font-style:normal;font-weight:600;color:var(--ink)}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(40px,10vw,76px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--m3)}.tm.done{color:var(--m1)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.1)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── RIG ── */
+.rig{background:#221914;border:1px solid #3E2B22;border-radius:var(--radius);padding:1.2rem 1rem 1.4rem;margin-bottom:1.2rem;overflow:hidden}
+.rig-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:#E0944E;border-bottom:1px solid #3E2B22;padding-bottom:9px;margin-bottom:14px}
+.rig-h span{color:#8A776D;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.ctrls{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.narr{font-size:13px;color:#C4A88E;text-align:center;margin:10px 0 0;min-height:20px;line-height:1.55}
+
+/* ── ERROS DA ABERTURA ── */
+.errs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+@media(max-width:700px){.errs{grid-template-columns:1fr}}
+.errc{background:#241A15;border:1px solid #4A362C;border-radius:10px;padding:12px 12px 14px;cursor:pointer;transition:all .18s;text-align:center}
+.errc:hover{border-color:var(--h-accent);transform:translateY(-2px)}
+.errc-org{font-family:var(--f-body);font-size:8.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#8A776D;margin-bottom:7px}
+.errc-q{font-family:var(--f-mono);font-size:clamp(15px,3.4vw,20px);font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px}
+.errc-a{font-family:var(--f-mono);font-size:14px;font-weight:700;color:#E08585;min-height:20px}
+.errc-w{font-size:11.5px;color:#C4A88E;line-height:1.5;margin-top:8px;display:none;text-align:left;border-top:1px solid #4A362C;padding-top:8px}
+.errc.open .errc-w{display:block}
+.errc-w b{color:var(--h-accent)}
+
+/* ── ICEBERG ── */
+.ice-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:760px){.ice-wrap{grid-template-columns:1fr}}
+.ice-svg{width:100%;height:auto;display:block;background:#14100D;border-radius:10px;border:1px solid #3E2B22}
+.strat{opacity:0;transition:opacity .6s ease}
+.strat.on{opacity:1}
+.ice-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;fill:#14100D}
+.ice-tip{font-family:'Nunito Sans',sans-serif;font-size:10px;fill:#C4A88E}
+.ice-panel{background:#1A120E;border:1px solid #3E2B22;border-radius:10px;padding:12px;min-height:180px}
+.ice-panel-h{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--h-accent);margin-bottom:4px}
+.ice-panel-s{font-size:11px;color:#8A776D;margin-bottom:10px}
+.hab{background:#241A15;border:1px solid #4A362C;border-left:3px solid #8A776D;border-radius:6px;padding:8px 10px;margin-bottom:7px;animation:fade .3s ease}
+.hab.marco{border-left-color:var(--h-accent);background:#2C201A}
+.hab-c{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--h-accent);display:block;margin-bottom:3px}
+.hab-d{font-size:11.5px;color:#C4A88E;line-height:1.5}
+.hab-m{display:inline-block;font-family:var(--f-body);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--h-accent);color:#2A1610;padding:2px 7px;border-radius:100px;margin-left:6px;vertical-align:middle}
+.chainsel{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.cbtn{font-family:var(--f-body);font-size:11px;font-weight:700;background:#2C201A;border:1px solid #4A362C;color:#C4A88E;
+  padding:7px 13px;border-radius:100px;cursor:pointer;transition:all .15s}
+.cbtn:hover{border-color:var(--h-accent);color:#fff}
+.cbtn.sel{background:var(--h-accent);border-color:var(--h-accent);color:#2A1610}
+.conv{background:#2C201A;border:1px dashed var(--h-accent);border-radius:8px;padding:11px 13px;margin-top:12px;display:none}
+.conv.on{display:block;animation:fade .4s ease}
+.conv-t{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--h-accent);margin-bottom:6px}
+.conv-d{font-size:12px;color:#C4A88E;line-height:1.6}
+.conv-d b{color:#fff}
+
+/* ── LENTES ── */
+.lentes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+@media(max-width:760px){.lentes{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.lentes{grid-template-columns:1fr}}
+.lente{background:#241A15;border:1px solid #4A362C;border-radius:10px;padding:11px 11px 13px;cursor:pointer;transition:all .18s}
+.lente:hover{border-color:var(--h-accent);transform:translateY(-2px)}
+.lente.on{border-color:var(--h-accent);background:#2C201A}
+.lente-n{font-family:var(--f-head);font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
+.lente-c{font-size:10.5px;color:var(--h-accent);font-weight:600;margin-bottom:7px}
+.lente-b{display:none;border-top:1px solid #4A362C;padding-top:8px;margin-top:4px}
+.lente.on .lente-b{display:block;animation:fade .3s ease}
+.lente-q{font-family:var(--f-head);font-size:12.5px;font-style:italic;color:var(--h-accent);line-height:1.5;margin-bottom:8px}
+.lente-e{font-size:11.5px;color:#C4A88E;line-height:1.55}
+.lente-e b{color:#fff}
+.lente-tag{display:inline-block;font-family:var(--f-mono);font-size:9px;background:#3E2B22;color:#C4A88E;padding:2px 7px;border-radius:4px;margin-top:8px}
+
+/* ── ESPIRAL ── */
+.esp-svg{width:100%;height:auto;max-width:560px;margin:0 auto;display:block}
+.esp-node{cursor:pointer;transition:all .2s}
+.esp-node:hover circle{stroke-width:3.5}
+.esp-node circle{transition:all .25s}
+.esp-node.on circle{stroke-width:4}
+.esp-t{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;fill:#fff;text-anchor:middle}
+.esp-s{font-family:'Nunito Sans',sans-serif;font-size:9px;fill:#C4A88E;text-anchor:middle}
+.esp-out{background:#1A120E;border:1px solid #3E2B22;border-radius:8px;padding:12px 14px;margin-top:12px;min-height:76px}
+.esp-out-c{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--h-accent);margin-bottom:5px}
+.esp-out-d{font-size:12.5px;color:#C4A88E;line-height:1.6}
+.esp-out-d b{color:#fff}
+
+/* ── CLASSIFICADOR ── */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:700px){.cards{grid-template-columns:1fr}}
+.cardc{background:#241A15;border:1px solid #4A362C;border-radius:10px;padding:11px 12px 12px;transition:all .2s}
+.cardc.rev{border-color:#C25151}.cardc.rec{border-color:#4EC9A8}.cardc.ger{border-color:#5BA0D1}
+.cardc-n{font-family:var(--f-mono);font-size:9.5px;color:#8A776D;margin-bottom:5px}
+.cardc-t{font-size:12.5px;color:#fff;line-height:1.55;margin-bottom:9px}
+.cardc-b{display:flex;gap:5px;flex-wrap:wrap}
+.cbt{font-family:var(--f-body);font-size:9.5px;font-weight:700;background:#2C201A;border:1px solid #4A362C;color:#C4A88E;
+  padding:5px 9px;border-radius:100px;cursor:pointer;transition:all .15s}
+.cbt:hover{border-color:var(--h-accent);color:#fff}
+.cbt.pick{background:var(--h-accent);border-color:var(--h-accent);color:#2A1610}
+.cardc-f{font-size:11.5px;line-height:1.55;margin-top:9px;display:none;border-top:1px solid #4A362C;padding-top:8px}
+.cardc.ans .cardc-f{display:block;animation:fade .3s ease}
+.cardc-f.ok{color:#8FD4C0}.cardc-f.no{color:#E0A585}
+.cardc-f b{color:#fff}
+.score{font-family:var(--f-mono);font-size:13px;color:var(--h-accent);text-align:center;margin-top:12px}
+.legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.lg{font-family:var(--f-body);font-size:10px;font-weight:700;padding:4px 11px;border-radius:100px;border:1px solid}
+.lg.rev{color:#E08585;border-color:#C25151}
+.lg.rec{color:#8FD4C0;border-color:#4EC9A8}
+.lg.ger{color:#9BC7E5;border-color:#5BA0D1}
+
+/* ── DIÁRIO / FICHAS ── */
+.diario{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1.1rem;margin:1rem 0}
+.diario summary{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--accent-deep);cursor:pointer;list-style:none}
+.diario summary::-webkit-details-marker{display:none}
+.diario summary::before{content:"▸ ";color:var(--accent)}
+.diario[open] summary::before{content:"▾ "}
+.diario textarea,.diario input{width:100%;font-family:var(--f-body);font-size:13px;color:var(--ink);background:var(--bg);
+  border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-top:9px;resize:vertical}
+.diario label{display:block;font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-top:10px}
+.ficha{margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ficha table{width:100%;border-collapse:collapse;font-size:12px}
+.ficha th{background:var(--accent-soft);color:var(--accent-deep);font-family:var(--f-body);font-weight:700;
+  font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:8px;text-align:left;border-bottom:1px solid var(--border)}
+.ficha td{padding:9px 8px;border-bottom:1px solid var(--border);color:var(--ink-mid);line-height:1.5;vertical-align:top}
+.ficha td:first-child{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--accent);white-space:nowrap}
+.ficha tr:last-child td{border-bottom:none}
+
+/* ── NAV ── */
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-info{font-size:11px;color:var(--ink-soft);font-weight:600}
+
+@media print{
+  .top,.tabs-wrap,.tw,.nav,.btn,.ctrls,.chainsel{display:none!important}
+  .pane{display:block!important;page-break-after:always}
+  body{background:#fff}
+  .rig{background:#fff;border:1px solid #ccc}
+  .speech{background:#f3f0ec}.speech p{color:#333}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">A Escavação <em>· o que sustentava tudo o que já fizemos</em></div>
+  <span class="top-badge">⛏ retomada teórico-prática · 1º ao 9º ano</span>
+  <span class="top-badge">60 min</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>A ponta do iceberg</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>⛏ A escavação</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>🔎 As seis lentes</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>🌀 A espiral</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>⚖ Revisar ou recompor?</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>📌 Meu marco</button>
+    </div>
+  </div>
+
+<!-- ═══════════ 1 · ABERTURA ═══════════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>"Hoje de manhã vocês repartiram moedas, trocaram peças na mesa, compactaram blocos e caçaram uma promoção enganosa.</p>
+    <p>Acabamos de estudar um texto que diz que <b>a dificuldade quase nunca nasce onde ela aparece</b>. Vamos testar isso nas nossas próprias atividades."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Como este momento funciona</div>
+    <ul>
+      <li>Nas próximas etapas <b>não haverá conteúdo novo</b>. Vamos reler o que já foi feito com as lentes do texto.</li>
+      <li>Mantenha as <b>mesmas equipes</b> da manhã. Cada uma precisa de papel, caneta e as <b>duas</b> folhas do DCRC — Anos Iniciais e Anos Finais.</li>
+      <li>A tela <b>confere</b>, não revela: em cada etapa as equipes decidem primeiro no papel.</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">Três erros que vocês viram acontecer <span>clique em cada um para abrir</span></div>
+    <div class="errs" id="errs">
+      <div class="errc" onclick="this.classList.toggle('open')">
+        <div class="errc-org">Fábrica das Três Formas</div>
+        <div class="errc-q">0,6 = ?</div>
+        <div class="errc-a">6%</div>
+        <div class="errc-w">O estudante andou <b>uma</b> casa, não duas. O erro parece ser de porcentagem — conteúdo do 7º ano. Mas quem anda uma casa não sabe que as regras do valor posicional <b>continuam valendo depois da vírgula</b>. Isso é dito uma única vez no currículo: <b>EF04MA10</b>, no 4º ano.</div>
+      </div>
+      <div class="errc" onclick="this.classList.toggle('open')">
+        <div class="errc-org">Caça à Promoção Enganosa</div>
+        <div class="errc-q">50% + 20% = ?</div>
+        <div class="errc-a">70%</div>
+        <div class="errc-w">Somar taxas é tratar porcentagem como <b>número absoluto</b>, e não como <b>razão que incide sobre uma base</b>. Quem soma nunca perguntou "por cento de quê?". A porcentagem nasce ligada à base em <b>EF05MA06</b> — e a ideia de razão, em <b>EF05MA13</b>.</div>
+      </div>
+      <div class="errc" onclick="this.classList.toggle('open')">
+        <div class="errc-org">Puzzle de fechamento</div>
+        <div class="errc-q">caiu 20% → sobe ?</div>
+        <div class="errc-a">20%</div>
+        <div class="errc-w">A resposta é 25%. Desfazer ×0,8 exige <b>1 ÷ 0,8</b> — a operação inversa. Quem responde 20% não opera o desconto como <b>fator multiplicativo</b>, e sim como pedaço que sai e volta. A relação inversa entre multiplicar e dividir é objeto de <b>EF04MA13</b>, no 4º ano.</div>
+      </div>
+    </div>
+    <div class="narr">Três erros de 9º ano. Nenhum deles nasce nos Anos Finais.</div>
+  </div>
+
+  <div class="cite">
+    "Assim como a maior parte de um iceberg permanece submersa, muitas defasagens escolares tendem a permanecer pouco perceptíveis durante anos, manifestando-se de forma mais clara apenas quando os estudantes passam a ser demandados a realizar operações cognitivas mais complexas." <b>— texto estudado, seção 3</b>
+  </div>
+
+  <div class="tip"><b>A pergunta que abre o dia:</b> se o erro não nasce onde aparece, <b>onde ele nasce?</b> Nas próximas etapas vocês vão descobrir isso escavando o próprio DCRC — e não o texto. Aviso desde já: <b>a escavação não vai parar no 6º ano</b>.</div>
+
+  <div class="nav">
+    <span class="nav-info">etapa 1 de 6 · 5 min</span>
+    <button class="btn btn-a" onclick="go(1)">começar a escavação →</button>
+  </div>
+</div>
+
+<!-- ═══════════ 2 · A ESCAVAÇÃO ═══════════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>"Cada equipe recebe <b>um erro</b> e as duas folhas do DCRC. A missão: descer ano a ano, do 9º ano <b>até onde for preciso</b>,</p>
+    <p>e encontrar a habilidade mais funda sem a qual esse erro é inevitável. <b>Só pare quando encontrar o ano em que o conceito nasce</b> — não o ano em que ele reaparece."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Regras da escavação · trabalho em equipe, no papel, antes da tela</div>
+    <ol>
+      <li><b>Escreva a superfície.</b> Qual habilidade do 9º ano o erro impede? Anote o código.</li>
+      <li><b>Desça um andar por vez.</b> Para cada ano — 8º, 7º, 6º, e então <b>5º, 4º, 3º</b> — pergunte: <i>que habilidade deste ano precisa estar consolidada para a de cima existir?</i> Anote de 1 a 3 códigos por andar.</li>
+      <li><b>Aplique o teste de origem.</b> Em cada código anotado, pergunte: <i>esta habilidade inaugura a ideia, ou apenas a retoma?</i> Se um ano anterior já disser a mesma coisa, <b>o andar de baixo é que interessa</b>.</li>
+      <li><b>Marque o fundo.</b> Circule <b>uma</b> habilidade — aquela que, se faltar, derruba toda a coluna. É o marco.</li>
+      <li><b>Prove.</b> Complete em voz alta: "sem ______, o estudante não consegue ______, e por isso erra ______."</li>
+    </ol>
+  </div>
+
+  <div class="warn"><b>Os dois erros previsíveis desta etapa.</b> O primeiro: escolher como marco a habilidade <i>mais parecida</i> com o erro, não a que o <i>sustenta</i>. Se a equipe desce até o 6º ano e só encontra "porcentagem", ela mudou de andar mas não mudou de pergunta — devolva: <i>"e o que porcentagem exige que já esteja pronto?"</i>. O segundo, e mais importante hoje: <b>parar no 6º ano porque a folha dos Anos Finais acabou</b>. A folha acaba; o conceito não começa ali. Insista: <i>"em que ano isso é dito pela primeira vez?"</i></div>
+
+  <div class="tw">
+    <div class="tm" id="t1">14:00</div>
+    <div class="tl" id="t1l">escavação nas equipes · sem a tela</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,840)">▶ 14 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,840)">↺</button>
+    </div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A escavadeira <span>projete só depois que as equipes apresentarem</span></div>
+    <div class="chainsel">
+      <button class="cbtn sel" id="cb-A" onclick="setChain('A')">⛏ coluna A · a conversão (Fábrica)</button>
+      <button class="cbtn" id="cb-B" onclick="setChain('B')">⛏ coluna B · o fator (Caça à Promoção)</button>
+    </div>
+
+    <div class="ice-wrap">
+      <div>
+        <svg class="ice-svg" viewBox="0 0 400 560" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="110" width="400" height="450" fill="#0E1C22"/>
+          <line x1="0" y1="110" x2="400" y2="110" stroke="#5BA0D1" stroke-width="1.5" opacity=".55"/>
+          <text x="8" y="103" class="ice-tip">linha d'água · o que a avaliação enxerga</text>
+
+          <g id="s0" class="strat on">
+            <polygon points="200,18 163,110 237,110" fill="#E0944E"/>
+            <text x="200" y="92" class="ice-lbl" text-anchor="middle">9º ANO</text>
+          </g>
+          <g id="s1" class="strat">
+            <polygon points="163,110 237,110 250,175 150,175" fill="#5BA0D1"/>
+            <text x="200" y="150" class="ice-lbl" text-anchor="middle">8º ANO</text>
+          </g>
+          <g id="s2" class="strat">
+            <polygon points="150,175 250,175 264,240 136,240" fill="#8E7BC4"/>
+            <text x="200" y="215" class="ice-lbl" text-anchor="middle">7º ANO</text>
+          </g>
+          <g id="s3" class="strat">
+            <polygon points="136,240 264,240 279,305 121,305" fill="#4EC9A8"/>
+            <text x="200" y="275" class="ice-lbl" text-anchor="middle">6º ANO</text>
+            <text x="200" y="292" class="ice-tip" text-anchor="middle" style="font-size:8.5px;fill:#0E3B31">retomada, não origem</text>
+          </g>
+          <g id="s4" class="strat">
+            <polygon points="121,305 279,305 295,378 105,378" fill="#D9736B"/>
+            <text x="200" y="342" class="ice-lbl" text-anchor="middle">5º ANO</text>
+            <text x="200" y="359" class="ice-tip" text-anchor="middle" style="font-size:8.5px;fill:#3B1210">ANOS INICIAIS</text>
+          </g>
+          <g id="s5" class="strat">
+            <polygon points="105,378 295,378 312,455 88,455" fill="#C9A227">
+            </polygon>
+            <text x="200" y="418" class="ice-lbl" text-anchor="middle">4º ANO</text>
+          </g>
+          <g id="s6" class="strat">
+            <polygon points="88,455 312,455 330,545 70,545" fill="#6FB3C9"/>
+            <text x="200" y="498" class="ice-lbl" text-anchor="middle">3º ANO</text>
+            <text x="200" y="516" class="ice-tip" text-anchor="middle" style="font-size:9px;fill:#0E2B33">o fundo</text>
+          </g>
+        </svg>
+        <div class="ctrls">
+          <button class="btn btn-a" id="digBtn" onclick="dig()">⛏ escavar um andar</button>
+          <button class="btn btn-g" onclick="digReset()">↺</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="ice-panel">
+          <div class="ice-panel-h" id="icH">Coluna A · a conversão entre representações</div>
+          <div class="ice-panel-s" id="icS">superfície: o erro que a turma vê</div>
+          <div id="icList"></div>
+        </div>
+        <div class="conv" id="conv">
+          <div class="conv-t">⛏ As duas colunas terminam no mesmo lugar — e não é nos Anos Finais</div>
+          <div class="conv-d">Escave a coluna B e compare. A Fábrica e a Caça à Promoção parecem tratar de coisas diferentes — conversão e desconto. Mas as duas passam por <b>EF05MA06</b> e as duas terminam em <b>EF03MA09</b>: o quociente de uma divisão associado às ideias de metade, quarta e <b>décima</b> parte. <b>Um mesmo marco do 3º ano sustenta duas trilhas curriculares inteiras</b> — e é por isso que ele merece atenção pedagógica desproporcional. Repare também no que <i>não</i> apareceu como marco: nenhuma habilidade do 6º ano. Todas as quatro eram retomada.</div>
+        </div>
+      </div>
+    </div>
+    <div class="narr" id="digNarr">clique em "escavar" para descer um andar por vez</div>
+  </div>
+
+  <div class="tip"><b>Como conduzir a comparação:</b> peça que cada equipe leia em voz alta <i>só o marco que circulou</i>, e anote todos no quadro <b>organizados por ano</b>. Duas perguntas, nesta ordem: primeiro <i>"quantos marcos diferentes apareceram?"</i> — quase sempre um se repete entre equipes que receberam erros diferentes, e é a convergência que interessa. Depois, olhando o quadro: <i>"qual é o ano mais frequente?"</i>. Se a maioria dos marcos estiver nos Anos Iniciais, a etapa cumpriu seu papel.</div>
+
+  <div class="tip" style="background:#F0EEE9;border-color:rgba(90,80,70,.25);color:#3A322C"><b>Se a formação for só de professores dos Anos Finais</b> — o que é provável —, a conclusão desta etapa é desconfortável e precisa ser dita com cuidado: <b>o marco não está no seu ano, e mesmo assim é seu problema.</b> Não porque o professor do 3º ano falhou, mas porque a lacuna chegou ao 9º e é ali que ela está agora. A leitura correta não é "o Fundamental I não fez"; é <b>"a recomposição no 9º ano passa por reconstruir uma ideia do 3º ano — e isso é trabalho legítimo de professor de Anos Finais"</b>. Se houver professores dos Anos Iniciais na sala, a pergunta muda de sinal e fica ainda melhor: <i>"o que a gente faz hoje que chega inteiro lá?"</i></div>
+
+  <details class="diario">
+    <summary>🖨 Ficha de Escavação — imprimir uma por equipe</summary>
+    <div class="ficha">
+      <table>
+        <tr><th style="width:22%">Andar</th><th>O que a equipe escreve</th></tr>
+        <tr><td>O ERRO</td><td>Transcreva o erro do estudante, com os números.</td></tr>
+        <tr><td>9º ano</td><td>Habilidade que o erro impede — código e o que ela exige.</td></tr>
+        <tr><td>8º ano</td><td>Habilidades que sustentam a de cima (1 a 3 códigos).</td></tr>
+        <tr><td>7º ano</td><td>Habilidades que sustentam as de cima (1 a 3 códigos).</td></tr>
+        <tr><td>6º ano</td><td>Habilidades que sustentam as de cima. <b>Aplique o teste de origem: alguma delas inaugura a ideia, ou todas retomam?</b></td></tr>
+        <tr><td>5º ano</td><td>Habilidades que sustentam as de cima (1 a 3 códigos).</td></tr>
+        <tr><td>4º ano</td><td>Habilidades que sustentam as de cima (1 a 3 códigos).</td></tr>
+        <tr><td>3º ano</td><td>Habilidades que sustentam as de cima. Aqui costuma estar o fundo.</td></tr>
+        <tr><td>O MARCO</td><td>Circule UMA, de qualquer ano. Justifique em uma frase: "sem ela, não é possível…"</td></tr>
+        <tr><td>A PROVA</td><td>Escreva uma pergunta de diagnóstico de 30 segundos que revele se esse marco está consolidado.</td></tr>
+      </table>
+    </div>
+    <label>Anotações do formador durante a apresentação das equipes</label>
+    <textarea rows="3" placeholder="Marcos que apareceram, convergências, discordâncias produtivas..."></textarea>
+  </details>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← a ponta do iceberg</button>
+    <span class="nav-info">etapa 2 de 6 · 20 min</span>
+    <button class="btn btn-a" onclick="go(2)">as seis lentes →</button>
+  </div>
+</div>
+
+<!-- ═══════════ 3 · AS LENTES ═══════════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>"Vocês acabaram de descobrir <b>onde</b> o erro nasce. Falta entender <b>por que</b> certas aprendizagens seguram outras.</p>
+    <p>Cada equipe recebe <b>uma lente</b> do texto e reencontra, na manhã de hoje, <b>o momento exato</b> em que aquela ideia aconteceu."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Como funciona · jigsaw, 4 min de preparo + 6 min de apresentação</div>
+    <ul>
+      <li>Sorteie <b>uma lente por equipe</b>. Se houver menos de seis equipes, distribua as restantes entre as mais rápidas.</li>
+      <li>A equipe tem <b>4 minutos</b> para responder: <i>em que instante da Fábrica ou da Caça essa ideia apareceu na prática?</i></li>
+      <li>Cada equipe apresenta em <b>até 1 minuto</b>, começando obrigatoriamente por: <b>"foi no momento em que…"</b>.</li>
+      <li>Só depois de a equipe falar, abra a lente na tela e compare com a leitura dela.</li>
+    </ul>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t2">04:00</div>
+    <div class="tl" id="t2l">preparo nas equipes</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(2,240)">▶ 4 min</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(2,240)">↺</button>
+    </div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">As seis lentes <span>abra só depois da fala da equipe</span></div>
+    <div class="lentes" id="lentes"></div>
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="lentesAll(true)">abrir todas</button>
+      <button class="btn btn-g" onclick="lentesAll(false)">fechar todas</button>
+    </div>
+    <div class="narr">Seis tradições diferentes, um pressuposto comum: a aprendizagem não é acúmulo linear de informação.</div>
+  </div>
+
+  <div class="tip"><b>Amarração desta etapa:</b> "nenhuma dessas seis ideias foi inventada para a nossa oficina. Mas todas as seis já estavam acontecendo na sala hoje de manhã, antes de terem nome. <b>Nomear é o que permite planejar de novo — e de propósito.</b>"</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← a escavação</button>
+    <span class="nav-info">etapa 3 de 6 · 12 min</span>
+    <button class="btn btn-a" onclick="go(3)">a espiral →</button>
+  </div>
+</div>
+
+<!-- ═══════════ 4 · A ESPIRAL ═══════════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>"Bruner diz que o currículo deve <b>retornar às ideias fundamentais, ampliando-as</b>. Isso soa abstrato.</p>
+    <p>Então olhem para o DCRC: a ideia de <b>parte de um todo</b> aparece em <b>sete anos seguidos</b>, do 3º ao 9º. E não aparece do mesmo jeito nenhuma vez."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Antes de projetar — 2 min, sala toda</div>
+    <ul>
+      <li>Peça que abram <b>as duas folhas</b> do DCRC e localizem, sozinhos, onde a ideia de "parte de um todo" aparece — começando pelo 9º ano e descendo.</li>
+      <li>Pergunta oral: "é a mesma coisa repetida sete vezes, ou sete coisas diferentes?"</li>
+      <li>Só então clique nos nós da espiral, <b>do 3º para o 9º</b>, um por vez.</li>
+      <li>Guarde o nó do <b>6º ano</b>: é o único que não acrescenta exigência cognitiva nova. Vale deixar o grupo perceber sozinho.</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A espiral da porcentagem · 3º ao 9º ano <span>clique em cada volta</span></div>
+    <svg class="esp-svg" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 261.0 228.7 L 260.0 229.6 L 258.8 230.6 L 257.6 231.4 L 256.3 232.3 L 254.9 233.0 L 253.5 233.7 L 252.0 234.3 L 250.5 234.8 L 248.9 235.3 L 247.3 235.7 L 245.7 235.9 L 243.9 236.1 L 242.2 236.2 L 240.5 236.2 L 238.7 236.1 L 236.9 235.9 L 235.1 235.6 L 233.3 235.2 L 231.5 234.7 L 229.7 234.0 L 227.9 233.3 L 226.1 232.5 L 224.4 231.5 L 222.7 230.4 L 221.1 229.3 L 219.5 228.0 L 217.9 226.6 L 216.4 225.2 L 215.0 223.6 L 213.6 222.0 L 212.4 220.2 L 211.2 218.4 L 210.1 216.4 L 209.1 214.4 L 208.2 212.4 L 207.4 210.2 L 206.7 208.0 L 206.2 205.8 L 205.7 203.5 L 205.4 201.1 L 205.2 198.7 L 205.1 196.3 L 205.2 193.8 L 205.4 191.4 L 205.7 188.9 L 206.2 186.4 L 206.8 183.9 L 207.6 181.5 L 208.5 179.0 L 209.5 176.6 L 210.7 174.3 L 212.0 171.9 L 213.4 169.7 L 215.0 167.5 L 216.7 165.3 L 218.6 163.3 L 220.5 161.3 L 222.6 159.4 L 224.8 157.6 L 227.1 156.0 L 229.6 154.4 L 232.1 153.0 L 234.7 151.6 L 237.4 150.5 L 240.2 149.4 L 243.1 148.5 L 246.0 147.8 L 249.0 147.2 L 252.0 146.7 L 255.1 146.4 L 258.2 146.3 L 261.4 146.4 L 264.6 146.6 L 267.7 147.0 L 270.9 147.6 L 274.1 148.3 L 277.2 149.2 L 280.3 150.3 L 283.4 151.6 L 286.4 153.0 L 289.3 154.6 L 292.2 156.4 L 295.0 158.4 L 297.8 160.5 L 300.4 162.7 L 302.9 165.1 L 305.3 167.7 L 307.6 170.4 L 309.7 173.2 L 311.7 176.2 L 313.6 179.3 L 315.3 182.5 L 316.8 185.8 L 318.2 189.3 L 319.4 192.8 L 320.4 196.4 L 321.2 200.0 L 321.8 203.7 L 322.3 207.5 L 322.5 211.3 L 322.5 215.2 L 322.4 219.1 L 322.0 222.9 L 321.4 226.8 L 320.6 230.7 L 319.6 234.5 L 318.3 238.3 L 316.9 242.1 L 315.3 245.8 L 313.4 249.4 L 311.4 253.0 L 309.2 256.4 L 306.7 259.8 L 304.1 263.0 L 301.3 266.1 L 298.3 269.1 L 295.1 271.9 L 291.8 274.6 L 288.3 277.1 L 284.7 279.4 L 280.9 281.6 L 277.0 283.5 L 273.0 285.3 L 268.9 286.8 L 264.7 288.2 L 260.3 289.3 L 256.0 290.2 L 251.5 290.8 L 247.0 291.3 L 242.4 291.4 L 237.9 291.4 L 233.3 291.1 L 228.7 290.6 L 224.1 289.8 L 219.5 288.7 L 215.0 287.5 L 210.5 285.9 L 206.1 284.2 L 201.8 282.2 L 197.5 279.9 L 193.4 277.4 L 189.4 274.7 L 185.5 271.8 L 181.8 268.6 L 178.2 265.3 L 174.7 261.7 L 171.5 258.0 L 168.4 254.0 L 165.6 249.9 L 162.9 245.6 L 160.5 241.2 L 158.2 236.6 L 156.3 231.9 L 154.5 227.0 L 153.1 222.1 L 151.8 217.1 L 150.9 211.9 L 150.2 206.7 L 149.7 201.5 L 149.6 196.2 L 149.7 190.9 L 150.2 185.6 L 150.9 180.3 L 151.8 175.0 L 153.1 169.7 L 154.7 164.5 L 156.5 159.4 L 158.6 154.3 L 161.0 149.4 L 163.6 144.5 L 166.5 139.8 L 169.7 135.2 L 173.1 130.8 L 176.8 126.5 L 180.7 122.4 L 184.9 118.6 L 189.2 114.9 L 193.8 111.4 L 198.5 108.2 L 203.5 105.2 L 208.6 102.5 L 213.8 100.0 L 219.3 97.8 L 224.8 95.9 L 230.5 94.3 L 236.2 92.9 L 242.1 91.9 L 248.0 91.2 L 254.0 90.8 L 260.0 90.7 L 266.0 90.9 L 272.1 91.4 L 278.1 92.3 L 284.1 93.5 L 290.1 95.0 L 295.9 96.8 L 301.7 98.9 L 307.5 101.3 L 313.0 104.1 L 318.5 107.2 L 323.8 110.5 L 329.0 114.1 L 333.9 118.1 L 338.7 122.3 L 343.3 126.7 L 347.6 131.4 L 351.7 136.4 L 355.6 141.6 L 359.2 147.0 L 362.5 152.5 L 365.5 158.3 L 368.2 164.3 L 370.6 170.4 L 372.7 176.7 L 374.5 183.0 L 376.0 189.5 L 377.1 196.1 L 377.8 202.8 L 378.2 209.5 L 378.3 216.2 L 378.0 223.0 L 377.3 229.8 L 376.3 236.5 L 374.9 243.2 L 373.2 249.8 L 371.1 256.4 L 368.7 262.9 L 365.9 269.2 L 362.8 275.5 L 359.3 281.5 L 355.5 287.4 L 351.4 293.2 L 347.0 298.7 L 342.3 304.0 L 337.3 309.0 L 332.0 313.8 L 326.4 318.3 L 320.7 322.6 L 314.6 326.5 L 308.4 330.2 L 301.9 333.5 L 295.3 336.5 L 288.5 339.1 L 281.5 341.4 L 274.4 343.3 L 267.2 344.9 L 259.9 346.0 L 252.5 346.8 L 245.0 347.2 L 237.6 347.2 L 230.1 346.9 L 222.6 346.1 L 215.1 344.9 L 207.7 343.3 L 200.4 341.4 L 193.1 339.0 L 186.0 336.3 L 179.0 333.1 L 172.1 329.6 L 165.4 325.8 L 158.9 321.6 L 152.7 317.0 L 146.6 312.1 L 140.8 306.8 L 135.3 301.3 L 130.0 295.4 L 125.1 289.3 L 120.4 282.9 L 116.1 276.2 L 112.1 269.3 L 108.5 262.2 L 105.3 254.8 L 102.4 247.3 L 100.0 239.6 L 97.9 231.8 L 96.2 223.9 L 95.0 215.8 L 94.2 207.7 L 93.8 199.5 L 93.8 191.3 L 94.3 183.1 L 95.2 174.9 L 96.5 166.7 L 98.3 158.6 L 100.5 150.6 L 103.1 142.6 L 106.2 134.8 L 109.6 127.2 L 113.5 119.7 L 117.8 112.4 L 122.4 105.3 L 127.5 98.5 L 132.9 91.9 L 138.6 85.6 L 144.7 79.5 L 151.2 73.8 L 157.9 68.4 L 164.9 63.4 L 172.2 58.7 L 179.8 54.5 L 187.6 50.6 L 195.6 47.1 L 203.8 44.0 L 212.2 41.3 L 220.7 39.1 L 229.4 37.3 L 238.2 36.0 L 247.0 35.2 L 255.9 34.8 L 264.9 34.9 L 273.8 35.4 L 282.8 36.4 L 291.7 37.9 L 300.5 39.9 L 309.2 42.3" fill="none" stroke="#4A362C" stroke-width="2.5" stroke-dasharray="7 5" stroke-linecap="round"/>
+      <text x="250" y="212" class="esp-s" style="font-size:8px;fill:#8A776D">a mesma ideia</text>
+      <g class="esp-node" id="e0" onclick="espClick(0)">
+        <circle cx="250.0" cy="235.0" r="24" fill="#2C201A" stroke="#6FB3C9" stroke-width="2.5"/>
+        <text x="250.0" y="233.0" class="esp-t">3º</text>
+        <text x="250.0" y="245.0" class="esp-s" style="font-size:6.8px">EF03MA09</text>
+      </g>
+      <g class="esp-node" id="e1" onclick="espClick(1)">
+        <circle cx="223.3" cy="158.8" r="24" fill="#2C201A" stroke="#C9A227" stroke-width="2.5"/>
+        <text x="223.3" y="156.8" class="esp-t">4º</text>
+        <text x="223.3" y="168.8" class="esp-s" style="font-size:6.8px">EF04MA10</text>
+      </g>
+      <g class="esp-node" id="e2" onclick="espClick(2)">
+        <circle cx="316.4" cy="243.3" r="24" fill="#2C201A" stroke="#D9736B" stroke-width="2.5"/>
+        <text x="316.4" y="241.3" class="esp-t">5º</text>
+        <text x="316.4" y="253.3" class="esp-s" style="font-size:6.8px">EF05MA06</text>
+      </g>
+      <g class="esp-node" id="e3" onclick="espClick(3)">
+        <circle cx="150.0" cy="205.0" r="24" fill="#2C201A" stroke="#4EC9A8" stroke-width="2.5" stroke-dasharray="4 3"/>
+        <text x="150.0" y="203.0" class="esp-t">6º</text>
+        <text x="150.0" y="215.0" class="esp-s" style="font-size:6.8px">EF06MA13</text>
+      </g>
+      <g class="esp-node" id="e4" onclick="espClick(4)">
+        <circle cx="356.8" cy="143.3" r="24" fill="#2C201A" stroke="#8E7BC4" stroke-width="2.5"/>
+        <text x="356.8" y="141.3" class="esp-t">7º</text>
+        <text x="356.8" y="153.3" class="esp-s" style="font-size:6.8px">EF07MA02</text>
+      </g>
+      <g class="esp-node" id="e5" onclick="espClick(5)">
+        <circle cx="176.7" cy="332.0" r="24" fill="#2C201A" stroke="#5BA0D1" stroke-width="2.5"/>
+        <text x="176.7" y="330.0" class="esp-t">8º</text>
+        <text x="176.7" y="342.0" class="esp-s" style="font-size:6.8px">EF08MA04</text>
+      </g>
+      <g class="esp-node" id="e6" onclick="espClick(6)">
+        <circle cx="250.0" cy="35.0" r="24" fill="#2C201A" stroke="#E0944E" stroke-width="2.5"/>
+        <text x="250.0" y="33.0" class="esp-t">9º</text>
+        <text x="250.0" y="45.0" class="esp-s" style="font-size:6.8px">EF09MA05</text>
+      </g>
+      <text x="14" y="390" class="esp-s" style="font-size:10px;text-anchor:start">do centro para fora: a mesma ideia, sete vezes, cada volta com mais exigência cognitiva · o 6º ano, em tracejado, não acrescenta exigência nova</text>
+    </svg>
+    <div class="esp-out" id="espOut">
+      <div class="esp-out-c">clique em uma volta da espiral</div>
+      <div class="esp-out-d">Cada nó traz a habilidade do DCRC, o que ela exige de novo em relação à anterior, e onde ela apareceu na manhã de hoje.</div>
+    </div>
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="espClick(0)">3º</button>
+      <button class="btn btn-g" onclick="espClick(1)">4º</button>
+      <button class="btn btn-g" onclick="espClick(2)">5º</button>
+      <button class="btn btn-g" onclick="espClick(3)">6º</button>
+      <button class="btn btn-g" onclick="espClick(4)">7º</button>
+      <button class="btn btn-g" onclick="espClick(5)">8º</button>
+      <button class="btn btn-g" onclick="espClick(6)">9º</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A pergunta decisiva, para o grupo todo</div>
+    <p style="font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--accent-deep)">"Em qual volta da espiral seus estudantes param? E, se eles param na primeira, o que adianta insistir na sétima?"</p>
+    <p style="margin-top:9px">Deixe o silêncio trabalhar. Esta é a pergunta que converte o texto em decisão de planejamento.</p>
+  </div>
+
+  <div class="tip"><b>Bônus para quem quiser esticar:</b> a mesma espiral existe para <b>padrão, regra e algoritmo</b>, e também começa nos Anos Iniciais — EF01MA10 e EF02MA10 (descrever a regularidade), EF03MA10 (descrever <i>a regra de formação</i>), EF04MA15 e EF05MA11 (determinar o termo desconhecido de uma igualdade), EF06MA04, EF07MA13 (a letra como variável), EF08MA10 e EF09MA15. É exatamente o percurso que a Caça à Promoção fez ao pedir que as equipes <i>escrevessem o algoritmo geral</i>. Aquilo não era apêndice de Computação: era a última volta de uma espiral que começa no <b>1º ano</b>, quando a criança descreve o padrão de uma sequência de figuras.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← as seis lentes</button>
+    <span class="nav-info">etapa 4 de 6 · 10 min</span>
+    <button class="btn btn-a" onclick="go(4)">revisar ou recompor? →</button>
+  </div>
+</div>
+
+<!-- ═══════════ 5 · CLASSIFICADOR ═══════════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>"O texto é duro num ponto: recompor <b>não</b> é retomar conteúdo. É reconstruir a estrutura que sustenta o conteúdo.</p>
+    <p>A diferença parece sutil. Não é. <b>Ela decide o que vocês vão fazer na segunda-feira.</b>"</p>
+  </div>
+
+  <div class="cite">
+    "Mais do que a retomada de conteúdos não ensinados ou não aprendidos, a recomposição precisa ser compreendida como reconstrução de fundamentos cognitivos e curriculares essenciais ao desenvolvimento posterior dos estudantes." <b>— texto estudado, considerações finais</b>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Como conduzir · votação com o corpo, 10 min</div>
+    <ul>
+      <li>Rotule <b>três cantos da sala</b>: REVISÃO · RECOMPOSIÇÃO · DIAGNÓSTICO OU GESTÃO.</li>
+      <li>Leia uma ação em voz alta. Todos <b>caminham</b> até o canto que escolheram. Ninguém fica no meio.</li>
+      <li>Antes de revelar, peça a <b>um</b> participante de cada canto que justifique em uma frase.</li>
+      <li>Só então clique na resposta na tela. Onde houver divisão forte, <b>a discussão vale mais que o gabarito</b>.</li>
+    </ul>
+  </div>
+
+  <div class="warn"><b>Cuidado importante:</b> "diagnóstico ou gestão" não é a categoria errada nem a categoria do lixo. Diagnosticar e ampliar tempo são <b>condições necessárias</b> — só não são, sozinhas, recomposição. Deixe isso explícito, ou o grupo sai achando que avaliar diagnóstico é perda de tempo.</div>
+
+  <div class="rig">
+    <div class="rig-h">Nove ações reais de escola <span>a turma decide antes da tela</span></div>
+    <div class="legend">
+      <span class="lg rev">REVISÃO</span>
+      <span class="lg rec">RECOMPOSIÇÃO</span>
+      <span class="lg ger">DIAGNÓSTICO OU GESTÃO</span>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="score" id="score">0 de 9 respondidas</div>
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="cardsReset()">↺ limpar tudo</button>
+    </div>
+  </div>
+
+  <div class="tip"><b>Critério que o grupo deve conseguir enunciar ao final:</b> uma ação é <b>recomposição</b> quando ataca a <i>estrutura cognitiva</i> que faltou — não quando repete o conteúdo em que o estudante falhou. Se a ação pode ser descrita como "de novo, só que mais devagar", é revisão.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← a espiral</button>
+    <span class="nav-info">etapa 5 de 6 · 12 min</span>
+    <button class="btn btn-a" onclick="go(5)">meu marco →</button>
+  </div>
+</div>
+
+<!-- ═══════════ 6 · COMPROMISSO ═══════════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <p>"Última coisa. Individualmente, cada um escolhe <b>uma</b> habilidade que vai ensinar neste bimestre</p>
+    <p>e escava <b>um andar</b> abaixo dela. Um só. E decide o que fará <b>antes</b> de começar a ensiná-la."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">O Bilhete do Marco · 6 min, individual e escrito</div>
+    <ol>
+      <li><b>A habilidade que vou ensinar:</b> código do DCRC e ano.</li>
+      <li><b>O marco anterior que ela exige:</b> um código de um ano anterior — <b>e aplique o teste de origem antes de anotar</b>. Se o ano que você escolheu apenas retoma, desça mais um.</li>
+      <li><b>Como vou saber, em 5 minutos de aula, se ele está consolidado:</b> uma pergunta ou tarefa curta — não uma prova.</li>
+      <li><b>O que farei se não estiver:</b> uma ação concreta, que não seja "revisar o conteúdo".</li>
+    </ol>
+    <p style="margin-top:9px">Ao terminar, cada participante lê <b>apenas o item 4</b> em voz alta, em roda rápida. Ninguém comenta a leitura do outro.</p>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t3">06:00</div>
+    <div class="tl" id="t3l">escrita individual do bilhete</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,360)">▶ 6 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,360)">↺</button>
+    </div>
+  </div>
+
+  <details class="diario" open>
+    <summary>📌 Bilhete do Marco — modelo digital (também pode ser feito em papel)</summary>
+    <label>1 · A habilidade que vou ensinar neste bimestre</label>
+    <input type="text" placeholder="Ex.: EF09MA05 — percentuais sucessivos, 9º ano">
+    <label>2 · O marco anterior que ela exige</label>
+    <input type="text" placeholder="Ex.: EF05MA06 — porcentagem como parte de um todo, 5º ano (e não EF06MA13, que só retoma)">
+    <label>3 · Como vou detectar, em 5 minutos, se está consolidado</label>
+    <textarea rows="2" placeholder="Ex.: 'quanto é a décima parte de 80? e 10% de 80?' — se o estudante responde a primeira e trava na segunda, o marco está identificado"></textarea>
+    <label>4 · O que farei se não estiver — e que não seja "revisar o conteúdo"</label>
+    <textarea rows="2" placeholder="Ex.: retomar a tira de 100 e a repartição de moedas antes da primeira aula do capítulo, mesmo no 9º ano"></textarea>
+    <div class="ctrls" style="justify-content:flex-start">
+      <button class="btn btn-g" onclick="window.print()">🖨 imprimir</button>
+    </div>
+  </details>
+
+  <div class="inst">
+    <div class="inst-t">Fechamento — o que fica desta manhã</div>
+    <ul>
+      <li>A <b>Fábrica das Três Formas</b> não era uma aula de conversão: era a reconstrução de marcos do <b>3º, do 4º e do 5º ano</b>, feita com as mãos, numa turma de Anos Finais.</li>
+      <li>A <b>Caça à Promoção Enganosa</b> não era uma aula de desconto: era a última volta de uma espiral que começa no <b>3º ano</b> — e por isso ela só funciona se as voltas anteriores estiverem lá.</li>
+      <li>Nenhuma das duas foi planejada a partir de um conteúdo. Ambas foram planejadas a partir de <b>uma pergunta sobre o que sustenta o conteúdo</b>.</li>
+      <li>E a descoberta mais incômoda do dia: <b>o 6º ano quase não apareceu como marco</b>. Não porque seja irrelevante, mas porque, nos racionais, ele retoma o que os Anos Iniciais introduziram. Um currículo que enxerga marcos <b>sabe distinguir o ano que inaugura do ano que revisita</b> — e não confunde revisitar com recompor.</li>
+      <li>É isso, e só isso, que muda quando um currículo passa a enxergar marcos.</li>
+    </ul>
+  </div>
+
+  <div class="cite">
+    "Recompor aprendizagens-marco significa reconstruir as condições de possibilidade sem as quais os estudantes continuarão a avançar com lacunas que se acumulam silenciosamente ao longo da trajetória escolar." <b>— texto estudado, seção 3.1</b>
+  </div>
+
+  <div class="speech">
+    <p>"O 9º ano não é onde a defasagem começa. <b>É onde ela fica visível.</b></p>
+    <p>Quem ensina no 3º ano está ensinando, o tempo todo, o 9º ano de alguém. E quem ensina no 9º ano, muitas vezes, precisa <b>terminar de ensinar o 3º</b> — não como castigo, mas como método."</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← revisar ou recompor?</button>
+    <span class="nav-info">etapa 6 de 6 · fim da atividade</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAV ═══ */
+const tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+let cur=0;
+function go(i){if(cur<i)tabs[cur].classList.add('done');tabs.forEach(t=>t.classList.remove('on'));panes.forEach(p=>p.classList.remove('on'));tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ═══ TIMERS ═══ */
+const TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,tot){
+  const el=document.getElementById('t'+id);if(!el)return;
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id]||TM[id].left==null||TM[id].left<=0)TM[id]={left:tot,iv:null};
+  TM[id].iv=setInterval(()=>{
+    TM[id].left--;el.textContent=fmtT(Math.max(0,TM[id].left));
+    el.classList.toggle('low',TM[id].left<=60&&TM[id].left>0);
+    if(TM[id].left<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.classList.remove('low');el.classList.add('done');el.textContent='00:00';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;}}
+function resetT(id,tot){stopT(id);TM[id]={left:tot,iv:null};const el=document.getElementById('t'+id);el.textContent=fmtT(tot);el.classList.remove('low','done');}
+
+/* ═══ ESCAVAÇÃO ═══ */
+const CH={
+  A:{
+    titulo:'Coluna A · a conversão entre representações',
+    sub:'superfície: "0,6 = 6%" — o estudante do 9º ano não transita entre as formas',
+    andares:[
+      {ano:'9º ano · a superfície',habs:[
+        {c:'EF09MA05',d:'Percentuais sucessivos e determinação de taxas. Exige transitar entre decimal, fração e porcentagem sem pensar — é pré-requisito silencioso, não objeto da habilidade.'},
+        {c:'EF09MA03',d:'Efetuar cálculos com números reais, inclusive potências com expoentes fracionários. Quem não converte com segurança trava aqui antes mesmo de chegar ao irracional.'}
+      ]},
+      {ano:'8º ano',habs:[
+        {c:'EF08MA05',d:'Reconhecer e utilizar procedimentos para obter a fração geratriz de uma dízima periódica. É o retorno exato do cartão-desafio 1/3 da Fábrica — e é impossível sem "a barra é divisão".'},
+        {c:'EF08MA04',d:'Problemas com cálculo de porcentagens, inclusive com tecnologias. Pressupõe que a porcentagem já seja lida como número, não como rótulo.'},
+        {c:'EF08MA01',d:'Potências de expoentes inteiros e notação científica. Depende do valor posicional entendido como potência de dez.'}
+      ]},
+      {ano:'7º ano',habs:[
+        {c:'EF07MA08',d:'Comparar e ordenar frações associadas às ideias de partes de inteiros, resultado da divisão, razão e operador. Quatro sentidos da mesma escrita — mas nenhum deles é inaugurado aqui.'},
+        {c:'EF07MA11',d:'Multiplicação e divisão de racionais e a relação entre elas. Sem isso, converter vira sequência de gestos decorados.'},
+        {c:'EF07MA02',d:'Acréscimos e decréscimos simples. É onde a porcentagem passa a operar sobre um valor.'}
+      ]},
+      {ano:'6º ano · atenção',habs:[
+        {c:'EF06MA08',d:'Reconhecer que os racionais positivos podem ser expressos nas formas fracionária e decimal, passando de uma para outra. É o Triângulo das Transformações escrito no DCRC.'},
+        {c:'EF06MA07',d:'Frações como partes de inteiros E como resultado de divisão, identificando equivalentes.'},
+        {c:'EF06MA02',d:'Sistema de numeração decimal: base, valor posicional e função do zero.'},
+        {c:'EF06MA13',d:'Porcentagem com base na ideia de proporcionalidade, sem regra de três.'},
+        {c:'⚠ o teste de origem',d:'<b>Nenhuma das quatro inaugura o conceito.</b> EF06MA02 repete EF02MA01; EF06MA07 repete EF05MA03; EF06MA08 repete EF05MA05; EF06MA13 repete EF05MA06. O 6º ano <b>retoma</b> os racionais — não os introduz. Quem para aqui encontra a habilidade, mas não encontra o marco.'}
+      ]},
+      {ano:'5º ano · onde o conceito nasce',habs:[
+        {c:'EF05MA03',d:'Identificar e representar frações (menores e maiores que a unidade), <b>associando-as ao resultado de uma divisão</b> ou à ideia de parte de um todo, utilizando a reta numérica. É aqui — e não no 6º ano — que "a barra é um sinal de dividir" entra no currículo. Marco da Divisão do Cofre.',m:1},
+        {c:'EF05MA05',d:'Comparar e ordenar racionais positivos <b>nas representações fracionária e decimal</b>, relacionando-os a pontos na reta numérica. As duas formas convivem na mesma reta pela primeira vez: é a semente do Triângulo das Transformações.',m:1},
+        {c:'EF05MA02',d:'Ler, escrever e ordenar racionais na forma decimal com compreensão do SND, usando composição, decomposição e reta numérica.'},
+        {c:'EF05MA06',d:'Associar 10%, 25%, 50%, 75% e 100% à décima parte, quarta parte, metade, três quartos e um inteiro. <b>A primeira aparição do símbolo % no currículo</b> — e já ligada à fração da qual ele é apelido.',m:1},
+        {c:'EF05MA04',d:'Identificar frações equivalentes. Sustenta toda a manipulação posterior de razões.'}
+      ]},
+      {ano:'4º ano',habs:[
+        {c:'EF04MA10',d:'Reconhecer que <b>as regras do SND podem ser estendidas para a representação decimal</b> de um racional e relacionar décimos e centésimos com o sistema monetário. É a única vez em todo o currículo em que se diz que o valor posicional continua valendo depois da vírgula. Sem isso, "andar a vírgula" é truque — e produz exatamente 0,6 = 6%.',m:1},
+        {c:'EF04MA09',d:'Reconhecer as frações unitárias mais usuais (1/2, 1/3, 1/4, 1/5, <b>1/10 e 1/100</b>) como unidades de medida menores que a unidade, na reta numérica. O centésimo aparece como quantidade antes de aparecer como porcentagem.',m:1},
+        {c:'EF04MA02',d:'Mostrar, por composição e decomposição, que todo natural pode ser escrito por adições e multiplicações <b>por potências de dez</b>. É o valor posicional dito na linguagem que o 8º ano vai cobrar de volta.'}
+      ]},
+      {ano:'3º ano · o fundo',habs:[
+        {c:'EF03MA09',d:'<b>Associar o quociente de uma divisão com resto zero</b> por 2, 3, 4, 5 e 10 <b>às ideias de metade, terça, quarta, quinta e décima partes</b>. Aqui divisão e fração são a mesma ideia, ditas sem notação. É o ponto mais fundo desta coluna: quem não fez esta associação vai decorar a barra da fração por seis anos.',m:1},
+        {c:'EF03MA08',d:'Divisão de um natural por outro, com resto zero e diferente de zero, com os significados de repartição equitativa e de medida. Os dois sentidos que a fração vai herdar.'},
+        {c:'EF03MA02',d:'Identificar características do SND por composição e decomposição de números de até quatro ordens.'},
+        {c:'↓ ainda mais fundo',d:'Se a equipe quiser descer mais: <b>EF02MA01</b> (valor posicional e função do zero) e <b>EF02MA08</b> (dobro, metade, triplo, terça parte) são a origem remota. Vale mostrar — desde que fique claro que o marco acionável é o 3º ano.'}
+      ]}
+    ]
+  },
+  B:{
+    titulo:'Coluna B · o fator multiplicativo',
+    sub:'superfície: "caiu 20%, sobe 20% e volta" — o estudante não opera a taxa como fator',
+    andares:[
+      {ano:'9º ano · a superfície',habs:[
+        {c:'EF09MA05',d:'Aplicação de percentuais sucessivos e determinação das taxas percentuais. É exatamente o alvo da Caça à Promoção Enganosa.'},
+        {c:'EF09MA08',d:'Proporcionalidade direta e inversa, escalas e taxa de variação. O puzzle da ação que cai 20% é um problema de operação inversa.'},
+        {c:'EF09MA06',d:'Função como relação de dependência entre variáveis. Encadear fatores é compor funções — o próprio fechamento da atividade.'}
+      ]},
+      {ano:'8º ano',habs:[
+        {c:'EF08MA13',d:'Problemas com grandezas diretamente e inversamente proporcionais. Sustenta a percepção de que a base muda a cada aplicação.'},
+        {c:'EF08MA12',d:'Identificar a natureza da variação entre duas grandezas e expressá-la por sentença algébrica.'},
+        {c:'EF08MA06',d:'Valor numérico de expressões algébricas. Sem isso, 1 − x/100 é um desenho, não uma ferramenta que se calcula.'}
+      ]},
+      {ano:'7º ano',habs:[
+        {c:'EF07MA02',d:'Problemas com porcentagens que lidam com acréscimos e decréscimos simples. É onde o desconto deixa de ser leitura e passa a ser operação — o alvo direto da tira de 100.'},
+        {c:'EF07MA13',d:'Compreender a ideia de <b>variável</b>, representada por letra, para expressar relação entre grandezas. O momento "nomear": a regra só vira ferramenta quando o número vira letra.',m:1},
+        {c:'EF07MA09',d:'Associação entre razão e fração na resolução de problemas. Porcentagem é razão de denominador 100 — é aqui que isso é dito com todas as letras.'},
+        {c:'EF07MA11',d:'Multiplicação e divisão de racionais e a relação entre elas. Desfazer ×0,8 com 1 ÷ 0,8 mora aqui.'}
+      ]},
+      {ano:'6º ano · atenção',habs:[
+        {c:'EF06MA13',d:'Porcentagem com base na ideia de proporcionalidade, sem regra de três.'},
+        {c:'EF06MA09',d:'Cálculo da fração de uma quantidade. A fração agindo sobre um valor.'},
+        {c:'EF06MA14',d:'A igualdade não se altera ao multiplicar os dois membros por um mesmo número.'},
+        {c:'⚠ o teste de origem',d:'<b>As três retomam os Anos Iniciais.</b> EF06MA13 retoma EF05MA06; EF06MA09 retoma EF05MA08 e EF04MA09; EF06MA14 retoma EF05MA10, que já dizia exatamente o mesmo, inclusive para a multiplicação e a divisão. O andar seguinte é obrigatório.'}
+      ]},
+      {ano:'5º ano · onde o conceito nasce',habs:[
+        {c:'EF05MA12',d:'Resolver problemas que envolvam <b>variação de proporcionalidade direta entre duas grandezas</b> — associar a quantidade de um produto ao valor a pagar, alterar ingredientes de receitas, ampliar ou reduzir escala. É a raiz do raciocínio proporcional, e a base de tudo o que a Caça exigiu.',m:1},
+        {c:'EF05MA13',d:'Partilha de uma quantidade em duas partes desiguais, <b>com compreensão da ideia de razão entre as partes e delas com o todo</b>. A primeira vez que a palavra razão aparece no currículo. Quem soma 50% + 20% nunca construiu isto.',m:1},
+        {c:'EF05MA06',d:'Associar 10%, 25%, 50%, 75% e 100% à décima parte, quarta parte, metade, três quartos e um inteiro. A porcentagem entra no currículo <b>já amarrada à base sobre a qual incide</b> — e é exatamente essa amarração que se perde depois.',m:1},
+        {c:'EF05MA10',d:'Concluir que a igualdade se mantém ao adicionar, subtrair, <b>multiplicar ou dividir</b> ambos os membros por um mesmo número. Fundamento da equivalência entre as duas rotas de cálculo do desconto.'}
+      ]},
+      {ano:'4º ano',habs:[
+        {c:'EF04MA13',d:'Reconhecer, por meio de investigações e com uso da calculadora, <b>as relações inversas</b> entre adição e subtração e entre multiplicação e divisão, para aplicá-las na resolução de problemas. É o marco exato do puzzle "caiu 20%, sobe quanto?" — desfazer um fator é dividir por ele.',m:1},
+        {c:'EF04MA06',d:'Diferentes significados da multiplicação, incluindo <b>proporcionalidade</b>. O operador multiplicativo antes da porcentagem existir.'},
+        {c:'EF04MA25',d:'Problemas de compra e venda e formas de pagamento, <b>utilizando os termos troco e desconto</b>. A palavra "desconto" entra no currículo aqui — cinco anos antes de EF09MA05.'}
+      ]},
+      {ano:'3º ano · o fundo',habs:[
+        {c:'EF03MA07',d:'Problemas de multiplicação (por 2, 3, 4, 5 e 10) com os significados de adição de parcelas iguais, <b>proporcionalidade</b>, combinatória e disposição retangular. A proporcionalidade nasce aqui, dentro da multiplicação.',m:1},
+        {c:'EF03MA09',d:'Associar o quociente de uma divisão às ideias de metade, terça, quarta, quinta e <b>décima partes</b>. Mesmo marco da coluna A — e é o que permite que "10%" um dia signifique alguma coisa.',m:1},
+        {c:'EF03MA11',d:'Compreender a ideia de igualdade para escrever diferentes sentenças que resultem na mesma soma ou diferença. A raiz remota de EF05MA10 e EF06MA14.'},
+        {c:'↓ ainda mais fundo',d:'<b>EF02MA08</b> (dobro, metade, triplo, terça parte) é a origem do operador multiplicativo. Vale citar como curiosidade — mas o marco acionável desta coluna é o 3º ano.'}
+      ]}
+    ]
+  }
+};
+let chain='A',level=0,seenB=false;
+function setChain(k){
+  chain=k;level=0;seenB=(k==='B')||seenB;
+  document.getElementById('cb-A').classList.toggle('sel',k==='A');
+  document.getElementById('cb-B').classList.toggle('sel',k==='B');
+  document.getElementById('icH').textContent=CH[k].titulo;
+  document.getElementById('icS').textContent=CH[k].sub;
+  document.getElementById('icList').innerHTML='';
+  for(let i=1;i<4;i++)document.getElementById('s'+i).classList.remove('on');
+  document.getElementById('digBtn').disabled=false;
+  document.getElementById('digBtn').textContent='⛏ escavar um andar';
+  document.getElementById('digNarr').textContent='clique em "escavar" para descer um andar por vez';
+  document.getElementById('conv').classList.remove('on');
+  renderAndar(0);
+}
+function renderAndar(i){
+  const a=CH[chain].andares[i];if(!a)return;
+  const box=document.getElementById('icList');
+  const h=document.createElement('div');
+  h.innerHTML='<div style="font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:.1em;color:#8A776D;margin:10px 0 6px;text-transform:uppercase">'+a.ano+'</div>';
+  box.appendChild(h);
+  a.habs.forEach(x=>{
+    const d=document.createElement('div');
+    d.className='hab'+(x.m?' marco':'');
+    d.innerHTML='<span class="hab-c">'+x.c+(x.m?'<span class="hab-m">marco</span>':'')+'</span><span class="hab-d">'+x.d+'</span>';
+    box.appendChild(d);
+  });
+}
+function dig(){
+  const total=CH[chain].andares.length;
+  if(level>=total-1)return;
+  level++;
+  document.getElementById('s'+level).classList.add('on');
+  renderAndar(level);
+  const nomes=['','8º ano','7º ano','6º ano','5º ano','4º ano','3º ano'];
+  document.getElementById('digNarr').textContent='andar aberto: '+nomes[level]+' — pergunte à turma o que sustenta o que acabou de aparecer';
+  if(level>=total-1){
+    document.getElementById('digBtn').disabled=true;
+    document.getElementById('digBtn').textContent='⛏ fundo alcançado';
+    document.getElementById('digNarr').textContent='fundo alcançado no 3º ano — as habilidades marcadas são os marcos desta coluna';
+    if(chain==='B'||seenB)document.getElementById('conv').classList.add('on');
+  }
+}
+function digReset(){setChain(chain);}
+setChain('A');
+
+/* ═══ LENTES ═══ */
+const LENTES=[
+ {n:'Ausubel',c:'subsunçor e aprendizagem significativa',
+  q:'"O que o estudante já sabe é onde o novo vai se ancorar. Existe âncora?"',
+  e:'Foi no momento da <b>Mesa de Trocas</b>. A oficina não pediu a conversão e depois explicou; ela <b>construiu a âncora primeiro</b> — o valor posicional, com o corpo — e só então a conversão apareceu como consequência. E note onde essa âncora foi construída no currículo: <b>EF04MA10</b>, quando se diz que as regras do SND valem depois da vírgula. Quem inverte a ordem produz aprendizagem mecânica: o estudante decora "duas casas" sem nada onde essa informação se prenda.',
+  t:'EF03MA09 e EF04MA10 são os subsunçores'},
+ {n:'Piaget',c:'abstração reflexionante',
+  q:'"Isso ampliou o que ele sabe, ou reorganizou o modo como ele pensa?"',
+  e:'Foi no <b>movimento 5 da tira de 100</b>, quando as equipes pararam de contar quadradinhos e escreveram <b>100 − x</b>. Nada foi acrescentado ao que elas sabiam: o pensamento se reorganizou num nível acima. É a diferença entre saber mais e pensar diferente — e é por isso que recompor não é repetir.',
+  t:'a regra não foi dada, foi construída'},
+ {n:'Vygotsky',c:'mediação e zona de desenvolvimento proximal',
+  q:'"O que ele faz hoje comigo, fará sozinho amanhã?"',
+  e:'Foi na <b>validação cruzada da Corrida</b> e na regra de ouro da tira de 100: <i>"testa na tira e me diz se funciona"</i>. Nos dois casos o formador recusou dar a conclusão e ofereceu apenas a próxima pergunta. A defasagem, aqui, deixa de ser destino: <b>o que falta pode ser reconstruído por mediação intencional</b>, em qualquer ano.',
+  t:'a defasagem não é destino, nem tem prazo'},
+ {n:'Bruner',c:'currículo em espiral',
+  q:'"Este conceito já apareceu antes? Vai voltar depois? Como?"',
+  e:'É a manhã inteira. A <b>Fábrica</b> tratou de porcentagem no nível da representação; a <b>Caça</b> tratou da mesma porcentagem no nível do operador e da composição. Mesmo objeto, duas alturas da espiral. E o DCRC faz isso <b>sete vezes</b>, do 3º ao 9º ano: EF03MA09 → EF04MA10 → EF05MA06 → EF06MA13 → EF07MA02 → EF08MA04 → EF09MA05.',
+  t:'sete voltas, um conceito'},
+ {n:'Young',c:'conhecimento poderoso',
+  q:'"Isso permite entender algo que a experiência cotidiana não entrega?"',
+  e:'Foi na <b>promoção enganosa</b>. Todo mundo já viu uma vitrine com "50% + 20%". Sem o fator multiplicativo, a vitrine é só uma vitrine. Com ele, o estudante lê o que o anúncio esconde. <b>Esse é o conhecimento que a escola deve, porque a vida cotidiana não dá.</b>',
+  t:'ler além da experiência imediata'},
+ {n:'Meyer &amp; Land',c:'conceito limiar (threshold concept)',
+  q:'"Depois de entender isso, é possível voltar a não entender?"',
+  e:'Foram duas travessias: <b>"a barra da fração é um sinal de dividir"</b> — que o currículo abre em <b>EF03MA09</b> e formaliza em <b>EF05MA03</b> — e <b>"o desconto é um fator que multiplica"</b>. Nenhuma das duas é conteúdo a mais: são portais. Quem passou não volta atrás e enxerga o campo inteiro de outro jeito. Por isso são difíceis — exigem abandonar uma compreensão anterior, não apenas somar a ela. E por isso o 6º ano, que só as repete, não faz ninguém atravessar.',
+  t:'transformador, integrador, irreversível'}
+];
+const lbox=document.getElementById('lentes');
+LENTES.forEach((l,i)=>{
+  const d=document.createElement('div');
+  d.className='lente';d.onclick=()=>d.classList.toggle('on');
+  d.innerHTML='<div class="lente-n">'+l.n+'</div><div class="lente-c">'+l.c+'</div>'+
+   '<div class="lente-b"><div class="lente-q">'+l.q+'</div><div class="lente-e">'+l.e+'</div><span class="lente-tag">'+l.t+'</span></div>';
+  lbox.appendChild(d);
+});
+function lentesAll(v){[...document.querySelectorAll('.lente')].forEach(e=>e.classList.toggle('on',v));}
+
+/* ═══ ESPIRAL ═══ */
+const ESP=[
+ {c:'EF03MA09 · 3º ano — a origem',d:'<b>Associar o quociente de uma divisão com resto zero por 2, 3, 4, 5 e 10 às ideias de metade, terça, quarta, quinta e décima partes.</b> Ainda não há símbolo, nem fração escrita, nem porcentagem: há a ideia de <b>parte de um todo obtida por divisão</b>. Tudo o que vem depois é reescrita disto. Cognitivamente: associar e nomear.'},
+ {c:'EF04MA10 · 4º ano',d:'<b>Reconhecer que as regras do SND podem ser estendidas para a representação decimal e relacionar décimos e centésimos com o sistema monetário.</b> O que muda: a parte ganha <b>notação posicional</b> e vira quantidade manipulável — o centavo é o centésimo. Com EF04MA09, o 1/100 entra na reta numérica. Cognitivamente: representar e localizar.'},
+ {c:'EF05MA06 · 5º ano — o símbolo',d:'<b>Associar 10%, 25%, 50%, 75% e 100% à décima parte, quarta parte, metade, três quartos e um inteiro, para calcular porcentagens.</b> O que muda: aparece o <b>símbolo %</b> — e aparece já colado à fração da qual é apelido. Este é o nó decisivo da espiral: aqui a porcentagem ainda é <i>parte de</i>, nunca número solto. Cognitivamente: reconhecer e calcular por equivalência.'},
+ {c:'EF06MA13 · 6º ano — a retomada',d:'<b>Resolver problemas que envolvam porcentagens, com base na ideia de proporcionalidade, sem fazer uso da regra de três.</b> O que muda: <b>quase nada.</b> É EF05MA06 em contexto mais amplo — mesma exigência cognitiva, mais problemas. Vale dizer isso em voz alta: se a turma chega ao 6º sem EF05MA06, este ano <b>não corrige</b> a lacuna, apenas a atravessa. É a volta da espiral que mais engana o professor.'},
+ {c:'EF07MA02 · 7º ano',d:'<b>Resolver problemas que envolvam porcentagens com acréscimos e decréscimos simples.</b> O que muda: a porcentagem deixa de ser lida e passa a <b>agir sobre um valor</b> — vira operador. Foi a tira de 100, no instante em que a equipe recortou o pedaço que sai. Cognitivamente: aplicar e transformar.'},
+ {c:'EF08MA04 · 8º ano',d:'<b>Resolver problemas de cálculo de porcentagens, inclusive com tecnologias.</b> O que muda: a porcentagem entra em <b>problemas de várias etapas</b>, com números que não fecham e que exigem calculadora. Cognitivamente: resolver e generalizar.'},
+ {c:'EF09MA05 · 9º ano',d:'<b>Aplicação de percentuais sucessivos e determinação das taxas percentuais.</b> O que muda: já não se pede o resultado de uma taxa, mas o efeito de <b>taxas que se compõem</b> — e, no puzzle, <b>a taxa que desfaz outra taxa</b>. Cognitivamente: compor, inverter, analisar.'}
+];
+function espClick(i){
+  [...document.querySelectorAll('.esp-node')].forEach((n,j)=>n.classList.toggle('on',j===i));
+  document.getElementById('espOut').innerHTML='<div class="esp-out-c">'+ESP[i].c+'</div><div class="esp-out-d">'+ESP[i].d+'</div>';
+}
+
+/* ═══ CLASSIFICADOR ═══ */
+const ACOES=[
+ {t:'Refazer com a turma a lista de exercícios de conversão que a maioria errou na prova.',r:'rev',
+  f:'<b>Revisão.</b> Repete a mesma via cognitiva que já falhou. Se o estudante errou porque não tem o valor posicional, mais exercícios de conversão só produzem mais erro — agora com desânimo junto.'},
+ {t:'Antes de iniciar conversões no 9º ano, montar a mesa de trocas e reconstruir valor posicional com material manipulável.',r:'rec',
+  f:'<b>Recomposição.</b> Ataca o subsunçor — e o subsunçor não é EF06MA02, que apenas retoma: é <b>EF04MA10</b>, o único ponto do currículo em que se diz que o valor posicional atravessa a vírgula. É Ausubel em ato: constrói a âncora antes de exigir a ancoragem.'},
+ {t:'Dar uma nova aula expositiva, mais devagar e com mais exemplos, sobre a regra de "andar a vírgula".',r:'rev',
+  f:'<b>Revisão.</b> Mais devagar continua sendo o truque. O texto é explícito: ensinar o procedimento sem o porquê é plantar o conhecimento frágil que a recomposição existe para evitar.'},
+ {t:'Repartir moedas para dividir R$ 3 entre 4 pessoas, no 9º ano, antes de tratar de fração e decimal.',r:'rec',
+  f:'<b>Recomposição.</b> Reconstrói a fração como resultado de divisão — que o currículo abre em <b>EF03MA09</b> e formaliza em <b>EF05MA03</b>, e não no 6º ano. Parece "coisa de série anterior"; é justamente por isso que funciona. <b>O marco não tem idade fixa: tem função.</b>'},
+ {t:'Aplicar um simulado no formato SAEB para medir de novo o desempenho da turma.',r:'ger',
+  f:'<b>Diagnóstico.</b> Necessário — sem alvo não há recomposição. Mas medir não recompõe. O texto defende avaliação diagnóstica <i>contínua e articulada</i> à priorização curricular, não como etapa isolada.'},
+ {t:'Pedir que as equipes escrevam, com uma letra, a regra que descobriram contando quadradinhos.',r:'rec',
+  f:'<b>Recomposição.</b> É EF07MA13 sendo construído: a abstração reflexionante de Piaget. Não se acrescentou conteúdo — reorganizou-se o nível do pensamento. Este é o exemplo mais fino da lista.'},
+ {t:'Acrescentar duas aulas semanais de Matemática ao 9º ano.',r:'ger',
+  f:'<b>Gestão.</b> Tempo é condição, não conteúdo. Sem definir <i>o que</i> será reconstruído, mais aulas ampliam a mesma lacuna. Pode virar recomposição — se o tempo extra tiver alvo.'},
+ {t:'Aplicar de novo, no 7º ano, as atividades de porcentagem do 6º ano, que a turma já viu e não aprendeu.',r:'rev',
+  f:'<b>Revisão.</b> E das mais enganosas, porque parece recomposição — é material de ano anterior. Mas EF06MA13 apenas retoma EF05MA06 com a mesma exigência cognitiva. Voltar a ela é repetir a volta da espiral que já não funcionou. Recompor exigiria descer até onde a ideia nasce.'},
+ {t:'Diagnosticar que 60% da turma não lê a fração como divisão e, a partir disso, reorganizar o plano do bimestre.',r:'rec',
+  f:'<b>Recomposição.</b> Aqui o diagnóstico não fica sozinho: vira <b>priorização curricular</b>. É o que o texto chama de coerência entre currículo, avaliação e prática — e não empobrece o currículo, reorganiza-o. Repare que o alvo diagnosticado é uma ideia de <b>3º ano</b> reaparecendo numa turma de 9º.'}
+];
+const NOME={rev:'REVISÃO',rec:'RECOMPOSIÇÃO',ger:'DIAGNÓSTICO / GESTÃO'};
+let respondidas=0;
+function renderCards(){
+  const box=document.getElementById('cards');box.innerHTML='';respondidas=0;
+  document.getElementById('score').textContent='0 de 9 respondidas';
+  ACOES.forEach((a,i)=>{
+    const d=document.createElement('div');d.className='cardc';d.id='ac'+i;
+    let b='';['rev','rec','ger'].forEach(k=>{b+='<button class="cbt" onclick="pick('+i+',\''+k+'\')">'+NOME[k]+'</button>';});
+    d.innerHTML='<div class="cardc-n">ação '+(i+1)+'</div><div class="cardc-t">'+a.t+'</div><div class="cardc-b">'+b+'</div><div class="cardc-f" id="af'+i+'"></div>';
+    box.appendChild(d);
+  });
+}
+function pick(i,k){
+  const card=document.getElementById('ac'+i);
+  if(card.classList.contains('ans'))return;
+  const ok=(k===ACOES[i].r);
+  card.classList.add('ans',ACOES[i].r);
+  [...card.querySelectorAll('.cbt')].forEach(b=>{if(b.textContent===NOME[k])b.classList.add('pick');});
+  const f=document.getElementById('af'+i);
+  f.className='cardc-f '+(ok?'ok':'no');
+  f.innerHTML=(ok?'✓ ':'→ ')+ACOES[i].f;
+  respondidas++;
+  document.getElementById('score').textContent=respondidas+' de 9 respondidas';
+}
+function cardsReset(){renderCards();}
+renderCards();
+</script>
+</body>
+</html>

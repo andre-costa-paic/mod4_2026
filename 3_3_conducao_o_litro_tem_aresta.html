@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · O Litro Tem Aresta</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#0E6E7A;--accent-soft:#E2F1F3;--accent-deep:#083F47;
+--h-bg:#08191F;--h-aqua:#5BC8D6;--h-sub:#8CA3AB;--h-line:#1D3641;
+--vol:#2E7D32;--vol-s:#E9F4EA;--vol-b:#A8CFAB;--vol-hi:#8CD494;
+--cap:#1565C0;--cap-s:#E4EDFA;--cap-b:#A3C0E4;--cap-hi:#8FC0F0;
+--brg:#A9761A;--brg-s:#FDF3DE;--brg-b:#E0BE7A;--brg-hi:#F0CE85;
+--ink:#0E1A1E;--ink-mid:#37464C;--ink-soft:#69797F;--border:#DCE3E5;--bg:#F5F8F8;--bg-card:#fff;--radius:8px;
+--sw:46px;--slw:88px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ══ REGRA MESTRA — oculta tudo do formador quando o modo está desligado ══ */
+body:not(.fmode) .fonly{display:none !important}
+
+/* botão mestre do modo formador */
+.fkey{font-family:var(--f-body);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--h-sub);
+  background:rgba(255,255,255,.05);border:1px solid var(--h-line);border-radius:100px;padding:7px 15px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fkey:hover{border-color:var(--h-aqua);color:var(--h-aqua)}
+body.fmode .fkey{background:var(--h-aqua);border-color:var(--h-aqua);color:#08191F}
+.fbar{background:var(--brg-s);border-bottom:1px solid var(--brg-b);color:#6B4C10;font-size:11.5px;font-weight:600;
+  padding:7px 1.5rem;letter-spacing:.02em;position:relative;z-index:39}
+.fbar b{font-weight:800}
+
+/* ── NOTA DO FORMADOR ── */
+.fnote{background:#FFFDF6;border:1px solid rgba(169,118,26,.35);border-left:5px solid var(--brg);border-radius:var(--radius);
+  padding:.95rem 1.2rem;margin:1rem 0;position:relative}
+.fnote.alerta{background:#FFF8F9;border-color:rgba(176,38,74,.35);border-left-color:#B0264A}
+.fnote.chave{background:var(--vol-s);border-color:rgba(46,125,50,.3);border-left-color:var(--vol)}
+.fnote.trans{background:#EFEAF8;border-color:#BFAEDD;border-left-color:#5B3E8E}
+.fnote-h{font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--brg);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.fnote.alerta .fnote-h{color:#B0264A}
+.fnote.chave .fnote-h{color:var(--vol)}
+.fnote.trans .fnote-h{color:#5B3E8E}
+.fnote-h::before{content:"◆";font-size:8px}
+.fnote-b{font-size:13.5px;color:var(--ink-mid);line-height:1.72}
+.fnote-b b{color:var(--ink);font-weight:700}
+.fnote-b p+p{margin-top:9px}
+.fnote-b ul{list-style:none;padding:0;margin:0}
+.fnote-b li{padding-left:19px;position:relative;margin-bottom:8px}
+.fnote-b li:last-child{margin-bottom:0}
+.fnote-b li::before{content:"▸";position:absolute;left:0;color:var(--brg);font-size:10px;line-height:1.85}
+.fnote.alerta .fnote-b li::before{color:#B0264A}
+.fnote.chave .fnote-b li::before{color:var(--vol)}
+.fnote.trans .fnote-b li::before{color:#5B3E8E}
+
+/* tabs do formador */
+.tab.fonly{color:var(--brg)}
+.tab.fonly .tn{background:var(--brg-s);color:var(--brg);border-color:rgba(169,118,26,.35)}
+.tab.fonly.on{color:var(--brg);border-bottom-color:var(--brg);background:var(--brg-s)}
+.tab.fonly.on .tn{background:var(--brg);color:#fff}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-aqua)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(91,200,214,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:900px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:10.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 10px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--vol)}.tab.done .tn{background:var(--vol-s);color:var(--vol);border-color:var(--vol)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#0E2830);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'';position:absolute;inset:0;z-index:0;opacity:.5;background-image:repeating-linear-gradient(30deg,rgba(91,200,214,.09) 0 1px,transparent 1px 40px),repeating-linear-gradient(-30deg,rgba(91,200,214,.09) 0 1px,transparent 1px 40px)}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#D2E0E4;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-aqua);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst.v{border-left-color:var(--vol)}.inst.c{border-left-color:var(--cap)}.inst.b{border-left-color:var(--brg)}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst.v .inst-t{color:#1D5E21}.inst.c .inst-t{color:#0D3E7A}.inst.b .inst-t{color:#7A5410}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst.v li::before{color:var(--vol)}.inst.c li::before{color:var(--cap)}.inst.b li::before{color:var(--brg)}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(14,110,122,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:var(--brg-s);border:1px solid rgba(169,118,26,.25);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#6B4C10;line-height:1.6}
+.ok{background:var(--vol-s);border:1px solid rgba(46,125,50,.22);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#1D5E21;line-height:1.6}
+.cap-box{background:var(--cap-s);border:1px solid rgba(21,101,192,.22);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#0D3E7A;line-height:1.6}
+.tip b,.warn b,.ok b,.cap-box b{font-weight:700}
+
+/* ── GOLD (a ponte) ── */
+.gold{background:var(--brg-s);border:1px solid var(--brg-b);border-left:4px solid var(--brg);border-radius:var(--radius);padding:1.15rem 1.3rem;margin-bottom:1.2rem;text-align:center}
+.gold-t{font-family:var(--f-head);font-size:clamp(18px,3.8vw,26px);font-weight:700;color:#7A5410;margin-bottom:8px}
+.gold-d{font-size:13px;color:#6B4C10;line-height:1.65;font-style:italic}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--brg)}.tm.done{color:var(--vol)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.14)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-b{background:var(--cap);border-color:var(--cap);color:#fff}
+.btn-b:hover{filter:brightness(1.1)}
+.btn-v{background:var(--vol);border-color:var(--vol);color:#fff}
+.btn-v:hover{filter:brightness(1.1)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ══════ DARK RIG (widgets projetáveis) ══════ */
+.rig{background:var(--h-bg);border:1px solid var(--h-line);border-radius:var(--radius);padding:1.2rem 1.1rem 1.4rem;margin-bottom:1.2rem}
+.rig.palco{position:fixed;inset:0;z-index:300;border-radius:0;border:none;margin:0;overflow-y:auto;padding:3vh 4vw;display:flex;flex-direction:column;justify-content:center}
+.rig-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--h-aqua);
+  border-bottom:1px solid var(--h-line);padding-bottom:10px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rig-h span{color:#597480;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.fs-btn{background:none;border:1px solid var(--h-line);color:var(--h-sub);font-family:var(--f-mono);font-size:10px;padding:5px 11px;border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.fs-btn:hover{border-color:var(--h-aqua);color:var(--h-aqua)}
+
+/* cube */
+.cubewrap{display:flex;justify-content:center;align-items:center;min-height:330px}
+.cubewrap svg{max-width:100%;height:auto;max-height:340px}
+.rig.palco .cubewrap{min-height:52vh}.rig.palco .cubewrap svg{max-height:56vh}
+.lay{opacity:0;transition:opacity .18s}.lay.on{opacity:1}
+@keyframes pop{0%{transform:translateY(-9px);opacity:0}60%{transform:translateY(0);opacity:1}100%{transform:translateY(0);opacity:1}}
+.lay.pop{animation:pop .26s ease both}
+@keyframes flow{to{stroke-dashoffset:-40}}
+.stream{stroke-dasharray:7 6;animation:flow .55s linear infinite}
+
+/* out panel */
+.rig-out{margin-top:15px;background:#0C2029;border:1px solid var(--h-line);border-radius:6px;padding:14px 15px}
+.oc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:520px){.oc-grid{grid-template-columns:1fr}}
+.oc{text-align:center;background:#0A1A21;border:1px solid var(--h-line);border-radius:5px;padding:9px 6px}
+.ol{font-family:var(--f-body);font-size:8.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#69838E;margin-bottom:5px}
+.ov{font-family:var(--f-mono);font-size:17px;font-weight:700;color:#fff}
+.ov.v{color:var(--vol-hi)}.ov.c{color:var(--cap-hi)}.ov.b{color:var(--brg-hi)}
+.oeq{text-align:center;font-family:var(--f-mono);font-size:clamp(14px,3.3vw,20px);font-weight:600;color:var(--h-aqua);padding:12px 6px;background:#0A1A21;border:1px solid var(--h-line);border-radius:5px;line-height:1.5}
+.oeq b{color:#fff}
+.ocap{text-align:center;font-size:12.5px;color:#8CA3AB;font-style:italic;margin-top:11px;min-height:19px;line-height:1.5}
+.rig.palco .ocap{font-size:clamp(13px,1.9vw,19px)}
+.otrail{text-align:center;font-family:var(--f-mono);font-size:12px;color:#9FB8C2;margin-top:10px;line-height:1.7;word-break:break-word;min-height:20px}
+.rig-tip{text-align:center;font-size:11.5px;color:#597480;margin-top:12px;font-style:italic}
+
+/* bet buttons */
+.bet{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.betb{font-family:var(--f-body);font-size:12px;font-weight:700;background:#0C2029;border:1px solid var(--h-line);color:#9FB8C2;padding:9px 16px;border-radius:100px;cursor:pointer;transition:all .15s}
+.betb:hover{border-color:var(--h-aqua);color:#fff}
+.betb.on{background:var(--brg);border-color:var(--brg);color:#fff}
+
+/* ── W2 escala ── */
+.scroll{overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
+.sc-body{position:relative;width:calc(var(--slw) + 13 * var(--sw));margin:0 auto}
+.sc-row{display:flex}.sc-row+.sc-row{margin-top:4px}
+.sc-lab{width:var(--slw);flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:3px 0 0 3px;
+  font-family:var(--f-head);font-size:9px;font-weight:700;letter-spacing:.08em;text-align:center;padding:0 4px}
+.sc-lab.pw{background:#132C36;color:#7592A0;border:1px solid #24404B}
+.sc-lab.cp{background:var(--cap-s);color:#0D3E7A;border:1px solid var(--cap-b)}
+.sc-lab.vl{background:var(--vol-s);color:#1D5E21;border:1px solid var(--vol-b)}
+.sc-cells{display:grid;grid-template-columns:repeat(13,var(--sw))}
+.sc{height:38px;display:flex;align-items:center;justify-content:center;border:1px solid;font-family:var(--f-head);font-size:12px;font-weight:600;transition:all .2s;position:relative}
+.sc.pw{background:#132C36;border-color:#24404B;color:#93AEBA;font-family:var(--f-mono);font-size:10.5px}
+.sc.cp{background:var(--cap-s);border-color:var(--cap-b);color:#0D3E7A;font-style:italic}
+.sc.vl{background:var(--vol-s);border-color:var(--vol-b);color:#1D5E21;font-style:italic}
+.sc.nul{background:#0F2630;border-color:var(--h-line);color:#3B5763}
+.sc.brg{background:var(--brg-s);border-color:var(--brg-b);color:#7A5410;box-shadow:inset 0 0 0 1px var(--brg-b)}
+.sc.src{box-shadow:0 0 0 2px #5BC8D6,0 0 12px rgba(91,200,214,.5);z-index:2}
+.sc.tgt{box-shadow:0 0 0 2px #F0CE85,0 0 12px rgba(240,206,133,.5);z-index:2}
+.sc.lit{filter:brightness(1.14)}
+.sc-tok{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--h-aqua);
+  box-shadow:0 0 0 4px rgba(91,200,214,.24),0 3px 9px rgba(0,0,0,.4);left:0;top:0;
+  transition:transform .26s cubic-bezier(.34,.05,.25,1);pointer-events:none;z-index:5;opacity:0}
+.sc-tok.on{opacity:1}
+.sc-tok::after{content:'';position:absolute;inset:8px;border-radius:50%;background:#04222A}
+
+/* fld controls */
+.rig-ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-top:16px}
+.fld{display:flex;align-items:center;gap:6px;background:#132C36;border:1px solid #24404B;border-radius:5px;padding:5px 10px}
+.fld label{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7592A0}
+.fld input,.fld select{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:13px;font-weight:700;outline:none;cursor:pointer}
+.fld input{width:80px;cursor:text}
+.fld select option{background:#132C36;color:#fff}
+.rig-pre{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:13px}
+.pre{font-family:var(--f-mono);font-size:11.5px;background:#132C36;border:1px solid #24404B;color:#9FB8C2;padding:5px 11px;border-radius:100px;cursor:pointer;transition:all .15s}
+.pre:hover{border-color:var(--h-aqua);color:#fff}
+
+/* rain */
+.rain{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+@media(max-width:560px){.rain{grid-template-columns:1fr}}
+.cist{margin-top:14px;background:#0C2029;border:1px solid var(--h-line);border-radius:5px;padding:13px 15px}
+.cist-h{font-family:var(--f-body);font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:#69838E;margin-bottom:9px}
+.bar{height:26px;background:#071820;border:1px solid #24404B;border-radius:4px;overflow:hidden;position:relative}
+.bar-f{height:100%;background:linear-gradient(90deg,#2C7FBF,#5BC8D6);width:0;transition:width .6s cubic-bezier(.34,.05,.25,1)}
+.bar-t{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+
+/* investigation cards */
+.invg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+@media(max-width:600px){.invg{grid-template-columns:1fr}}
+.iv{background:#0C2029;border:1px solid var(--h-line);border-radius:8px;padding:.85rem 1rem;cursor:pointer;transition:all .2s}
+.iv:hover{border-color:var(--accent)}
+.iv-top{display:flex;gap:10px;align-items:baseline}
+.iv-n{font-family:var(--f-mono);font-size:10px;font-weight:700;color:#597480;min-width:18px}
+.iv-q{flex:1;font-size:12px;color:#C6D6DC;line-height:1.4}
+.iv-a{display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--h-line)}
+.iv.open .iv-a{display:block}
+.iv-r{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--h-aqua);margin-bottom:4px}
+.iv-b{font-family:var(--f-mono);font-size:11px;color:var(--brg-hi)}
+
+/* Cabe game arbiter */
+.verd{text-align:center;font-family:var(--f-head);font-size:clamp(20px,4vw,28px);font-weight:700;padding:14px;border-radius:6px;margin-top:12px}
+.verd.cabe{background:var(--vol-s);color:#1D5E21;border:1px solid var(--vol-b)}
+.verd.nao{background:#FBE9ED;color:#7C1832;border:1px solid #E6AEBE}
+.verd.exato{background:var(--brg-s);color:#7A5410;border:1px solid var(--brg-b)}
+
+/* rally cards */
+.rally-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0}
+@media(max-width:600px){.rally-grid{grid-template-columns:repeat(2,1fr)}}
+.rt{border-radius:var(--radius);padding:.7rem .5rem;text-align:center;border:1px solid}
+.rt-v{font-family:var(--f-mono);font-size:15px;font-weight:700;margin-bottom:4px}
+.rt-t{font-family:var(--f-head);font-size:10px;font-weight:600;margin-bottom:3px}
+.rt-d{font-size:9px;line-height:1.35;opacity:.82}
+.rt.pad{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+.rt.lng{background:var(--brg-s);border-color:var(--brg);color:#6B4C10}
+.rt.arm{background:#FBE9ED;border-color:#B0264A;color:#7C1832}
+.rt.rel{background:var(--vol-s);border-color:var(--vol);color:#1D5E21}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+
+/* ══════ HUD — relógio único de condução ══════ */
+.hud{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--h-bg);border-radius:0 0 8px 8px;padding:.5rem .8rem;margin-bottom:1.1rem}
+.hud-s{font-size:10px;color:var(--h-sub);display:flex;align-items:center;gap:6px;letter-spacing:.04em}
+.hud-s b{font-family:var(--f-mono);color:#fff;font-size:12.5px;font-weight:600}
+.dot{width:7px;height:7px;border-radius:50%;background:#3B5763}
+.dot.live{background:#8CD494;box-shadow:0 0 0 3px rgba(140,212,148,.18)}
+.hud-mid{flex:1;display:flex;align-items:center;gap:7px;justify-content:center;min-width:230px}
+.hud-step{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--h-aqua);font-weight:700;max-width:120px;line-height:1.25}
+.hud-t{font-family:var(--f-mono);font-size:23px;font-weight:700;color:#fff;min-width:72px;text-align:center;line-height:1}
+.hud-t.low{color:var(--brg-hi)}.hud-t.done{color:var(--vol-hi)}
+.hud-t.over{color:#F09090}
+.mini{background:none;border:1px solid var(--h-line);color:#9FB8C2;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:var(--f-body);font-weight:700;transition:all .15s}
+.mini:hover{border-color:var(--h-aqua);color:#fff}
+.hud-aux{font-family:var(--f-mono);font-size:14px;color:var(--brg-hi);min-width:48px;text-align:center}
+.palco-clock{display:none;position:fixed;top:14px;right:18px;z-index:320;font-family:var(--f-mono);font-size:20px;font-weight:700;color:#fff;background:rgba(4,20,26,.85);border:1px solid var(--h-line);border-radius:6px;padding:6px 12px}
+.palco-clock.on{display:block}
+.palco-clock.over{color:#F09090}
+
+/* ══════ tira de materiais da etapa ══════ */
+.mat{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--brg);border-radius:6px;padding:.55rem .8rem;margin-bottom:1.1rem}
+.mat-t{font-size:8.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--brg);margin-right:2px}
+.mat i{font-style:normal;font-size:11.5px;color:var(--ink-mid);background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:3px 10px}
+.mat i.pr{border-color:var(--brg-b);background:var(--brg-s);color:#6B4C10;font-weight:600}
+.mat i.no{border-color:#C9D6D9}
+
+/* ══════ contadores da sala (tally) ══════ */
+.tally{display:grid;gap:8px;margin:12px 0}
+.tally.q4{grid-template-columns:repeat(4,1fr)}
+.tally.q3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:520px){.tally.q4{grid-template-columns:repeat(2,1fr)}.tally.q3{grid-template-columns:1fr}}
+.tl-c{background:#0C2029;border:1px solid var(--h-line);border-radius:6px;padding:10px 6px;text-align:center;cursor:pointer;user-select:none;transition:all .15s}
+.tl-c:hover{border-color:var(--h-aqua)}
+.tl-c.hit{border-color:var(--vol);box-shadow:inset 0 0 0 1px var(--vol)}
+.tl-v{font-family:var(--f-mono);font-size:25px;font-weight:700;color:#fff;line-height:1}
+.tl-k{font-family:var(--f-mono);font-size:12px;color:#9FB8C2;margin-top:4px}
+.tl-b{height:4px;background:var(--h-aqua);border-radius:3px;margin-top:8px;width:0;transition:width .3s}
+.tl-c.hit .tl-b{background:var(--vol-hi)}
+
+/* ══════ overlay (checklist e roteiro) ══════ */
+.ovbg{position:fixed;inset:0;background:rgba(4,14,18,.75);z-index:400;display:none;padding:4vh 3vw;overflow-y:auto}
+.ovbg.on{display:block}
+.ovc{max-width:860px;margin:0 auto;background:var(--bg-card);border-radius:10px;padding:1.5rem 1.6rem 1.9rem}
+.ovc h3{font-family:var(--f-head);font-size:19px;color:var(--accent-deep);margin-bottom:4px}
+.ovc h4{font-family:var(--f-head);font-size:13px;color:var(--accent);margin:16px 0 7px;letter-spacing:.02em}
+.ovc p.sub{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.ck{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:var(--ink-mid);line-height:1.55;padding:5px 0;cursor:pointer}
+.ck input{margin-top:3px;accent-color:var(--accent);width:15px;height:15px;flex-shrink:0}
+.ck b{color:var(--ink)}
+.ck.done span{text-decoration:line-through;opacity:.5}
+.plan{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.plan th{text-align:left;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);padding:6px 8px;border-bottom:1px solid var(--border)}
+.plan td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--ink-mid)}
+.plan td.n{font-family:var(--f-mono);font-weight:700;color:var(--accent);white-space:nowrap}
+.plan tr.off td{opacity:.42}
+.plan tr.cur td{background:var(--accent-soft)}
+
+.top-btn{background:rgba(91,200,214,.14);border:.5px solid rgba(91,200,214,.45);color:var(--h-aqua);font-family:var(--f-body);font-size:11px;font-weight:700;border-radius:3px;padding:4px 11px;cursor:pointer}
+.top-btn:hover{background:rgba(91,200,214,.26)}
+
+/* ══════ transposição ══════ */
+.tp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+@media(max-width:620px){.tp{grid-template-columns:1fr}}
+.tp-c{border-radius:var(--radius);padding:.9rem 1rem;border:1px solid}
+.tp-c.keep{background:var(--vol-s);border-color:var(--vol-b)}
+.tp-c.adapt{background:var(--cap-s);border-color:var(--cap-b)}
+.tp-h{font-family:var(--f-head);font-size:12.5px;font-weight:700;margin-bottom:7px}
+.tp-c.keep .tp-h{color:#1D5E21}.tp-c.adapt .tp-h{color:#0D3E7A}
+.tp-c ul{list-style:none;padding:0}
+.tp-c li{font-size:12.5px;line-height:1.6;padding-left:16px;position:relative;margin-bottom:5px;color:var(--ink-mid)}
+.tp-c li::before{content:"▸";position:absolute;left:0;font-size:10px;line-height:1.75}
+.tp-c.keep li::before{color:var(--vol)}.tp-c.adapt li::before{color:var(--cap)}
+.prt{width:100%;border-collapse:collapse;font-size:12px;color:#C6D6DC;margin-top:4px}
+.prt th{text-align:left;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:#7592A0;padding:7px 8px;border-bottom:1px solid var(--h-line)}
+.prt td{padding:7px 8px;border-bottom:1px solid #10262E}
+.prt td.q{font-family:var(--f-mono);font-weight:700;color:#fff;text-align:right;white-space:nowrap}
+.prt tr.tot td{border-bottom:none;color:var(--h-aqua);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">O Litro Tem <em>Aresta</em></div>
+  <span class="top-badge">🫙 EF08MA20 · volume e capacidade</span>
+  <span class="top-badge">60 min</span>
+  <button class="top-btn" onclick="ovOpen('ovCheck')">✓ checklist de sala</button>
+  <button class="top-btn" onclick="ovOpen('ovPlan')">🗺 roteiro</button>
+  <button class="fkey" id="fkey" onclick="toggleF()" title="mostrar/ocultar notas do formador (tecla F)">notas do formador</button>
+</div>
+<div class="fbar fonly"><b>MODO FORMADOR ATIVO.</b> As notas em âmbar são só suas — não devem ir para a tela. Tecle <b>F</b> para voltar ao modo projeção.</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Abertura</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>Caixa de Mil</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>Por que mil</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>Duas marchas</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>A ponte</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>A régua</button>
+      <button class="tab" onclick="go(6)"><span class="tn">7</span>Investigação</button>
+      <button class="tab" onclick="go(7)"><span class="tn">8</span>A chuva</button>
+      <button class="tab" onclick="go(8)"><span class="tn">9</span>Cabe?</button>
+      <!-- <button class="tab fonly" onclick="go(9)"><span class="tn">10</span>Transposição</button> -->
+    </div>
+    <!-- <div class="hud">
+      <div class="hud-s"><span class="dot" id="hudDot"></span>sessão <b id="hudSess">00:00</b><span id="hudPlan">/ 100 min</span></div>
+      <div class="hud-mid">
+        <span class="hud-step" id="hudStep">1 · Abertura</span>
+        <span class="hud-t" id="hudT">08:00</span>
+        <button class="mini" id="hudPlay" onclick="tToggle()">▶</button>
+        <button class="mini" onclick="tReset()">↺</button>
+      </div>
+      <div class="hud-s">
+        <span class="hud-aux" id="hudAux">—</span>
+        <button class="mini" onclick="aux(90)">90s</button>
+        <button class="mini" onclick="aux(120)">2min</button>
+        <button class="mini" onclick="aux(0)">✕</button>
+      </div>
+    </div> -->
+  </div>
+  <div class="palco-clock" id="palcoClock">00:00</div>
+
+<!-- ══════════ ABERTURA ══════════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>No quadro, sem comentário: <b>1 m³ = ___ dm³ &nbsp;·&nbsp; 1 L = ___ cm³ &nbsp;·&nbsp; 1 m³ = ___ L</b></p>
+    <p>Respondam num papel, sozinhos, sem calculadora. Levantem ao mesmo tempo. <b>Hoje ninguém recebe a resposta pronta — vocês vão construí-la, com papel, régua e um quilo de arroz.</b></p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="pr">meia folha em branco por participante</i>
+    <i class="pr">Apêndice F · Ficha de Registro (1 por dupla)</i>
+    <i class="no">quadro e piloto</i>
+  </div>
+
+  <div class="inst fonly">
+    <div class="inst-t">Como conduzir a abertura</div>
+    <ul>
+      <li>Vão aparecer <b>10, 100, 1000 e 10 000</b> — quase sempre as quatro convivendo na sala, entre professores experientes</li>
+      <li><b>Não corrija nenhuma resposta e não dê pistas.</b> Recolha os papéis e guarde — voltam no fechamento da chuva</li>
+      <li>Organize duplas ou grupos de quatro e distribua as planificações</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">RETRATO DA SALA · 1 m³ = ___ dm³ <span>toque para somar · shift+toque para tirar um</span></div>
+    <div class="tally q4" id="tlOpen"></div>
+    <div class="ocap" id="tlCap">Conte em voz alta quantos papéis mostram cada resposta e registre aqui. Este retrato volta no fechamento — é a prova visível do percurso da turma.</div>
+    <div class="ctrls"><button class="btn btn-g" onclick="tlReset()">↺ zerar</button></div>
+  </div>
+
+  <div class="tip fonly"><b>Por que registrar o retrato.</b> Recolher os papéis é bom; ter o número projetado é melhor. No fechamento, a sala vê que <b>X pessoas escreveram 100 no início</b> e que nenhuma escreveria isso agora — a aprendizagem deixa de ser sensação e vira dado. Nas réplicas municipais, esse mesmo número é o melhor argumento para convencer um professor cético a montar a caixa.</div>
+
+  <div class="nav"><span class="nav-info">o cronômetro desta etapa está no topo da tela</span><button class="btn btn-a" onclick="go(1)">a Caixa de Mil →</button></div>
+</div>
+
+<!-- ══════════ CAIXA DE MIL ══════════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>A pergunta que abre a investigação <b>não é "quantos cubinhos cabem aqui?"</b></p>
+    <p>É: <b>"como você descobriria isso sem contar um por um?"</b></p>
+  </div>
+
+  <div class="mat"><span class="mat-t">distribuir agora</span>
+    <i class="pr">Apêndice A1 · fundo — <b>2 cópias por dupla</b></i>
+    <i class="pr">Apêndice A2 e A3 · cintas — 1 de cada por dupla</i>
+    <i class="no">régua, tesoura, cola, fita larga</i>
+    <i class="no">material dourado, se houver</i>
+  </div>
+
+  <div class="warn fonly"><b>Antes de recortar qualquer coisa, meça.</b> Cada dupla mede um quadradinho da malha impressa: precisa ter <b>exatamente 1 cm</b> de lado. Se tiver 0,9 ou 1,1, a impressora aplicou escala automática e a caixa não será um decímetro cúbico — reimprima a 100%. <b>Esta conferência é a primeira lição da oficina sobre o que significa medir</b> — não a pule para ganhar tempo.</div>
+
+  <div class="rig" id="rigCube">
+    <div class="rig-h">A CAIXA DE MIL · empilhe as camadas, depois despeje o litro
+      <button class="fs-btn" onclick="palco('rigCube')">⛶ modo palco</button></div>
+    <div class="cubewrap">
+      <svg id="cubeSvg" viewBox="-165 -178 330 348" xmlns="http://www.w3.org/2000/svg">
+        <g id="gBack"></g><g id="gFill"></g><g id="gGrid"></g><g id="gCyl"></g><g id="gArrow"></g><g id="gFront"></g>
+      </svg>
+    </div>
+    <div class="ctrls">
+      <button class="btn btn-v" id="cbOne">+ 1 camada</button>
+      <button class="btn btn-v" id="cbPlay">▶ empilhar 10</button>
+      <button class="btn btn-b" id="cbPour">💧 despejar 1 litro</button>
+      <button class="btn btn-g" id="cbReset">↺</button>
+    </div>
+    <div class="rig-out">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">camadas</div><div class="ov" id="oLay">0</div></div>
+        <div class="oc"><div class="ol">altura</div><div class="ov" id="oH">0 cm</div></div>
+        <div class="oc"><div class="ol">volume</div><div class="ov v" id="oV">0 cm³</div></div>
+      </div>
+      <div class="oeq" id="oEq">cada camada tem 10 × 10 = 100 cubinhos de 1 cm³</div>
+      <div class="ocap" id="oCap">A caixa tem 10 cm de aresta. O fundo traz 100 quadradinhos de 1 cm².</div>
+    </div>
+    <div class="rig-tip" id="cbState">caixa vazia</div>
+  </div>
+
+  <div class="inst v">
+    <div class="inst-t">As quatro perguntas de investigação — registrem ANTES de responder em voz alta</div>
+    <ul>
+      <li>Quantos quadradinhos de 1 cm² há no fundo? <b>100 — e a resposta valiosa é "10 × 10", não "contei"</b></li>
+      <li>Quantos cubinhos ocupam uma camada de 1 cm? <b>100 — a camada é exatamente 100 cm³</b></li>
+      <li>Quantas camadas cabem até a borda? <b>10 — as faixas da parede respondem sozinhas</b></li>
+      <li>Quantos cubinhos na caixa inteira? <b>100 × 10 = 1000 → 1 dm³ = 1000 cm³</b></li>
+    </ul>
+  </div>
+
+  <div class="ok"><b>Não conte mil cubinhos.</b> Conte cem uma única vez e multiplique por dez. Esse atalho não é preguiça — é exatamente o raciocínio que gera a fórmula do volume: área da base vezes altura. <b>Nomeie isso em voz alta no momento em que a turma o usar</b>, porque é o momento em que a fórmula está sendo inventada por eles.</div>
+
+  <div class="tip fonly"><b>🏫 O material dourado sempre soube.</b> Se a escola tiver, coloque as peças ao lado da caixa: o cubinho mede 1 cm³, a barra 10 cm³, a placa 100 cm³ (é a Camada) e o cubo do milhar 1000 cm³ — encaixando dentro da Caixa de Mil. O material que a professora do 1º ano usa para ensinar centena e milhar é, ao mesmo tempo, um decímetro cúbico. Não é coincidência: foi desenhado sobre o centímetro.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(0)">← abertura</button><span class="nav-info">1 dm³ = 1000 cm³, por 100 × 10</span><button class="btn btn-a" onclick="go(2)">por que mil →</button></div>
+</div>
+
+<!-- ══════════ POR QUE MIL ══════════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>No comprimento, do decímetro para o centímetro há <b>um passo</b>, e esse passo vale 10.</p>
+    <p><b>Por que aqui o mesmo passo vale 1000?</b> Não responda. Peça que respondam com a caixa nas mãos.</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="no">a Caixa de Mil montada, nas mãos de cada dupla</i>
+    <i class="pr">Apêndice C · tira deslizante de volume (1 por dupla)</i>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A resposta que a turma constrói</div>
+    <p>A aresta foi dividida em dez — <b>mas a aresta entra três vezes, uma para cada dimensão:</b></p>
+    <div class="gold" style="margin:12px 0"><div class="gold-t">10 × 10 × 10 = 10³ = 1000</div></div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">UMA, DUAS, TRÊS DIMENSÕES <span>toque para revelar cada linha</span></div>
+    <div id="dimTable" style="display:flex;flex-direction:column;gap:6px"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="revealDim()">revelar próxima grandeza</button>
+      <button class="btn btn-g" onclick="resetDim()">↺</button>
+    </div>
+  </div>
+
+  <div class="warn fonly"><b>O erro de fator dez.</b> "1 m³ = 100 dm³" é a resposta mais frequente da abertura — vem de aplicar ao volume a escada do comprimento com um ajuste improvisado. Peça a verificação direta: 1 m tem 10 dm, então o cubo de 1 m de aresta tem 10 dm de aresta, e 10 × 10 × 10 dá <b>1000</b>. A caixa na mão desarma o erro em segundos.</div>
+
+  <div class="cap-box fonly"><b>A tira deslizante de volume</b> (mesma arquitetura de "Deslizando na Medida") carrega <b>três zeros por casa</b>, não um: uma casa vale ×1000, duas casas ×1 000 000. É a marcha do volume, em papel.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(1)">← Caixa de Mil</button><span class="nav-info">o passo entra três vezes: 10³</span><button class="btn btn-a" onclick="go(3)">as duas marchas →</button></div>
+</div>
+
+<!-- ══════════ DUAS MARCHAS ══════════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>1 L = 1000 mL — <b>três passos de 10</b>, exatamente como no comprimento.</p>
+    <p>Se volume e capacidade medem, as duas, "o quanto cabe", <b>por que uma anda de 10 em 10 e a outra de 1000 em 1000?</b></p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="pr">Apêndice C · tira de capacidade, ao lado da tira de volume</i>
+    <i class="no">quadro: escreva mL · cL · dL · L · daL · hL · kL</i>
+  </div>
+
+  <div class="inst c">
+    <div class="inst-t">A conclusão a ser construída pela turma</div>
+    <p>Os prefixos da capacidade são <b>colados diretamente no litro</b> — é um sistema de nomes, e nomes métricos andam sempre de dez em dez. Já as unidades de volume <b>nascem de elevar ao cubo uma unidade de comprimento</b>, e é o expoente 3 que triplica os zeros. Não são duas regras arbitrárias: são <b>duas origens diferentes.</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">VOLUME vs CAPACIDADE · duas origens <span>as duas marchas lado a lado</span></div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;color:#C6D6DC">
+        <tr style="color:#7592A0;font-size:9px;letter-spacing:.06em;text-transform:uppercase">
+          <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--h-line)"></th>
+          <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--h-line);color:var(--vol-hi)">Volume</th>
+          <th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--h-line);color:var(--cap-hi)">Capacidade</th></tr>
+        <tr><td style="padding:8px 10px;border-bottom:1px solid #10262E;color:#93AEBA">De onde vem</td><td style="padding:8px 10px;border-bottom:1px solid #10262E">elevar ao cubo um comprimento</td><td style="padding:8px 10px;border-bottom:1px solid #10262E">colar prefixos na palavra litro</td></tr>
+        <tr><td style="padding:8px 10px;border-bottom:1px solid #10262E;color:#93AEBA">1 passo vale</td><td style="padding:8px 10px;border-bottom:1px solid #10262E;color:var(--vol-hi);font-weight:700">1000 (10³)</td><td style="padding:8px 10px;border-bottom:1px solid #10262E;color:var(--cap-hi);font-weight:700">10 (10¹)</td></tr>
+        <tr><td style="padding:8px 10px;color:#93AEBA">Unidades</td><td style="padding:8px 10px;font-family:var(--f-mono);font-size:10.5px">mm³·cm³·dm³·m³·dam³·hm³·km³</td><td style="padding:8px 10px;font-family:var(--f-mono);font-size:10.5px">mL·cL·dL·L·daL·hL·kL</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="warn fonly"><b>A regra que evita quase todos os erros:</b> nunca misture as duas marchas dentro da mesma conta sem passar pela ponte. Quem raciocina "1 L tem 100 cL, logo 1 dm³ tem 100 cm³" está trocando de marcha no meio do caminho — e erra por um fator de dez.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(2)">← por que mil</button><span class="nav-info">volume anda de 1000; capacidade, de 10</span><button class="btn btn-a" onclick="go(4)">a ponte →</button></div>
+</div>
+
+<!-- ══════════ A PONTE ══════════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>Encha a garrafa PET de 1 L com arroz, até a marca. <b>Antes de despejar, apostem:</b> o arroz vai encher a caixa? Vai sobrar? Vai faltar?</p>
+    <p>Cada dupla registra a aposta. <b>Depois, o silêncio trabalha.</b></p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="no">garrafa PET de 1 L cheia de arroz até a marca</i>
+    <i class="no">funil ou cone de papel</i>
+    <i class="no">bandeja ou jornal sob a caixa</i>
+    <i class="pr">Apêndice F · Parte 2 — a aposta, por escrito</i>
+  </div>
+
+  <div class="inst b">
+    <div class="inst-t">O momento central da oficina — a aposta é registrada ANTES do despejo</div>
+    <ul>
+      <li>Cada dupla escreve a aposta na ficha e justifica <b>por quê</b> — a justificativa vale mais que o palpite</li>
+      <li>Só depois some as apostas da sala no painel abaixo e projete o placar</li>
+      <li><b>Despeje em silêncio.</b> Não narre, não antecipe o resultado, não comente enquanto o arroz cai</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">APOSTAS DA SALA · some antes de despejar <span>toque para somar · shift+toque para tirar</span></div>
+    <div class="tally q3" id="tlBet"></div>
+    <div class="ctrls">
+      <button class="btn btn-b" onclick="revealBet()">revelar o que aconteceu</button>
+      <button class="btn btn-g" onclick="tlResetBet()">↺ zerar</button>
+    </div>
+    <div class="ocap" id="betCap">Quanto mais dividida a sala, melhor o momento seguinte. Uma sala unânime não sente o impacto do despejo.</div>
+  </div>
+
+  <div class="rig" id="rigPonte">
+    <div class="rig-h">O DESPEJO · use a Caixa de Mil da aba 2, ou projete aqui
+      <button class="fs-btn" onclick="go(1);setTimeout(function(){palco('rigCube');},80)">⛶ ir à caixa (palco)</button></div>
+    <div class="gold" style="margin:6px 0"><div class="gold-t">1 dm³ = 1 L</div><div class="gold-d">a caixa fica cheia até a borda — a solda aparece diante dos olhos</div></div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Agora — e este é o ponto pedagógico — NÃO faça mais nenhum experimento</div>
+    <ul>
+      <li><b>÷ 1000:</b> 1 dm³ = 1 L → <b>1 cm³ = 1 mL</b></li>
+      <li><b>× 1000:</b> 1 dm³ = 1 L → <b>1 m³ = 1000 L = 1 kL</b></li>
+      <li><b>× 1 000 000:</b> 1 m³ = 1 000 000 cm³</li>
+    </ul>
+    <p style="margin-top:8px">Peça que a turma <b>deduza</b> o resto. Uma medida, muitas conclusões.</p>
+  </div>
+
+  <div class="ok"><b>O experimento entra uma única vez e o raciocínio faz todo o resto.</b> Diga isso explicitamente: é exatamente aqui que a matemática se distingue de uma aula de ciências. Se quiserem conferir 1 cm³ = 1 mL com uma seringa, que seja para <b>confirmar o que já foi deduzido</b>, não para descobrir.</div>
+
+  <div class="tip fonly"><b>🌾 "E os vãos entre os grãos de arroz?"</b> Alguém sempre pergunta. O que medimos é o espaço ocupado, e os vãos também ocupam espaço — um litro de arroz solto preenche um litro de espaço, vãos incluídos. Para rigor absoluto, refaça com água e a caixa forrada de saco plástico.</div>
+
+  <div class="warn fonly"><b>Cuidado com a linguagem.</b> Volume é o espaço que um corpo ocupa; capacidade é o quanto cabe dentro de um recipiente. A ponte não afirma que são a mesma coisa — afirma que, <b>nesse par de unidades, os números coincidem.</b> É essa distinção que permite entender por que uma parede de tijolos tem volume, mas não tem capacidade.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(3)">← duas marchas</button><span class="nav-info">1 dm³ = 1 L — e todo o resto se deduz</span><button class="btn btn-a" onclick="go(5)">a régua →</button></div>
+</div>
+
+<!-- ══════════ A RÉGUA DE DUAS MARCHAS ══════════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <p>Uma única escala de potências de 10, com o litro como referência.</p>
+    <p><b>A capacidade ocupa todas as casas; o volume aparece só de três em três.</b> Não existe unidade de volume entre cm³ e dm³ — e isso é consequência das três dimensões.</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">distribuir agora</span>
+    <i class="pr">Apêndice B · Régua de Duas Marchas <b>EM BRANCO</b> — 1 por participante</i>
+    <i class="no">lápis</i>
+  </div>
+
+  <div class="tip fonly"><b>Entregue a régua vazia.</b> A versão preenchida do Apêndice B serve de gabarito para você; se a turma receber a escala pronta, a descoberta de que <b>o volume só aparece de três em três casas</b> vira informação copiada. Deixe que preencham primeiro a linha da capacidade — que é fácil — e só depois a do volume: o silêncio das casas vazias é o achado da etapa.</div>
+
+  <div class="rig" id="rigScale">
+    <div class="rig-h">RÉGUA DE DUAS MARCHAS · o litro como referência <span id="scState">pronta</span>
+      <button class="fs-btn" onclick="palco('rigScale')">⛶ modo palco</button></div>
+    <div class="scroll">
+      <div class="sc-body" id="scBody">
+        <div class="sc-row"><div class="sc-lab pw">POTÊNCIA<br>(em litros)</div><div class="sc-cells" id="rowPw"></div></div>
+        <div class="sc-row"><div class="sc-lab cp">CAPACIDADE</div><div class="sc-cells" id="rowCp"></div></div>
+        <div class="sc-row"><div class="sc-lab vl">VOLUME</div><div class="sc-cells" id="rowVl"></div></div>
+        <div class="sc-tok" id="scTok"></div>
+      </div>
+    </div>
+    <div class="rig-ctrl">
+      <div class="fld"><label>valor</label><input id="scVal" value="2500" inputmode="decimal"></div>
+      <div class="fld"><label>de</label><select id="scFrom"></select></div>
+      <div class="fld"><label>para</label><select id="scTo"></select></div>
+      <button class="btn btn-a" id="scGo">deslizar</button>
+      <button class="btn btn-b" id="scDemo">🎬 demonstração</button>
+    </div>
+    <div class="rig-out">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">passos</div><div class="ov" id="scN">—</div></div>
+        <div class="oc"><div class="ol">ponte</div><div class="ov b" id="scB">—</div></div>
+        <div class="oc"><div class="ol">fator</div><div class="ov" id="scF">—</div></div>
+      </div>
+      <div class="otrail" id="scTrail"></div>
+      <div class="oeq" id="scEq">escolha as unidades e deslize</div>
+      <div class="ocap" id="scCap"></div>
+    </div>
+  </div>
+
+  <div class="ok"><b>O protocolo em uma frase:</b> ande dentro de um sistema até a casa da ponte, atravesse a ponte uma única vez, e ande dentro do outro sistema. Quem tenta atravessar em qualquer outro ponto acaba misturando as marchas.</div>
+
+  <div class="warn fonly"><b>hL e hm³ têm o mesmo prefixo e são incomparáveis.</b> 1 hL são 100 litros — cabem numa caixa d'água pequena. 1 hm³ é um cubo de 100 metros de aresta: 10⁶ m³ = <b>um bilhão de litros</b>, o volume de um açude. O prefixo é o mesmo; a base sobre a qual ele age, não — a razão entre eles é de <b>dez milhões de vezes (10⁷)</b>.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(4)">← a ponte</button><span class="nav-info">o volume só aparece de três em três casas</span><button class="btn btn-a" onclick="go(6)">investigação →</button></div>
+</div>
+
+<!-- ══════════ INVESTIGAÇÃO ══════════ -->
+<div class="pane" id="p6">
+  <div class="speech">
+    <p>Oito objetos que todo adulto conhece — e em todos eles <b>a ponte estava escondida.</b></p>
+    <p>Cada equipe resolve com a régua e apresenta em até dois minutos.</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">distribuir agora</span>
+    <i class="pr">Apêndice D · 1 carta por equipe (8 cartas por folha)</i>
+    <i class="pr">Apêndice F · Ficha de Registro</i>
+    <i class="no">Régua de Duas Marchas preenchida na etapa anterior</i>
+  </div>
+
+  <div class="warn fonly" id="invShort"><b>Na versão de 100 minutos esta etapa não é executada.</b> Distribua as oito cartas como <b>leitura de saída</b>, junto com o gabarito (Apêndice G), e diga em uma frase o que elas fazem: mostram que a ponte já estava no carro 1.0, na caixa d'água, na seringa e na betoneira. Use o cronômetro auxiliar de 2 min se quiser resolver uma única carta ao vivo — a nº 1 é a que mais surpreende adultos.</div>
+
+  <div class="inst"><div class="inst-t">Leitor de gabarito — para arbitrar na hora</div><p>Clique em cada carta para conferir a resposta e onde a ponte 1 L = 1 dm³ aparece. Use o <b>cronômetro auxiliar de 2 min</b> no topo da tela para cada apresentação.</p></div>
+  <div class="invg" id="invList"></div>
+
+  <div class="ok"><b>Plenária de dois minutos.</b> Depois das apresentações, uma única pergunta: o que todas essas situações têm em comum? A resposta buscada é que <b>a ponte 1 L = 1 dm³ estava presente em todas, o tempo todo, sem nunca ter sido nomeada.</b></div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(5)">← a régua</button><span class="nav-info">a ponte já estava em tudo</span><button class="btn btn-a" onclick="go(7)">a chuva →</button></div>
+</div>
+
+<!-- ══════════ A CHUVA ══════════ -->
+<div class="pane" id="p7">
+  <div class="speech">
+    <p>"A FUNCEME registrou <b><span id="spMm">40</span> mm de chuva</b> em <b><span id="spCity">Quixadá</span></b>." <b>Quarenta milímetros de quê?</b></p>
+    <p>Milímetro é comprimento. Chuva se mede por <b>altura</b> — a altura que a água atingiria se não escoasse. E altura sozinha não diz nada: é preciso dizer sobre qual área.</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="no">trena ou fita métrica</i>
+    <i class="no">área do telhado da escola-sede, medida ou estimada antes</i>
+    <i class="pr">papéis da abertura, devolvidos aos participantes</i>
+  </div>
+
+  <div class="warn fonly"><b>Troque o município antes de começar.</b> Escreva no campo abaixo uma cidade da própria CREDE e, se possível, use um dado real do boletim da FUNCEME daquela semana. A oficina muda de temperatura quando o número na tela é o da chuva que a sala viu cair. Vale abrir <b>funceme.br</b> ao vivo se houver internet.</div>
+
+  <div class="gold"><div class="gold-t">1 mm de chuva = 1 litro por metro quadrado</div><div class="gold-d">1 m × 1 m × 0,04 m = 0,04 m³ = 40 L · a mais útil de todas as equivalências desta oficina</div></div>
+
+  <div class="rig" id="rigRain">
+    <div class="rig-h">CALCULADORA DA CHUVA <span>1 mm = 1 litro por metro quadrado</span>
+      <button class="fs-btn" onclick="palco('rigRain')">⛶ modo palco</button></div>
+    <div class="rain">
+      <div class="fld" style="justify-content:center"><label>chuva (mm)</label><input id="rnMm" value="40" inputmode="decimal"></div>
+      <div class="fld" style="justify-content:center"><label>área (m²)</label><input id="rnA" value="200" inputmode="decimal"></div>
+    </div>
+    <div class="fld" style="justify-content:center;margin-bottom:12px"><label>município</label><input id="rnCity" value="Quixadá" style="width:150px"></div>
+    <div class="rig-pre">
+      <button class="pre" data-a="200">telhado da escola · 200 m²</button>
+      <button class="pre" data-a="60">quintal · 60 m²</button>
+      <button class="pre" data-a="20000">açude 2 ha · 20 000 m²</button>
+    </div>
+    <div class="rig-out" style="margin-top:14px">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">litros captados</div><div class="ov c" id="rnL">8 000 L</div></div>
+        <div class="oc"><div class="ol">em m³</div><div class="ov" id="rnM">8 m³</div></div>
+        <div class="oc"><div class="ol">cisternas 16000 L</div><div class="ov b" id="rnC">0,5</div></div>
+      </div>
+      <div class="oeq" id="rnEq">40 mm × 200 m² = 8 000 litros</div>
+      <div class="cist"><div class="cist-h">enchimento de cisterna de placas (16 000 L)</div>
+        <div class="bar"><div class="bar-f" id="rnBar"></div><div class="bar-t" id="rnBarT"></div></div></div>
+      <div class="ocap" id="rnCap">Cada milímetro de chuva deposita um litro de água sobre cada metro quadrado.</div>
+    </div>
+  </div>
+
+  <div class="ok"><b>Por que esta oficina termina aqui.</b> Uma conversão de unidades que decide se uma família terá água armazenada no segundo semestre não é conteúdo básico — é <b>conteúdo essencial</b>. Este fechamento devolve o assunto ao território e conecta Matemática com Geografia e Ciências: captação de água de chuva, dimensionamento de cisternas, leitura crítica do boletim da FUNCEME.</div>
+
+  <div class="tip fonly"><b>Encerre retomando os papéis da abertura.</b> Cada participante refaz as três perguntas, com a caixa sobre a mesa: 1 m³ = 1000 dm³ · 1 L = 1000 cm³ · 1 m³ = 1000 L. Compare com o que estava escrito no início.</div>
+
+  <div class="rig">
+    <div class="rig-h">O RETRATO DA ABERTURA · projete agora <span>1 m³ = ___ dm³, respondido antes de qualquer coisa</span></div>
+    <div class="tally q4" id="tlEnd"></div>
+    <div class="ocap" id="tlEndCap">Registre o retrato na aba 1 para que ele apareça aqui.</div>
+  </div>
+  <div class="nav"><button class="btn btn-g" onclick="go(6)">← investigação</button><span class="nav-info">1 mm = 1 L por metro quadrado</span><button class="btn btn-a" onclick="go(8)">o jogo →</button></div>
+</div>
+
+<!-- ══════════ CABE OU NÃO CABE ══════════ -->
+<div class="pane" id="p8">
+  <div class="speech">
+    <p><b>Cabe ou Não Cabe?</b> O jogo treina a única decisão que importa: <b>escolher uma unidade comum antes de comparar.</b></p>
+    <p>90 segundos por carta: unidade comum · os dois valores convertidos · o veredito.</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">distribuir agora</span>
+    <i class="pr">Apêndice E · baralho colado em papel-cartão — 1 por grupo de 4 equipes</i>
+    <i class="pr">Apêndice F · Parte 3 — placar e validação</i>
+    <i class="pr">Apêndice G · gabarito, só nas suas mãos</i>
+    <i class="no">Régua de Duas Marchas de cada equipe</i>
+  </div>
+
+  <div class="rally-grid">
+    <div class="rt pad"><div class="rt-v">10</div><div class="rt-t">Padrão</div><div class="rt-d">volume × capacidade, uma ponte</div></div>
+    <div class="rt lng"><div class="rt-v">20 ★</div><div class="rt-t">Longa</div><div class="rt-d">4+ passos, mm³ ou dam³</div></div>
+    <div class="rt arm"><div class="rt-v">30 ⚠</div><div class="rt-t">Armadilha</div><div class="rt-d">achar onde trocou a marcha</div></div>
+    <div class="rt rel"><div class="rt-v">15 ⚡</div><div class="rt-t">Relâmpago</div><div class="rt-d">medir objeto, 3 unidades</div></div>
+  </div>
+
+  <div class="rig" id="rigCabe">
+    <div class="rig-h">ÁRBITRO "CABE OU NÃO CABE" · escolha a unidade comum e confira <span>o veredito na hora</span></div>
+    <div class="rig-ctrl">
+      <div class="fld"><label>valor 1</label><input id="c1v" value="2,5" inputmode="decimal"></div>
+      <div class="fld"><label>un.</label><select id="c1u"></select></div>
+      <div class="fld" style="color:#597480;border:none;background:none">cabe em</div>
+      <div class="fld"><label>valor 2</label><input id="c2v" value="3000" inputmode="decimal"></div>
+      <div class="fld"><label>un.</label><select id="c2u"></select></div>
+      <button class="btn btn-a" onclick="judge()">julgar</button>
+    </div>
+    <div class="verd" id="verd" style="display:none"></div>
+    <div class="oeq" id="cabeEq" style="margin-top:12px">converte os dois para a unidade comum e compara</div>
+    <div class="rig-pre">
+      <button class="pre" onclick="cPreset('2,5','L','3000','cm³')">jarra 2,5 L / 3000 cm³</button>
+      <button class="pre" onclick="cPreset('18000','cm³','18','L')">18000 cm³ / lata 18 L</button>
+      <button class="pre" onclick="cPreset('900','L','0,8','m³')">900 L numa caixa 0,8 m³</button>
+      <button class="pre" onclick="cPreset('2500','mm³','3','mL')">2500 mm³ / 3 mL ★</button>
+      <button class="pre" onclick="cPreset('3','dam³','3000000','L')">3 dam³ / 3 000 000 L ★</button>
+    </div>
+  </div>
+
+  <div class="warn fonly"><b>As cartas-armadilha são o instrumento de avaliação da oficina.</b> Elas não pedem conta: pedem que a equipe aponte o lugar exato onde o raciocínio troca de marcha. Uma equipe que responde "é falso" sem localizar o erro não pontua. Se nenhuma conseguir nas duas primeiras, <b>pare o jogo e refaça a Etapa 3 no quadro</b> — o dado vale mais que o placar.</div>
+
+  <div class="inst b">
+    <div class="inst-t">As quatro armadilhas — e onde exatamente está o erro</div>
+    <ul>
+      <li><b>"1 L = 100 cL, logo 1 dm³ = 100 cm³"</b> → FALSO: cL avança de 10 em 10, cm³ de 1000 em 1000. 1 dm³ = 1000 cm³</li>
+      <li><b>"hL e hm³ têm valores próximos"</b> → FALSO: 1 hL = 100 L; 1 hm³ = 10⁹ L. Dez milhões de vezes maior</li>
+      <li><b>"1 m³ = 100 dm³"</b> → FALSO: o passo de volume vale 1000, a aresta entra três vezes</li>
+      <li><b>"1 mm de chuva mal molha o chão"</b> → FALSO: num telhado de 200 m², são 200 litros numa única chuva</li>
+    </ul>
+  </div>
+
+  <div class="ok"><b>O fecho da oficina:</b> "vocês não decoraram que 1 litro é 1 decímetro cúbico — vocês <b>viram o litro entrar no decímetro cúbico</b>, e deduziram todo o resto sem medir mais nada."</div>
+
+  <div class="tip fonly"><b>Cronômetro da carta:</b> use o botão <b>90s</b> no topo da tela. Ele roda em paralelo ao cronômetro da etapa.</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(7)">← a chuva</button><span class="nav-info">escolher a unidade comum ANTES de comparar</span><button class="btn btn-a" onclick="go(9)">transposição →</button></div>
+</div>
+
+<!-- ══════════ TRANSPOSIÇÃO ══════════ -->
+<!-- <div class="pane fonly" id="p9">
+  <div class="speech">
+    <p>Esta oficina vai ser replicada <b>duas vezes</b> antes de chegar ao estudante: por vocês, nos municípios; e pelos formadores municipais, com os professores.</p>
+    <p><b>A pergunta desta última meia hora é uma só:</b> o que não pode se perder no caminho?</p>
+  </div>
+
+  <div class="mat"><span class="mat-t">na mesa agora</span>
+    <i class="pr">roteiro completo da oficina (documento em PDF)</i>
+    <i class="pr">apêndices A a G, jogo completo</i>
+    <i class="no">a caixa que cada um montou — ela vai embora com o participante</i>
+  </div>
+
+  <div class="tp">
+    <div class="tp-c keep">
+      <div class="tp-h">✓ Inegociável — se cair, a oficina vira aula expositiva</div>
+      <ul>
+        <li>A pergunta <b>"como você descobriria sem contar um por um?"</b> vem antes de qualquer resposta</li>
+        <li>Cada dupla <b>monta a própria caixa</b>. Caixa pronta entregue pelo formador não produz o mesmo efeito</li>
+        <li>A <b>aposta escrita</b> antes do despejo, com justificativa</li>
+        <li><b>Um único experimento.</b> Tudo o mais é dedução — e isso precisa ser dito em voz alta</li>
+        <li>O <b>fechamento da chuva</b> com um município da própria rede</li>
+        <li>A conferência do quadradinho de 1 cm antes de recortar</li>
+      </ul>
+    </div>
+    <div class="tp-c adapt">
+      <div class="tp-h">↔ Adaptável — decida conforme a realidade da rede</div>
+      <ul>
+        <li>Arroz, feijão, areia peneirada ou água com saco plástico</li>
+        <li>Duplas ou grupos de quatro, conforme o número de caixas</li>
+        <li>Sem impressora: planificação desenhada na cartolina (+20 min, e vira atividade de medida)</li>
+        <li>Quantidade de cartas do jogo e de investigação</li>
+        <li>Dividir em dois encontros: Etapas 1–4 / Etapas 5–7</li>
+        <li>6º ano: parar na ponte. 9º ano: acrescentar notação científica na régua</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn fonly"><b>O que costuma se perder a cada nível da cascata.</b> Em toda formação replicada, o gesto manual é o primeiro a cair — por falta de tempo, de tesoura ou de coragem. O sintoma é sempre o mesmo: a caixa vira <b>foto no slide</b>, o despejo vira <b>vídeo</b>, e a ponte volta a ser informação a memorizar. Diga isso explicitamente aos formadores municipais: <b>se só houver tempo para uma coisa, que seja a caixa e o despejo</b> — as Etapas 5 a 7 podem esperar a semana seguinte; a Etapa 4, não.</div>
+
+  <div class="rig">
+    <div class="rig-h">CALCULADORA DE IMPRESSÃO E KIT <span>quantas folhas e quanto material para a sua réplica</span></div>
+    <div class="rig-ctrl">
+      <div class="fld"><label>participantes</label><input id="kpN" value="40" inputmode="numeric"></div>
+      <div class="fld"><label>por caixa</label><select id="kpG"><option value="2">dupla</option><option value="4">grupo de 4</option></select></div>
+    </div>
+    <div class="rig-out">
+      <div class="oc-grid">
+        <div class="oc"><div class="ol">caixas a montar</div><div class="ov v" id="kpBox">20</div></div>
+        <div class="oc"><div class="ol">folhas A4 (100%)</div><div class="ov" id="kpSheet">180</div></div>
+        <div class="oc"><div class="ol">arroz (todas as duplas)</div><div class="ov b" id="kpRice">17 kg</div></div>
+      </div>
+      <table class="prt" id="kpTab"></table>
+      <div class="ocap">Um litro de arroz cru pesa cerca de 850 g. <b>Se o despejo for uma demonstração única na mesa central, 1,5 kg resolve</b> — o número acima é para o caso, bem melhor, de cada dupla despejar na própria caixa. As folhas já incluem 10% de reserva: sempre há uma caixa torta e uma malha impressa fora de escala.</div>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Quatro perguntas para o formador municipal levar embora</div>
+    <ul>
+      <li><b>Quando</b> na sequência didática do 8º ano esta oficina entra — antes ou depois do capítulo de volume do livro?</li>
+      <li><b>Onde</b> as caixas ficam guardadas na escola, e quem é responsável por elas no ano seguinte?</li>
+      <li><b>Qual município</b> e qual dado da FUNCEME serão usados no fechamento da sua réplica?</li>
+      <li><b>Que evidência</b> volta para a CREDE: a foto do despejo, a ficha preenchida ou a carta-armadilha resolvida?</li>
+    </ul>
+  </div>
+
+  <div class="ok"><b>Combinado de devolutiva.</b> Peça a cada formador municipal três registros da réplica: <b>uma foto do litro entrando no decímetro cúbico</b>, <b>uma Ficha de Registro preenchida por uma dupla</b> e <b>o retrato da abertura</b> — quantos professores responderam 100 antes de montar a caixa. Esses três itens contam a oficina inteira em uma página e permitem comparar as redes sem aplicar nenhum instrumento novo.</div>
+
+  <div class="tip fonly"><b>O fecho da formação:</b> "vocês não vão pedir que os professores acreditem que 1 litro é 1 decímetro cúbico. Vão pedir que eles <b>vejam</b> — e depois deduzam todo o resto sem medir mais nada. É isso que vocês estão levando para o município: não uma resposta, um método."</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(8)">← o jogo</button><span class="nav-info">se só houver tempo para uma coisa: a caixa e o despejo</span></div>
+</div>
+
+</div> -->
+
+<!-- ══════════ OVERLAYS ══════════ -->
+<div class="ovbg" id="ovCheck" onclick="if(event.target===this)ovClose()">
+  <div class="ovc">
+    <h3>Checklist de sala — antes de abrir a porta</h3>
+    <p class="sub">Marque conforme conferir. Os itens em destaque são os que, se faltarem, impedem a oficina de acontecer.</p>
+    <h4>Impressos (escala 100%, "ajustar à página" DESATIVADO)</h4>
+    <div id="ckPrint"></div>
+    <h4>Material físico</h4>
+    <div id="ckPhys"></div>
+    <h4>Sala e projeção</h4>
+    <div id="ckRoom"></div>
+    <div class="nav"><button class="btn btn-g" onclick="ovClose()">fechar</button><span class="nav-info" id="ckCount"></span><button class="btn btn-a" onclick="ovClose();go(0)">começar a formação →</button></div>
+  </div>
+</div>
+
+<div class="ovbg" id="ovPlan" onclick="if(event.target===this)ovClose()">
+  <div class="ovc">
+    <h3>Roteiro e tempos</h3>
+    <p class="sub">As etapas em cinza não são executadas no modo selecionado. Clique em qualquer linha para ir até ela.</p>
+    <table class="plan"><thead><tr><th>#</th><th>Etapa</th><th>Gesto central</th><th>Tempo</th></tr></thead><tbody id="planBody"></tbody></table>
+    <div class="nav"><button class="btn btn-g" onclick="ovClose()">fechar</button><span class="nav-info" id="planTot"></span></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ═══ PLANO DE ETAPAS · dois modos ═══ */
+var STEPS=[
+  {n:'Abertura',           g:'três perguntas, nenhuma resposta', full:10},
+  {n:'A Caixa de Mil',     g:'recortar, dobrar, montar o cubo',  full:35},
+  {n:'Por que mil',        g:'a aresta entra três vezes',        full:25},
+  {n:'Duas marchas',       g:'comparar as duas listas',          full:20},
+  {n:'A ponte',            g:'despejar um litro na caixa',       full:25},
+  {n:'A régua',            g:'montar a escala de potências',     full:25},
+  {n:'Investigação',       g:'resolver e apresentar uma carta',  full:30},
+  {n:'A chuva',            g:'calcular sobre 1 m²',              full:25},
+  {n:'Cabe ou não cabe',   g:'escolher a unidade comum',         full:25}
+];
+var MODE='full';
+function dur(i){return STEPS[i].full*60;}
+function planTotal(){return STEPS.reduce(function(a,s){return a+s.full;},0);}
+
+/* ═══ MODO FORMADOR ═══ */
+var FONLY=[false,false,false,false,false,false,false,false,false,true]; /* pane 9 = transposição */
+function fmodeOn(){return document.body.classList.contains('fmode');}
+function toggleF(){
+  var on=document.body.classList.toggle('fmode');
+  document.getElementById('fkey').textContent=on?'ocultar notas':'notas do formador';
+  if(!on&&FONLY[cur])go(0);
+}
+function step(d){
+  var i=cur+d;
+  while(i>=0&&i<panes.length&&FONLY[i]&&!fmodeOn())i+=d;
+  if(i>=0&&i<panes.length)go(i);
+}
+
+/* ═══ NAV ═══ */
+var tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+var cur=0;
+function go(i){
+  if(i<0||i>=panes.length)return;
+  if(FONLY[i]&&!fmodeOn())return;
+  if(cur<i&&!FONLY[cur])tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on')});panes.forEach(function(p){p.classList.remove('on')});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});
+  loadStep(i);
+  setTimeout(function(){if(i===5)runPath();if(i===7)rain();if(i===7)paintEnd();if(i===9)kit();},60);
+}
+function setMode(){
+  MODE='full';
+  tabs.forEach(function(t){t.style.opacity=1;});
+  document.getElementById('hudPlan').textContent='/ '+planTotal()+' min';
+  document.getElementById('invShort').style.display='none';
+  if(!T.iv)loadStep(cur);
+  buildPlan();
+}
+
+/* ═══ CRONÔMETROS · um único relógio de etapa + auxiliar ═══ */
+function fmtT(s){var m=Math.floor(Math.abs(s)/60),x=Math.abs(s)%60;return (s<0?'-':'')+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');}
+var T={rem:480,iv:null,step:0};
+var hudT=document.getElementById('hudT'),hudPlay=document.getElementById('hudPlay'),palcoClock=document.getElementById('palcoClock');
+function paintT(){
+  hudT.textContent=fmtT(T.rem);
+  hudT.classList.toggle('low',T.rem<=60&&T.rem>0);
+  hudT.classList.toggle('over',T.rem<0);
+  hudT.classList.toggle('done',T.rem===0);
+  palcoClock.textContent=fmtT(T.rem);
+  palcoClock.classList.toggle('over',T.rem<0);
+}
+function loadStep(i){
+  tStop();T.step=i;T.rem=dur(i);
+  document.getElementById('hudStep').textContent=(i+1)+' · '+STEPS[i].n;
+  paintT();
+}
+function tTick(){T.rem--;paintT();}
+function tToggle(){
+  sessStart();
+  if(T.iv){tStop();return;}
+  if(T.rem<=0)T.rem=dur(T.step);
+  T.iv=setInterval(tTick,1000);hudPlay.textContent='⏸';paintT();
+}
+function tStop(){if(T.iv){clearInterval(T.iv);T.iv=null;}hudPlay.textContent='▶';}
+function tReset(){tStop();T.rem=dur(T.step);paintT();}
+
+/* auxiliar (90 s da carta, 2 min da apresentação) */
+var AX={rem:0,iv:null},hudAux=document.getElementById('hudAux');
+function aux(s){
+  if(AX.iv){clearInterval(AX.iv);AX.iv=null;}
+  if(!s){AX.rem=0;hudAux.textContent='—';return;}
+  AX.rem=s;hudAux.textContent=fmtT(AX.rem);
+  AX.iv=setInterval(function(){AX.rem--;hudAux.textContent=fmtT(AX.rem);
+    if(AX.rem<=0){clearInterval(AX.iv);AX.iv=null;hudAux.textContent='⏱ fim';}},1000);
+}
+
+/* relógio da sessão */
+var sess=0,sessOn=false;
+setInterval(function(){if(sessOn){sess++;document.getElementById('hudSess').textContent=fmtT(sess);}},1000);
+function sessStart(){sessOn=true;document.getElementById('hudDot').classList.add('live');}
+
+/* ═══ MODO PALCO ═══ */
+function palco(id){
+  var r=document.getElementById(id),on=!r.classList.contains('palco');
+  r.classList.toggle('palco',on);document.body.style.overflow=on?'hidden':'';
+  palcoClock.classList.toggle('on',on);
+  var b=r.querySelector('.fs-btn');if(b)b.textContent=on?'✕ sair do palco (Esc)':'⛶ modo palco';
+  if(id==='rigScale')setTimeout(runPath,60);
+}
+function sairPalco(){
+  document.querySelectorAll('.rig.palco').forEach(function(r){r.classList.remove('palco');
+    var b=r.querySelector('.fs-btn');if(b)b.textContent='⛶ modo palco';});
+  document.body.style.overflow='';palcoClock.classList.remove('on');
+}
+
+/* ═══ helpers ═══ */
+var NS='http://www.w3.org/2000/svg';
+function elx(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+function fmtN(s){var p=String(s).split(','),i=p[0];if(i.replace('-','').length>4)i=i.replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');return p[1]?i+','+p[1]:i;}
+function shiftDec(input,n){
+  var s=String(input).trim().replace(',','.').replace(/\s/g,'');
+  if(s===''||isNaN(Number(s)))return null;
+  var neg=s.startsWith('-');if(neg)s=s.slice(1);if(s.startsWith('+'))s=s.slice(1);
+  var pr=s.split('.'),intp=pr[0]||'0',dec=pr[1]||'';
+  var d=intp+dec,pt=intp.length+n;
+  if(pt<=0){d='0'.repeat(1-pt)+d;pt=1;}
+  if(pt>d.length){d+='0'.repeat(pt-d.length);}
+  var a=d.slice(0,pt).replace(/^0+(?=\d)/,''),b=d.slice(pt).replace(/0+$/,'');
+  return (neg?'-':'')+(b?a+','+b:a);
+}
+
+/* ═══════ W1 — CAIXA DE MIL (projeção isométrica) ═══════ */
+var U=15,K=0.8660254;
+function p3(x,y,z){return [(x-y)*K*U,(x+y)*0.5*U-z*U];}
+function pl(a){return a.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');}
+var gBack=document.getElementById('gBack'),gFill=document.getElementById('gFill'),gGrid=document.getElementById('gGrid'),
+    gFront=document.getElementById('gFront'),gCyl=document.getElementById('gCyl'),gArrow=document.getElementById('gArrow');
+(function(){
+  var corners=[[0,0],[10,0],[10,10],[0,10]];
+  var bot=corners.map(function(c){return p3(c[0],c[1],0);});
+  gBack.appendChild(elx('polygon',{points:pl(bot),fill:'#0A1A21',stroke:'#2C4A57','stroke-width':1.2}));
+  corners.forEach(function(c){
+    var a=p3(c[0],c[1],0),b=p3(c[0],c[1],10);
+    var back=(c[0]===0&&c[1]===0);
+    gFront.appendChild(elx('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:back?'#25404B':'#3E6675','stroke-width':back?1:1.5,'stroke-dasharray':back?'4 4':''}));
+  });
+  var top=corners.map(function(c){return p3(c[0],c[1],10);});
+  gFront.appendChild(elx('polygon',{points:pl(top),fill:'none',stroke:'#4E7C8C','stroke-width':1.5,'stroke-dasharray':'6 4'}));
+  var t=p3(5,5,10);
+  var txt=elx('text',{x:t[0],y:t[1]-14,fill:'#5BC8D6','font-size':11,'font-family':'Fraunces,serif','font-weight':600,'text-anchor':'middle','letter-spacing':1.5});txt.textContent='10 cm';gFront.appendChild(txt);
+})();
+var gridG=elx('g',{});
+(function(){
+  for(var i=0;i<=10;i++){
+    var a=p3(i,0,1),b=p3(i,10,1);
+    gridG.appendChild(elx('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#1F5C27','stroke-width':.6,opacity:.75}));
+    a=p3(0,i,1);b=p3(10,i,1);
+    gridG.appendChild(elx('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'#1F5C27','stroke-width':.6,opacity:.75}));
+  }
+  gGrid.appendChild(gridG);gridG.style.opacity=0;
+})();
+var layers=[];
+for(var kk=0;kk<10;kk++){
+  var gLay=elx('g',{class:'lay'});
+  var tp=[p3(0,0,kk+1),p3(10,0,kk+1),p3(10,10,kk+1),p3(0,10,kk+1)];
+  var rgt=[p3(10,0,kk),p3(10,10,kk),p3(10,10,kk+1),p3(10,0,kk+1)];
+  var lft=[p3(0,10,kk),p3(10,10,kk),p3(10,10,kk+1),p3(0,10,kk+1)];
+  gLay.appendChild(elx('polygon',{points:pl(lft),fill:'#3E9247',stroke:'#256B2B','stroke-width':.7}));
+  gLay.appendChild(elx('polygon',{points:pl(rgt),fill:'#2E7D32',stroke:'#256B2B','stroke-width':.7}));
+  gLay.appendChild(elx('polygon',{points:pl(tp),fill:'#6DBA79',stroke:'#256B2B','stroke-width':.7}));
+  gFill.appendChild(gLay);layers.push(gLay);
+}
+var liq=elx('g',{});liq.style.display='none';
+var liqL=elx('polygon',{fill:'#3B8FCB',stroke:'#1E5F92','stroke-width':.7});
+var liqR=elx('polygon',{fill:'#2C7FBF',stroke:'#1E5F92','stroke-width':.7});
+var liqT=elx('polygon',{fill:'#6FBCEA',stroke:'#1E5F92','stroke-width':.7});
+liq.appendChild(liqL);liq.appendChild(liqR);liq.appendChild(liqT);gFill.appendChild(liq);
+function setLiq(h){
+  if(h<=0){liq.style.display='none';return;}
+  liq.style.display='';
+  liqT.setAttribute('points',pl([p3(0,0,h),p3(10,0,h),p3(10,10,h),p3(0,10,h)]));
+  liqR.setAttribute('points',pl([p3(10,0,0),p3(10,10,0),p3(10,10,h),p3(10,0,h)]));
+  liqL.setAttribute('points',pl([p3(0,10,0),p3(10,10,0),p3(10,10,h),p3(0,10,h)]));
+}
+var CX=-232,CW=58,CTOP=-140,CH=180;
+(function(){
+  gCyl.appendChild(elx('rect',{x:CX,y:CTOP,width:CW,height:CH,rx:7,fill:'#0A1A21',stroke:'#3E6675','stroke-width':1.5}));
+  for(var i=1;i<10;i++){var y=CTOP+CH*i/10;gCyl.appendChild(elx('line',{x1:CX,y1:y,x2:CX+(i===5?20:12),y2:y,stroke:'#3E6675','stroke-width':1}));}
+  var t=elx('text',{x:CX+CW/2,y:CTOP-13,fill:'#5BC8D6','font-size':13,'font-family':'Fraunces,serif','font-weight':700,'text-anchor':'middle'});t.textContent='1 L';gCyl.appendChild(t);
+  gCyl.style.display='none';
+})();
+var cylFill=elx('rect',{x:CX+2,width:CW-4,rx:5,fill:'#2C7FBF',opacity:.92});gCyl.appendChild(cylFill);
+function setCyl(frac){var h=Math.max(0,CH-4)*frac;cylFill.setAttribute('y',CTOP+2+(CH-4-h));cylFill.setAttribute('height',h);}
+(function(){
+  var p=elx('path',{d:'M -196 -128 C -150 -186, -60 -180, -8 -122',fill:'none',stroke:'#5BC8D6','stroke-width':2.4,'stroke-linecap':'round',class:'stream'});
+  var head=elx('polygon',{points:'-8,-122 -20,-130 -4,-136',fill:'#5BC8D6'});
+  gArrow.appendChild(p);gArrow.appendChild(head);gArrow.style.display='none';
+})();
+var nLay=0,timer=null,mode='cubos';
+var oLay=document.getElementById('oLay'),oH=document.getElementById('oH'),oV=document.getElementById('oV'),
+    oEq=document.getElementById('oEq'),oCap=document.getElementById('oCap'),cbState=document.getElementById('cbState');
+function paintLayers(){
+  layers.forEach(function(g,i){g.classList.toggle('on',i<nLay);});
+  gridG.style.opacity=nLay>0?1:0;
+  gridG.setAttribute('transform','translate(0,'+(-(nLay-1)*U)+')');
+  oLay.textContent=nLay;oH.textContent=nLay+' cm';oV.textContent=fmtN(nLay*100)+' cm³';
+  cbState.textContent=nLay===0?'caixa vazia':nLay===10?'caixa cheia':nLay+' de 10 camadas';
+  if(nLay===0){oEq.textContent='cada camada tem 10 × 10 = 100 cubinhos de 1 cm³';oCap.textContent='A caixa tem 10 cm de aresta. O fundo traz 100 quadradinhos de 1 cm².';}
+  else if(nLay<10){oEq.textContent=nLay+' × 100 = '+fmtN(nLay*100)+' cm³';oCap.textContent='Repare que ninguém contou cubinho por cubinho — contou-se cem uma vez, e multiplicou-se.';}
+  else{oEq.innerHTML='100 × 10 = <b>1000 cm³</b> &nbsp;→&nbsp; 1 dm³ = 1000 cm³';oCap.textContent='Este é o raciocínio que gera a fórmula do volume: área da base vezes altura.';}
+}
+var VB_CUBE='-165 -178 330 348',VB_POUR='-300 -195 460 380';
+function toCubes(){mode='cubos';liq.style.display='none';gCyl.style.display='none';gArrow.style.display='none';document.getElementById('cubeSvg').setAttribute('viewBox',VB_CUBE);gFill.querySelectorAll('.lay').forEach(function(g){g.style.display='';});}
+function addLayer(){if(mode!=='cubos'){resetCube();}if(nLay>=10)return;nLay++;paintLayers();var g=layers[nLay-1];g.classList.remove('pop');void g.offsetWidth;g.classList.add('pop');}
+function resetCube(){if(timer){clearInterval(timer);timer=null;}nLay=0;toCubes();setLiq(0);paintLayers();}
+document.getElementById('cbOne').addEventListener('click',addLayer);
+document.getElementById('cbReset').addEventListener('click',resetCube);
+document.getElementById('cbPlay').addEventListener('click',function(){resetCube();timer=setInterval(function(){addLayer();if(nLay>=10){clearInterval(timer);timer=null;}},380);});
+document.getElementById('cbPour').addEventListener('click',function(){
+  if(timer){clearInterval(timer);timer=null;}
+  mode='liquido';
+  layers.forEach(function(g){g.classList.remove('on');g.style.display='none';});
+  gridG.style.opacity=0;
+  document.getElementById('cubeSvg').setAttribute('viewBox',VB_POUR);
+  gCyl.style.display='';gArrow.style.display='';setCyl(1);setLiq(0);
+  cbState.textContent='despejando 1 litro';
+  oCap.textContent='Um litro de arroz, despejado uma única vez. É a única medida experimental da oficina.';
+  var h=0;
+  var iv=setInterval(function(){
+    h+=0.16;
+    if(h>=10){h=10;clearInterval(iv);gArrow.style.display='none';cbState.textContent='caixa cheia · 1 L';oEq.innerHTML='<b>1 dm³ = 1 L</b>';oCap.textContent='Dividindo por mil: 1 cm³ = 1 mL. Multiplicando por mil: 1 m³ = 1000 L. Uma medida, todas as conclusões.';}
+    setLiq(h);setCyl(1-h/10);
+    oLay.textContent='—';oH.textContent=h.toFixed(0)+' cm';oV.textContent=fmtN(Math.round(h*100))+' cm³';
+    if(h<10)oEq.textContent=Math.round(h*100)+' cm³ de 1000 · '+Math.round(h*100)+' mL de 1000';
+  },40);
+});
+paintLayers();
+
+/* ═══ ETAPA 2 — dimensões ═══ */
+var DIMS=[
+  {g:'Comprimento',d:'uma',v:'10¹ = 10',z:1,ex:'1 m = 10 dm'},
+  {g:'Área',d:'duas',v:'10² = 100',z:2,ex:'1 m² = 100 dm²'},
+  {g:'Volume',d:'três',v:'10³ = 1000',z:3,ex:'1 m³ = 1000 dm³'}
+];
+var dimShown=0;
+function revealDim(){
+  if(dimShown>=DIMS.length)return;
+  var d=DIMS[dimShown];
+  var el=document.createElement('div');
+  el.style.cssText='display:grid;grid-template-columns:1fr 70px 100px 1fr;gap:8px;align-items:center;background:#0C2029;border:1px solid var(--h-line);border-radius:6px;padding:9px 12px;font-size:12px;color:#C6D6DC';
+  el.innerHTML='<span style="color:var(--h-aqua);font-weight:700">'+d.g+'</span><span style="color:#93AEBA">'+d.d+' dim.</span><span style="color:#fff;font-family:var(--f-mono);font-weight:700">'+d.v+'</span><span style="font-family:var(--f-mono);color:var(--vol-hi)">'+d.ex+'</span>';
+  document.getElementById('dimTable').appendChild(el);dimShown++;
+}
+function resetDim(){dimShown=0;document.getElementById('dimTable').innerHTML='';}
+
+/* ═══════ W2 — RÉGUA DE DUAS MARCHAS ═══════ */
+var EXPS=[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
+var EXPT=['10⁻⁶','10⁻⁵','10⁻⁴','10⁻³','10⁻²','10⁻¹','10⁰','10¹','10²','10³','10⁴','10⁵','10⁶'];
+var CAP={'-3':'mL','-2':'cL','-1':'dL','0':'L','1':'daL','2':'hL','3':'kL'};
+var VOL={'-6':'mm³','-3':'cm³','0':'dm³','3':'m³','6':'dam³'};
+var BRG=[-3,0,3];
+var rowPw=document.getElementById('rowPw'),rowCp=document.getElementById('rowCp'),rowVl=document.getElementById('rowVl');
+var cells=[[],[],[]];
+EXPS.forEach(function(e,i){
+  var a=document.createElement('div');a.className='sc pw';a.textContent=EXPT[i];rowPw.appendChild(a);cells[0].push(a);
+  var cu=CAP[e];var b=document.createElement('div');b.className='sc '+(cu?(BRG.includes(e)?'brg':'cp'):'nul');b.textContent=cu||'—';rowCp.appendChild(b);cells[1].push(b);
+  var vu=VOL[e];var c=document.createElement('div');c.className='sc '+(vu?(BRG.includes(e)?'brg':'vl'):'nul');c.textContent=vu||'—';rowVl.appendChild(c);cells[2].push(c);
+});
+var UNITS=[];
+EXPS.forEach(function(e){if(VOL[e])UNITS.push({n:VOL[e],e:e,f:'vol',row:2});});
+EXPS.forEach(function(e){if(CAP[e])UNITS.push({n:CAP[e],e:e,f:'cap',row:1});});
+var scFrom=document.getElementById('scFrom'),scTo=document.getElementById('scTo');
+UNITS.forEach(function(u,i){scFrom.appendChild(new Option(u.n,i));scTo.appendChild(new Option(u.n,i));});
+scFrom.value=UNITS.findIndex(function(u){return u.n==='mL';});scTo.value=UNITS.findIndex(function(u){return u.n==='dm³';});
+var scTok=document.getElementById('scTok'),scBody=document.getElementById('scBody');
+function moveTok(row,ci){var c=cells[row][ci];scTok.classList.add('on');scTok.style.transform='translate('+(c.offsetLeft+c.offsetWidth/2-13)+'px,'+(c.offsetTop+c.offsetHeight/2-13)+'px)';}
+function clearMarks(){cells.forEach(function(r){r.forEach(function(c){c.classList.remove('src','tgt','lit');});});}
+var scT=[];
+function stopSc(){scT.forEach(function(t){clearTimeout(t);});scT=[];}
+var scVal=document.getElementById('scVal');
+function runPath(){
+  stopSc();clearMarks();
+  var s=UNITS[+scFrom.value],t=UNITS[+scTo.value];
+  var ci=function(e){return EXPS.indexOf(e);};
+  cells[s.row][ci(s.e)].classList.add('src');
+  cells[t.row][ci(t.e)].classList.add('tgt');
+  var steps=[],bridge=null;
+  if(s.f===t.f){var d=Math.sign(t.e-s.e);for(var e=s.e;e!==t.e;e+=d)steps.push({row:s.row,e:e+d});}
+  else{
+    var best=null;
+    BRG.forEach(function(b){var c=Math.abs(s.e-b)+Math.abs(b-t.e);if(!best||c<best.c||(c===best.c&&Math.abs(b-t.e)<Math.abs(best.b-t.e)))best={b:b,c:c};});
+    bridge=best.b;
+    var d2=Math.sign(bridge-s.e);
+    for(var e2=s.e;e2!==bridge;e2+=d2)steps.push({row:s.row,e:e2+d2});
+    steps.push({row:t.row,e:bridge,cross:true});
+    d2=Math.sign(t.e-bridge);
+    for(var e3=bridge;e3!==t.e;e3+=d2)steps.push({row:t.row,e:e3+d2});
+  }
+  var shift=s.e-t.e,k=Math.abs(shift);
+  document.getElementById('scN').textContent=steps.filter(function(x){return !x.cross;}).length;
+  document.getElementById('scB').textContent=bridge===null?'nenhuma':(VOL[bridge]+' = '+CAP[bridge]);
+  document.getElementById('scF').textContent=shift===0?'×1':(shift>0?'×':'÷')+fmtN('1'+'0'.repeat(k));
+  document.getElementById('scState').textContent=s.n+' → '+t.n;
+  document.getElementById('scTrail').textContent='';
+  var val=scVal.value;var trail=[];
+  var push=function(e,row){var u=row===1?CAP[e]:VOL[e];if(u)trail.push(fmtN(shiftDec(val,s.e-e))+' '+u);};
+  push(s.e,s.row);
+  moveTok(s.row,ci(s.e));
+  steps.forEach(function(st,i){
+    scT.push(setTimeout(function(){
+      moveTok(st.row,ci(st.e));
+      cells[st.row][ci(st.e)].classList.add('lit');
+      push(st.e,st.row);
+      document.getElementById('scTrail').textContent=trail.join('  →  ');
+    },300+i*300));
+  });
+  scT.push(setTimeout(function(){
+    var res=shiftDec(val,shift);
+    document.getElementById('scEq').innerHTML=res===null?'digite um valor válido':fmtN(shiftDec(val,0))+' '+s.n+' &nbsp;=&nbsp; <b>'+fmtN(res)+' '+t.n+'</b>';
+    document.getElementById('scCap').textContent=bridge===null?'Caminho inteiro dentro de um só sistema — nenhuma ponte foi necessária.':'Atravessou a ponte '+VOL[bridge]+' = '+CAP[bridge]+' uma única vez, como manda o protocolo.';
+  },300+steps.length*300+150));
+}
+document.getElementById('scGo').addEventListener('click',runPath);
+scFrom.addEventListener('change',runPath);scTo.addEventListener('change',runPath);
+var SDEMO=[{v:'2500',f:'mL',t:'dm³'},{v:'0,5',f:'m³',t:'L'},{v:'75000',f:'cm³',t:'m³'},{v:'1',f:'mm³',t:'L'},{v:'1,2',f:'m³',t:'cm³'},{v:'3',f:'dam³',t:'kL'}];
+var dI=0,dT=null;var btnD=document.getElementById('scDemo');
+function sStepDemo(){var d=SDEMO[dI%SDEMO.length];scVal.value=d.v;scFrom.value=UNITS.findIndex(function(u){return u.n===d.f;});scTo.value=UNITS.findIndex(function(u){return u.n===d.t;});runPath();dI++;dT=setTimeout(sStepDemo,5200);}
+btnD.addEventListener('click',function(){if(dT){clearTimeout(dT);dT=null;btnD.textContent='🎬 demonstração';}else{dI=0;btnD.textContent='⏸ pausar';sStepDemo();}});
+
+/* ═══ CONTADORES DA SALA ═══ */
+function mkTally(host,keys,state,after){
+  host.innerHTML='';
+  keys.forEach(function(k,i){
+    var c=document.createElement('div');c.className='tl-c';
+    c.innerHTML='<div class="tl-v">0</div><div class="tl-k">'+k+'</div><div class="tl-b"></div>';
+    c.addEventListener('click',function(e){
+      state[i]=Math.max(0,state[i]+(e.shiftKey?-1:1));paintTally(host,state);if(after)after();
+    });
+    host.appendChild(c);
+  });
+  paintTally(host,state);
+}
+function paintTally(host,state){
+  var max=Math.max(1,Math.max.apply(null,state));
+  [...host.children].forEach(function(c,i){
+    c.querySelector('.tl-v').textContent=state[i];
+    c.querySelector('.tl-b').style.width=(state[i]/max*100)+'%';
+  });
+}
+var OPEN_KEYS=['10','100','1000','10 000'],openState=[0,0,0,0];
+mkTally(document.getElementById('tlOpen'),OPEN_KEYS,openState,function(){paintEnd();});
+function tlReset(){openState=[0,0,0,0];mkTally(document.getElementById('tlOpen'),OPEN_KEYS,openState,function(){paintEnd();});paintEnd();}
+function paintEnd(){
+  var host=document.getElementById('tlEnd');host.innerHTML='';
+  var tot=openState.reduce(function(a,b){return a+b;},0);
+  var max=Math.max(1,Math.max.apply(null,openState));
+  OPEN_KEYS.forEach(function(k,i){
+    var c=document.createElement('div');c.className='tl-c'+(i===2?' hit':'');
+    c.innerHTML='<div class="tl-v">'+openState[i]+'</div><div class="tl-k">'+k+(i===2?' ✓':'')+'</div><div class="tl-b" style="width:'+(openState[i]/max*100)+'%"></div>';
+    host.appendChild(c);
+  });
+  var wrong=tot-openState[2];
+  document.getElementById('tlEndCap').textContent=tot===0
+    ? 'Registre o retrato na aba 1 para que ele apareça aqui.'
+    : 'No início da manhã, '+wrong+' de '+tot+' respostas estavam erradas — e a resposta certa é a única que ninguém precisou decorar: a caixa está sobre a mesa.';
+}
+var BET_KEYS=['encher exatamente','vai sobrar arroz','vai faltar arroz'],betState=[0,0,0];
+mkTally(document.getElementById('tlBet'),BET_KEYS,betState);
+function tlResetBet(){betState=[0,0,0];mkTally(document.getElementById('tlBet'),BET_KEYS,betState);document.getElementById('betCap').textContent='Quanto mais dividida a sala, melhor o momento seguinte.';}
+function revealBet(){
+  var host=document.getElementById('tlBet');
+  [...host.children].forEach(function(c,i){c.classList.toggle('hit',i===0);});
+  document.getElementById('betCap').textContent='Encheu exatamente. Não explique ainda — escreva 1 dm³ = 1 L no quadro e deixe o silêncio trabalhar por uns quinze segundos.';
+}
+
+/* ═══════ W3 — CHUVA ═══════ */
+var rnMm=document.getElementById('rnMm'),rnA=document.getElementById('rnA');
+function rain(){
+  var mm=parseFloat(String(rnMm.value).replace(',','.'))||0;
+  var a=parseFloat(String(rnA.value).replace(',','.'))||0;
+  var L=mm*a,m3=L/1000,cis=L/16000;
+  var f=function(n){return fmtN(String(Math.round(n*1000)/1000).replace('.',','));};
+  document.getElementById('rnL').textContent=f(L)+' L';
+  document.getElementById('rnM').textContent=f(m3)+' m³';
+  document.getElementById('rnC').textContent=f(Math.round(cis*100)/100);
+  document.getElementById('rnEq').textContent=f(mm)+' mm × '+f(a)+' m² = '+f(L)+' litros';
+  var pct=Math.min(100,cis*100);
+  document.getElementById('rnBar').style.width=pct+'%';
+  document.getElementById('rnBarT').textContent=cis>=1?f(Math.floor(cis))+(Math.floor(cis)===1?' cisterna cheia':' cisternas cheias'):Math.round(pct)+'% de uma cisterna';
+  document.getElementById('rnCap').textContent=mm>0&&a>0?'Cada milímetro de chuva deposita um litro de água sobre cada metro quadrado — por isso o resultado é, simplesmente, o produto dos dois números.':'Informe a chuva em milímetros e a área em metros quadrados.';
+}
+rnMm.addEventListener('input',rain);rnA.addEventListener('input',rain);
+document.querySelectorAll('button[data-a]').forEach(function(b){b.addEventListener('click',function(){rnA.value=b.dataset.a;rain();});});
+rain();
+
+/* ═══ INVESTIGAÇÃO — gabarito ═══ */
+var INV=[
+  {q:'O carro 1.0 — por que o motor mais popular do Brasil se chama assim?',r:'Cilindrada de 1000 cm³ = 1 L. Um "2.0" desloca 2 litros.',b:'1 cm³ = 1 mL → 1000 cm³ = 1 L'},
+  {q:'A caixa d\'água de 1000 L é cúbica. Qual é a aresta?',r:'1000 L = 1 m³ → aresta de exatamente 1 metro.',b:'1 m³ = 1000 L'},
+  {q:'A seringa — 10 mL empurram quantos cm³? E dm³?',r:'10 cm³ = 0,01 dm³. mL e cm³ são a mesma medida.',b:'1 mL = 1 cm³'},
+  {q:'O aquário 60 × 30 × 40 cm comporta quantos litros?',r:'60 × 30 × 40 = 72 000 cm³ = 72 L = 72 dm³.',b:'1 dm³ = 1 L'},
+  {q:'A cisterna de placas guarda 16 000 L. Em m³?',r:'16 m³ — dois caminhões-pipa de 8 m³.',b:'1 m³ = 1000 L'},
+  {q:'A lata de tinta 18 L, base 30 × 30 cm: que altura?',r:'18 L = 18 000 cm³; 18 000 ÷ 900 = 20 cm de altura.',b:'1 L = 1000 cm³'},
+  {q:'A colher (15 mL) e o copo (190 mL), em cm³?',r:'15 cm³ e 190 cm³ — cerca de 12,7 colheres por copo.',b:'1 mL = 1 cm³'},
+  {q:'A betoneira transporta 8 m³ de concreto. Em litros?',r:'8000 L — enche 16 caixas d\'água de 500 L.',b:'1 m³ = 1000 L'}
+];
+var invList=document.getElementById('invList');
+INV.forEach(function(c,i){
+  var el=document.createElement('div');el.className='iv';
+  el.innerHTML='<div class="iv-top"><span class="iv-n">'+(i+1)+'</span><span class="iv-q">'+c.q+'</span></div>'
+    +'<div class="iv-a"><div class="iv-r">'+c.r+'</div><div class="iv-b">a ponte: '+c.b+'</div></div>';
+  el.addEventListener('click',function(){el.classList.toggle('open');});
+  invList.appendChild(el);
+});
+
+/* ═══ CABE OU NÃO CABE — árbitro ═══ */
+/* converte tudo para mL (=cm³) via ponte. capacidade e volume unificados */
+var UEXP={'mL':0,'cL':1,'dL':2,'L':3,'daL':4,'hL':5,'kL':6, /* capacidade: passo 10, base mL */
+          'mm³':-3,'cm³':0,'dm³':3,'m³':6,'dam³':9,'hm³':12,'km³':15}; /* volume: passo 1000(=3 dec), em mL */
+var CUNITS=['mL','cL','dL','L','daL','hL','kL','mm³','cm³','dm³','m³','dam³','hm³','km³'];
+var c1u=document.getElementById('c1u'),c2u=document.getElementById('c2u');
+CUNITS.forEach(function(u){c1u.appendChild(new Option(u,u));c2u.appendChild(new Option(u,u));});
+c1u.value='L';c2u.value='cm³';
+function toML(val,unit){
+  /* returns a normalized value in mL as a decimal-string-safe number via shiftDec on exponent */
+  var n=UEXP[unit];
+  var s=shiftDec(val,n);
+  return s===null?null:parseFloat(s.replace(',','.'));
+}
+function cPreset(v1,u1,v2,u2){document.getElementById('c1v').value=v1;c1u.value=u1;document.getElementById('c2v').value=v2;c2u.value=u2;judge();}
+/* escolhe uma unidade comum legível conforme a magnitude (mL, L ou m³) */
+function commonUnit(mL){
+  var abs=Math.abs(mL);
+  if(abs>=1e6)return {n:'m³',div:1e6};
+  if(abs>=1000)return {n:'L',div:1000};
+  return {n:'mL',div:1};
+}
+function judge(){
+  var v1=document.getElementById('c1v').value,v2=document.getElementById('c2v').value;
+  var u1=c1u.value,u2=c2u.value;
+  var a=toML(v1,u1),b=toML(v2,u2);
+  var verd=document.getElementById('verd'),eq=document.getElementById('cabeEq');
+  if(a===null||b===null){verd.style.display='none';eq.textContent='digite valores válidos';return;}
+  verd.style.display='';
+  var cu=commonUnit(Math.max(Math.abs(a),Math.abs(b)));
+  var f=function(n){return fmtN(String(Math.round(n/cu.div*1000)/1000).replace('.',','));};
+  eq.innerHTML='conteúdo: <b style="color:#fff">'+f(a)+' '+cu.n+'</b> &nbsp;·&nbsp; recipiente: <b style="color:#fff">'+f(b)+' '+cu.n+'</b> &nbsp;(unidade comum: '+cu.n+')';
+  var diff=b-a;
+  if(Math.abs(diff)<1e-6){verd.className='verd exato';verd.textContent='CABE EXATAMENTE';}
+  else if(diff>0){verd.className='verd cabe';verd.textContent='CABE — sobram '+f(diff)+' '+cu.n;}
+  else{verd.className='verd nao';verd.textContent='NÃO CABE — faltam '+f(-diff)+' '+cu.n;}
+}
+judge();
+
+/* ═══ CHUVA · município no título ═══ */
+var rnCity=document.getElementById('rnCity');
+function paintCity(){
+  document.getElementById('spCity').textContent=rnCity.value||'Quixadá';
+  document.getElementById('spMm').textContent=String(rnMm.value).replace('.',',')||'40';
+}
+rnCity.addEventListener('input',paintCity);rnMm.addEventListener('input',paintCity);paintCity();
+
+/* ═══ OVERLAYS ═══ */
+function ovOpen(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden';if(id==='ovPlan')buildPlan();}
+function ovClose(){document.querySelectorAll('.ovbg').forEach(function(o){o.classList.remove('on');});document.body.style.overflow='';}
+
+var CK_PRINT=[
+  ['Apêndice A1 · fundo — <b>2 cópias por dupla</b> (uma vira o fundo, a outra a Camada de 100 cm³)',1],
+  ['Apêndice A2 e A3 · cintas — 1 de cada por dupla',1],
+  ['Apêndice B · Régua de Duas Marchas <b>em branco</b>, 1 por participante (+ 1 preenchida para você)',0],
+  ['Apêndice C · tiras deslizantes de volume e de capacidade, 1 jogo por dupla',0],
+  ['Apêndice D · Cartas de Investigação, 1 folha por 8 equipes',0],
+  ['Apêndice E · cartas do jogo, coladas em papel-cartão, 1 baralho por 4 equipes',0],
+  ['Apêndice F · Ficha de Registro, 1 por dupla + reservas',1],
+  ['Apêndice G · gabarito — <b>uma cópia só, na sua mão</b>',0],
+  ['Meia folha em branco por participante, para as três perguntas da abertura',1],
+  ['<b>Teste feito:</b> imprimi uma folha e medi o quadradinho com a régua — deu 1 cm exato',1]
+];
+var CK_PHYS=[
+  ['Garrafa PET de 1 L transparente com a marca do litro visível (ou copo medidor)',1],
+  ['1,5 kg de arroz cru — ou feijão, ou areia fina peneirada',1],
+  ['Funil, ou uma folha para enrolar em cone',1],
+  ['Réguas graduadas, tesouras sem ponta, cola bastão',1],
+  ['Fita adesiva larga — <b>as quinas da caixa não seguram sem ela</b>',1],
+  ['Papel-cartão ou cartolina para reforçar as caixas e colar o baralho',0],
+  ['Trena ou fita métrica',0],
+  ['Material dourado: cubinho, barra, placa e cubo do milhar',0],
+  ['Bandeja, jornal ou vassoura — o arroz cai fora, sempre',1],
+  ['Sacos plásticos e pote de 1 L, se for verificar com água',0],
+  ['Seringa de 10 mL sem agulha, para conferir 1 cm³ = 1 mL',0]
+];
+var CK_ROOM=[
+  ['Projetor ou TV testada com este arquivo aberto — <b>modo palco funcionando</b>',1],
+  ['Mesas em ilhas, uma caixa por dupla, espaço livre para recortar',1],
+  ['Quadro e piloto para as três perguntas da abertura',1],
+  ['Município e dado da FUNCEME escolhidos para o fechamento',1],
+  ['Área do telhado da escola-sede levantada antes (ou estimada)',0],
+  ['Câmera do celular à mão para registrar o despejo',0]
+];
+function mkCk(host,arr){
+  arr.forEach(function(it){
+    var l=document.createElement('label');l.className='ck';
+    l.innerHTML='<input type="checkbox"><span>'+(it[1]?'<b>·</b> ':'')+it[0]+'</span>';
+    l.querySelector('input').addEventListener('change',function(){l.classList.toggle('done',this.checked);ckCount();});
+    host.appendChild(l);
+  });
+}
+mkCk(document.getElementById('ckPrint'),CK_PRINT);
+mkCk(document.getElementById('ckPhys'),CK_PHYS);
+mkCk(document.getElementById('ckRoom'),CK_ROOM);
+function ckCount(){
+  var all=[...document.querySelectorAll('.ck input')],n=all.filter(function(i){return i.checked;}).length;
+  document.getElementById('ckCount').textContent=n+' de '+all.length+' conferidos';
+}
+ckCount();
+
+function buildPlan(){
+  var tb=document.getElementById('planBody');tb.innerHTML='';
+  STEPS.forEach(function(s,i){
+    var tr=document.createElement('tr');
+    tr.className=(s.full===0?'off':'')+(i===cur?' cur':'');
+    tr.innerHTML='<td class="n">'+(i+1)+'</td><td><b>'+s.n+'</b></td><td>'+s.g+'</td><td class="n">'+(s.full===0?'—':s.full+' min')+'</td>';
+    tr.style.cursor='pointer';
+    tr.addEventListener('click',function(){ovClose();go(i);});
+    tb.appendChild(tr);
+  });
+  document.getElementById('planTot').textContent='total do modo selecionado: '+planTotal()+' min';
+}
+
+/* ═══ CALCULADORA DE IMPRESSÃO E KIT ═══ */
+var kpN=document.getElementById('kpN'),kpG=document.getElementById('kpG');
+function kit(){
+  var n=Math.max(1,parseInt(kpN.value,10)||0),g=parseInt(kpG.value,10);
+  var box=Math.ceil(n/g), team=Math.ceil(n/4);
+  var rows=[
+    ['A1 · fundo + Camada','2 por caixa',box*2],
+    ['A2 e A3 · cintas','2 por caixa',box*2],
+    ['B · Régua de Duas Marchas','1 por participante',n],
+    ['C · tiras deslizantes','1 por caixa',box],
+    ['D · Cartas de Investigação','8 cartas por folha',Math.max(1,Math.ceil(team/8))],
+    ['E · baralho do jogo','1 por 4 equipes',Math.max(1,Math.ceil(team/4))*2],
+    ['F · Ficha de Registro','1 por caixa + 10%',Math.ceil(box*1.1)],
+    ['G · gabarito','só para o formador',1],
+    ['Folha em branco da abertura','1 meia folha por pessoa',Math.ceil(n/2)]
+  ];
+  var tot=rows.reduce(function(a,r){return a+r[2];},0);
+  document.getElementById('kpBox').textContent=box;
+  document.getElementById('kpSheet').textContent=Math.ceil(tot*1.1);
+  document.getElementById('kpRice').textContent=(Math.ceil(box*0.85*10)/10).toString().replace('.',',')+' kg';
+  var t='<tr><th>impresso</th><th>critério</th><th style="text-align:right">folhas</th></tr>';
+  rows.forEach(function(r){t+='<tr><td>'+r[0]+'</td><td style="color:#7592A0">'+r[1]+'</td><td class="q">'+r[2]+'</td></tr>';});
+  t+='<tr class="tot"><td>total + 10% de reserva</td><td></td><td class="q">'+Math.ceil(tot*1.1)+'</td></tr>';
+  document.getElementById('kpTab').innerHTML=t;
+}
+kpN.addEventListener('input',kit);kpG.addEventListener('change',kit);
+kit();
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){sairPalco();ovClose();return;}
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA'))return;
+  if(e.key===' '||e.key==='t'||e.key==='T'){e.preventDefault();tToggle();return;}
+  if(document.querySelector('.rig.palco'))return;
+  if(e.key==='f'||e.key==='F'){toggleF();return;}
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);
+});
+
+/* ═══ ARRANQUE ═══ */
+setMode();loadStep(0);paintEnd();buildPlan();
+
+</script>
+</body>
+</html>

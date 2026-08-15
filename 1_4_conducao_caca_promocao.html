@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · Caça à Promoção Enganosa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#C62828;--accent-soft:#FDEAEA;--accent-deep:#7F1616;
+--h-bg:#1A0A0A;--h-accent:#FF8A80;--h-sub:#D4A0A0;
+--green:#2E7D32;--green-s:#E8F5E9;--blue:#1565C0;--blue-s:#E3F2FD;--gold:#F9A825;--gold-s:#FFF8E1;
+--ink:#1A0F0F;--ink-mid:#4A3535;--ink-soft:#7A6565;--border:#E8D8D8;--bg:#FFFAF9;--bg-card:#fff;--radius:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(255,138,128,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:860px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:11.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 12px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:6px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--green)}.tab.done .tn{background:var(--green-s);color:var(--green);border-color:var(--green)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.speech{background:linear-gradient(135deg,var(--h-bg),#4A1515);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'％';position:absolute;right:14px;top:-10px;font-family:var(--f-head);font-size:110px;color:rgba(255,138,128,.07);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#FFE0DB;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+.tip{background:var(--green-s);border:1px solid rgba(46,125,50,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#1B5E20;line-height:1.6}
+.warn{background:var(--accent-soft);border:1px solid rgba(198,40,40,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--accent)}.tm.done{color:var(--green)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.1)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-v{background:var(--green);border-color:var(--green);color:#fff}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ── RIG (painel escuro) ── */
+.rig{background:#1A0F0F;border:1px solid #3A2222;border-radius:var(--radius);padding:1.2rem 1rem 1.4rem;margin-bottom:1.2rem}
+.rig-h{font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--h-accent);
+  border-bottom:1px solid #3A2222;padding-bottom:9px;margin-bottom:14px}
+
+/* ── PIPELINE ── */
+.pipe{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:16px 0;min-height:80px}
+.pnode{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;transition:all .4s}
+.pval{font-family:var(--f-mono);font-size:clamp(20px,5vw,36px);font-weight:600;color:#fff;transition:all .4s}
+.pval.old{opacity:0.5;color:#A08080;font-size:clamp(16px,4vw,26px);text-decoration:none;}
+.pval.final{color:var(--h-accent)}
+.pval.green{color:#81C784}
+.pval.red{color:#EF9A9A}
+.plbl{font-size:10px;color:#8A6565;text-align:center;max-width:90px;line-height:1.3}
+.parrow{font-size:20px;color:#5A3333;margin:0 4px;flex-shrink:0}
+.pfactor{font-family:var(--f-mono);font-size:14px;font-weight:600;color:var(--gold);background:#2A1A0A;border:1px solid #5A4020;border-radius:100px;padding:3px 10px;margin:0 2px}
+@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.pnode.anim{animation:slideIn .35s ease both}
+.eq{font-family:var(--f-mono);font-size:clamp(16px,3.5vw,28px);font-weight:600;color:var(--h-accent);text-align:center;margin:12px 0;min-height:36px}
+.narr{font-size:13px;color:#C4A08E;text-align:center;margin:8px 0;min-height:20px;line-height:1.5}
+.obs{font-size:12px;color:#A08080;text-align:center;margin:4px 0;border-top:1px solid #3A2222;padding-top:10px}
+
+/* ── CALCULADORA ── */
+.calc{background:#1A0F0F;border:1px solid #3A2222;border-radius:var(--radius);padding:1.2rem;margin-bottom:1.2rem}
+.calc-row{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.calc-fld{display:flex;align-items:center;gap:6px;background:#2A1616;border:1px solid #4A2828;border-radius:8px;padding:6px 12px}
+.calc-fld label{font-family:var(--f-body);font-size:9px;font-weight:700;color:#8A6565;letter-spacing:.08em;text-transform:uppercase}
+.calc-fld input,.calc-fld select{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:600;outline:none;width:70px}
+.calc-fld select{cursor:pointer;width:auto}
+.calc-fld select option{background:#2A1616}
+.chain{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin:10px 0;min-height:36px}
+.chip{font-family:var(--f-mono);font-size:13px;font-weight:600;padding:5px 12px;border-radius:100px;border:1.5px solid;cursor:pointer;transition:all .15s}
+.chip.desc{background:rgba(198,40,40,.15);border-color:var(--accent);color:var(--h-accent)}
+.chip.acr{background:rgba(46,125,50,.15);border-color:var(--green);color:#81C784}
+.chip:hover{transform:scale(1.06)}
+.chip .x{margin-left:5px;opacity:.5;font-size:11px}
+
+/* ── ALGORITMO ── */
+.algo{display:flex;flex-direction:column;align-items:center;gap:10px;margin:1.2rem 0}
+.astep{background:#2A1616;border:1.5px solid #4A2828;border-radius:var(--radius);padding:.8rem 1.2rem;width:100%;max-width:500px;
+  font-size:13.5px;color:#D4A0A0;line-height:1.6;text-align:center;opacity:.3;transition:all .35s;cursor:pointer}
+.astep.on{opacity:1;border-color:var(--h-accent);background:#2A1010}
+.astep b{color:#fff}
+.adown{font-size:18px;color:#5A3333;transition:opacity .3s}
+.adown.on{color:var(--h-accent)}
+
+
+/* ── TIRA DE 100 (etapa 4 · descoberta) ── */
+.tira{display:grid;grid-template-columns:repeat(10,var(--cell));gap:3px;justify-content:center;margin:16px auto 10px;--cell:clamp(16px,5.6vw,26px)}
+.tcell{width:var(--cell);height:var(--cell);border-radius:3px;background:#3A2222;border:1px solid #4A2828;transition:all .3s}
+.tcell.keep{background:var(--h-accent);border-color:#FFB3AD}
+.tcell.cut{background:transparent;border:1px dashed #fff;opacity:.5;transform:scale(.86)}
+.tcell.add{background:#2E7D32;border-color:#81C784}
+@keyframes popCell{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.tcell.pop{animation:popCell .3s ease both}
+.tira-leg{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:11px;color:#8A6565;margin-bottom:6px}
+.tira-leg span{display:flex;align-items:center;gap:5px}
+.tira-leg i{width:11px;height:11px;border-radius:2px;display:inline-block}
+
+/* ── TABELA DO PADRÃO ── */
+.ptab{width:100%;border-collapse:collapse;font-family:var(--f-mono);font-size:clamp(11px,2.6vw,13px);color:#D4A0A0;margin:12px 0 6px}
+.ptab th{font-family:var(--f-body);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:#8A6565;
+  border-bottom:1px solid #3A2222;padding:8px 4px;font-weight:700;line-height:1.3}
+.ptab td{padding:9px 4px;border-bottom:1px solid #2A1A1A;text-align:center;transition:all .25s}
+.ptab tbody tr{cursor:pointer}
+.ptab tbody tr:hover{background:#2A1616}
+.ptab td.hid{color:#5A3333}
+.ptab td.rev{color:var(--gold);font-weight:600}
+.ptab tr.gen{animation:fade .3s ease both}
+.ptab tr.gen td{color:var(--gold);border-top:1.5px solid #5A4020;border-bottom:none;font-weight:600;padding-top:11px}
+.ptab tr.gen td:last-child{color:var(--h-accent);font-size:1.12em}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">Caça à <em>Promoção Enganosa</em></div>
+  <span class="top-badge">％ Descontos, acréscimos e fator multiplicativo</span>
+  <span class="top-badge">🧠 Atividade desplugada · 60 min · 5 grupos</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Abertura</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>Descobrindo a regra</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>A surpresa</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>O fator</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>Análise</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>Algoritmo</button>
+    </div>
+  </div>
+
+<!-- ═══════ 1 · ABERTURA ═══════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>"Uma loja anuncia:</p>
+    <p>Esse mês, tudo com <b>50% de desconto</b>. Toda quarta-feira, haverá um <b>desconto extra de 20%</b>.</p>
+    <p>Quanto de desconto você leva sobre o preço inicial na quarta-feira?"</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A pergunta que abre a atividade</div>
+    <div class="eq" id="q0" style="font-size:clamp(24px,6vw,48px)">50% + 20% = <span style="color:#fff">???</span></div>
+    <div class="narr">Peça que cada mesa escreva a resposta em um papel e levante ao mesmo tempo.</div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="document.getElementById('q0').innerHTML='50% + 20% = <b style=color:var(--h-accent)>60%, não 70%</b>';document.getElementById('q0n').style.display='block'">revelar</button>
+    </div>
+    <div class="narr" id="q0n" style="display:none;color:var(--h-accent)">A maioria responderá 70%. A surpresa é o motor da atividade.</div>
+  </div>
+
+  <!-- <div class="inst">
+    <div class="inst-t">O que deve estar pronto</div>
+    <ul>
+      <li><b>5 Kits de promoções impressos</b> (Kit 1 a Kit 5), recortados e separados — <b>um por equipe</b>. Cada kit traz as mesmas 5 categorias, com valores diferentes: cashback · desconto progressivo · preço pra baixo · reajuste · queda de preço</li>
+      <li><b>5 Folhas de Registro</b> (+1 reserva), uma por equipe — usadas na etapa 5</li>
+      <li>Material manipulativo da etapa 3 (tiras de 100, tesoura, cola) separado por equipe</li>
+      <li><b>Gabarito do formador</b> em mãos: em cada kit há <b>exatamente uma</b> promoção enganosa, e é de uma categoria diferente em cada kit</li>
+      <li>Entregue os kits <b>só na etapa 5</b> — antes disso eles antecipam a descoberta</li>
+    </ul>
+  </div> -->
+
+  <div class="nav">
+    <span class="nav-info">etapa 1 de 6 · 3 min</span>
+    <button class="btn btn-a" onclick="go(1)">descobrindo a regra →</button>
+  </div>
+</div>
+
+<!-- ═══════ 2 · DESCOBRINDO A REGRA ═══════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>"Já vimos que 50% + 20% não dá 70%. Mas continuam calculando <b>o pedaço que sai</b>.</p>
+    <p>Agora a investigação é outra: <b>o que sobra do preço?</b> Sem calculadora — só papel, tesoura e cola."</p>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t3">12:00</div>
+    <div class="tl" id="t3l">investigação com a tira de 100</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,720)">▶ 12 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,720)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="inst">
+    <div class="inst-t">Material por equipe</div>
+    <ul>
+      <li><b>Tiras de 100 quadradinhos</b> (papel quadriculado, ~1 cm). Cada tira inteira representa <b>o preço todo: R$ 200</b> — logo, 1 quadradinho = R$ 2</li>
+      <li>Tesoura, cola ou fita adesiva e uma <b>ficha de registro</b> com as colunas: <i>anúncio · saem · ficam · ficam ÷ 100</i></li>
+      <li>Alternativas se faltar material: 100 tampinhas, 100 fichas, papel milimetrado ou uma fita métrica de 100 cm</li>
+    </ul>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Roteiro da investigação · 5 movimentos</div>
+    <ul>
+      <li><b>1 · Recortar (2 min) — decomposição.</b> "Apliquem 30% de desconto nesta tira." A equipe recorta o pedaço que sai e <b>separa fisicamente</b> as duas partes sobre a mesa: o que saiu à esquerda, o que ficou à direita.</li>
+      <li><b>2 · Registrar (3 min).</b> Repitam com 10%, 25%, 40% e 50%, em tiras novas. A ficha só tem três perguntas: quantos saem, quantos ficam, e que parte do inteiro é o que ficou.</li>
+      <li><b>3 · Comparar (2 min) — reconhecimento de padrão.</b> "Cubram a coluna do que SAI e olhem só para a coluna do que FICA. O que ela tem a ver com o número anunciado?"</li>
+      <li><b>4 · Colar (2 min) — a virada.</b> "E se, em vez de desconto, o preço <b>aumentar</b> 20%? Mostrem isso na tira." Elas terão de colar 20 quadradinhos a mais e perceber que agora há <b>120 de 100</b>.</li>
+      <li><b>5 · Nomear (3 min) — abstração.</b> "Digam em voz alta uma instrução que funcione para <b>qualquer</b> porcentagem — inclusive uma que eu ainda não falei." Cada equipe apresenta a sua regra oralmente; o formador pode registrar as falas no quadro para comparar entre equipes.</li>
+    </ul>
+  </div>
+
+  <!-- <div class="warn"><b>Regra de ouro desta etapa: quem escreve a fórmula é a equipe, não o formador.</b> Se alguém perguntar "é 1 menos x sobre 100?", devolva: "testa na tira e me diz se funciona". Se a equipe travar, ofereça só a próxima pergunta da lista abaixo — nunca a conclusão.</div> -->
+
+  <div class="rig">
+    <div class="rig-h">A tira de 100 · projete apenas DEPOIS que as equipes manipularam a sua</div>
+    <div class="ctrls" id="tiraOps" style="margin-top:0">
+      <button class="btn btn-a" data-op="d" onclick="tiraSetOp('d')">desconto</button>
+      <button class="btn btn-g" data-op="a" onclick="tiraSetOp('a')">acréscimo</button>
+    </div>
+    <div class="ctrls" id="tiraRates" style="margin-top:8px"></div>
+    <div class="tira" id="tiraGrid"></div>
+    <div class="tira-leg" id="tiraLeg"></div>
+    <div class="eq" id="tiraEq"></div>
+    <div class="narr" id="tiraNarr"></div>
+    <div class="ctrls">
+      <button class="btn btn-v" id="tiraBtn" onclick="tiraReveal()">▸ revelar</button>
+      <button class="btn btn-g" onclick="tiraReset()">↺ esconder de novo</button>
+    </div>
+    <div class="obs">Cada quadradinho vale R$ 2. A tira inteira vale R$ 200.</div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O padrão em tabela · revele uma linha por vez, conforme as equipes ditarem</div>
+    <div class="ctrls" id="padOps" style="margin-top:0">
+      <button class="btn btn-a" data-op="d" onclick="padSetOp('d')">descontos</button>
+      <button class="btn btn-g" data-op="a" onclick="padSetOp('a')">acréscimos</button>
+    </div>
+    <table class="ptab" id="padTab"></table>
+    <div class="narr" id="padNarr">clique numa linha para revelar a última coluna</div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="padAll()">revelar as numéricas</button>
+      <button class="btn btn-v" onclick="padGeneral()">▶ a linha que vale para qualquer x</button>
+      <button class="btn btn-g" onclick="padHide()">↺ esconder</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Perguntas que conduzem à generalização · uma de cada vez, com espera</div>
+    <ul>
+      <li>"Quantos quadradinhos ficaram? De quantos ao todo?" <i>(contagem)</i></li>
+      <li>"70 de 100 — como vocês escreveriam isso como um número decimal?" <i>(0,70 nasce da contagem, não da regra)</i></li>
+      <li>"Multipliquem R$ 200 por esse número. Deu o mesmo que tirar 30% e subtrair?" <i>(equivalência das duas rotas)</i></li>
+      <li>"Alguém consegue dizer quanto fica <b>sem contar</b> os quadradinhos um a um? Como?" <i>(aqui aparece o 100 − x)</i></li>
+      <li>"E se o desconto for 37%? E 3%? E se eu não disser o número — como vocês escreveriam?" <i>(a letra entra por necessidade)</i></li>
+      <li>"Agora leiam a mesma frase de vocês para o caso do aumento. O que muda?" <i>(uma só regra, com dois sinais)</i></li>
+    </ul>
+  </div>
+
+  <div class="tip"><b>🧠 O que aconteceu aqui, em linguagem de Pensamento Computacional:</b> <b>decomposição</b> (separar o que sai do que fica) → <b>reconhecimento de padrão</b> (a coluna do que fica é sempre 100 − x) → <b>abstração</b> (trocar o número por uma letra e descartar o contexto do preço) → <b>algoritmo</b> (uma instrução que qualquer pessoa executa sem saber de onde veio). A generalização não foi contada às equipes: elas a construíram. Na próxima etapa, vão ver que essa mesma regra explica algo que <b>ninguém previu</b>: +10% seguido de −10% não volta ao preço original.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← abertura</button>
+    <span class="nav-info">etapa 2 de 6 · 12 min</span>
+    <button class="btn btn-a" onclick="go(2)">a surpresa →</button>
+  </div>
+</div>
+
+<!-- ═══════ 3 · A SURPRESA ═══════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>"Uma loja aumentou 10% antes da Black Friday. Na sexta, deu 10% de desconto.</p>
+    <p><b>O cliente pagou o preço original?</b>"</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">A demonstração que muda a conversa · passo a passo</div>
+    <div class="pipe" id="pipeSurprise"></div>
+    <div class="eq" id="eqSurprise"></div>
+    <div class="narr" id="narrSurprise">peça previsões antes de revelar</div>
+    <div class="obs" id="obsSurprise"></div>
+    <div class="ctrls" id="surpriseControls" style="display:none">
+      <button class="btn btn-g" id="surprisePrev" onclick="surprisePrev()">◀ anterior</button>
+      <span id="surpriseIndicator" style="color:#8A6565;font-size:12px;font-family:var(--f-mono)">0/0</span>
+      <button class="btn btn-a" id="surpriseNext" onclick="surpriseNext()">próximo ▶</button>
+      <button class="btn btn-v" id="surprisePlay" onclick="surpriseAuto()">▶ executar tudo</button>
+    </div>
+    <div class="ctrls" style="margin-top:8px">
+      <button class="btn btn-a" onclick="demoSurpriseStepwise(200,[{op:'+10%',f:1.1},{op:'−10%',f:0.9}], '10%')">revelar +10% / −10%</button>
+      <button class="btn btn-g" onclick="demoSurpriseStepwise(200,[{op:'+20%',f:1.2},{op:'−20%',f:0.8}], '20%')">testar com 20%</button>
+      <button class="btn btn-g" onclick="demoSurpriseStepwise(200,[{op:'+50%',f:1.5},{op:'−50%',f:0.5}], '50%')">testar com 50%</button>
+      <button class="btn btn-g" onclick="clearSurprise()">↺ limpar</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">A pergunta que fecha o momento</div>
+    <p style="font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--accent-deep)">"Isso é justo? Se uma loja aumenta antes da promoção e depois dá o mesmo desconto, o cliente pagou menos ou mais?"</p>
+    <ul style="margin-top:10px">
+      <li>O desconto de 10% incidiu sobre <b>R$ 220</b>, não sobre R$ 200</li>
+      <li>A base mudou — e é por isso que o preço não volta</li>
+      <li>Quanto maior a taxa, maior a perda: +50%/−50% perde <b>25%</b></li>
+    </ul>
+  </div>
+
+  <!-- <div class="tip"><b>Este momento costuma surpreender os próprios professores</b> — agora eles têm a regra da tira de 100, mas acabaram de ver que ela funciona <b>dentro</b> de uma composição que ninguém previu. Use o espanto: "vocês já sabiam que 10% dá ×0,9 e que +10% dá ×1,1 — o que surpreende não é o fator, é o que acontece quando dois fatores se multiplicam." Isso prepara o terreno para a calculadora de cadeias da próxima etapa.</div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← descobrindo a regra</button>
+    <span class="nav-info">etapa 3 de 6 · 8 min</span>
+    <button class="btn btn-a" onclick="go(3)">o fator →</button>
+  </div>
+</div>
+
+<!-- ═══════ 4 · O FATOR ═══════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>"O artifício usado na tira de 100 e agora na Black Friday tem nome: <b>fator multiplicativo</b>.</p>
+    <p>A calculadora abaixo vai <b>testar essa ferramenta</b> em cadeias cada vez maiores — e vocês vão prever o resultado <b>antes</b> de a tela confirmar."</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Antes de tocar na calculadora</div>
+    <ul>
+      <li>Só então a cadeia é montada na tela — a tela <b>confere</b>, não revela</li>
+      <li>Se a previsão e a tela discordarem, a pergunta é: o erro está na regra ou na aplicação dela?</li>
+    </ul>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Testem os casos que a turma já viu — o resultado deve ser idêntico</div>
+    <ul>
+      <li>Abertura: "50% + 20%" → <b>×0,5 × 0,8 = ×0,4</b> → 60% de desconto ✓</li>
+      <li>A surpresa: "+10% −10%" → <b>×1,1 × 0,9 = ×0,99</b> → pagou 99% ✓</li>
+    </ul>
+  </div>
+
+  <div class="calc">
+    <div class="rig-h">Calculadora de fatores · monte a cadeia e veja o resultado</div>
+    <div class="calc-row">
+      <div class="calc-fld"><label>preço</label><input id="cP" value="200" inputmode="decimal"></div>
+      <div class="calc-fld">
+        <label>operação</label>
+        <select id="cOp"><option value="d">desconto</option><option value="a">acréscimo</option></select>
+      </div>
+      <div class="calc-fld"><label>taxa %</label><input id="cT" value="30" inputmode="decimal"></div>
+      <button class="btn btn-a" onclick="addChip()">+ adicionar</button>
+    </div>
+    <div class="chain" id="chain"></div>
+    <div class="pipe" id="pipe3"></div>
+    <div class="eq" id="eq3"></div>
+    <div class="narr" id="narr3"></div>
+    <div class="ctrls">
+      <button class="btn btn-v" onclick="calcChain()">▶ calcular cadeia</button>
+      <button class="btn btn-g" onclick="clearCalc()">↺ limpar</button>
+    </div>
+  </div>
+
+  <div class="tip"><b>Vale a pena comentar:</b> a ordem dos fatores não muda o produto. ×0,5 × 0,8 = ×0,8 × 0,5 = 0,4. Isso significa que a ordem dos descontos não importa — o resultado final é o mesmo. (A ordem muda os preços intermediários, mas não o final.)</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← a surpresa</button>
+    <span class="nav-info">etapa 4 de 6 · 10 min</span>
+    <button class="btn btn-a" onclick="go(4)">análise →</button>
+  </div>
+</div>
+
+<!-- ═══════ 5 · ANÁLISE ═══════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>"Cada equipe recebe agora um <b>Kit com 5 promoções</b> e uma <b>Folha de Registro</b>.</p>
+    <p>Em <b>uma</b> delas a porcentagem anunciada <b>não</b> corresponde à conta. Descubram qual — e provem com o fator."</p>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t1">09:00</div>
+    <div class="tl" id="t1l">análise nos grupos</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,540)">▶ 9 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,540)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="inst">
+    <div class="inst-t">Como a Folha de Registro é preenchida · 4 colunas, sempre na mesma ordem</div>
+    <ul>
+      <li><b>1 · Preço inicial e preço final.</b> Toda promoção, seja qual for o texto, vira dois números: quanto era e quanto ficou.</li>
+      <li><b>2 · Fator (f).</b> f = preço final ÷ preço inicial. É o mesmo fator da etapa anterior.</li>
+      <li><b>3 · Desconto ou acréscimo real.</b> Da regra de vocês, ao contrário: f = 1 − x/100 → x = (1 − f)·100.</li>
+      <li><b>4 · Enganosa?</b> Compare a coluna que vocês calcularam com a porcentagem que o anúncio grita.</li>
+    </ul>
+  </div>
+
+  <div class="warn"><b>Use o walkthrough só para ensinar a ler a folha</b> — os números dele não estão em nenhum kit. Se uma equipe travar, projete a categoria correspondente e deixe que ela transporte o método para o próprio kit. <b>Nunca</b> resolva o card da equipe na tela.</div>
+
+  <div class="rig">
+    <div class="rig-h">Walkthrough do método · uma categoria de cada vez, com números que NÃO estão em nenhum kit</div>
+    <div class="ctrls" style="margin-top:0">
+      <button class="btn btn-a" onclick="demoStepwise('wcash',500,[{op:'cashback 15%',f:0.85}])">① cashback</button>
+      <button class="btn btn-g" onclick="demoStepwise('wprog',500,[{op:'−40%',f:0.6},{op:'−10%',f:0.9}])">② progressivo</button>
+      <button class="btn btn-g" onclick="demoStepwise('wbaixo',500,[{op:'+R$ 100',f:1.2},{op:'−25%',f:0.75}])">③ preço pra baixo</button>
+      <button class="btn btn-g" onclick="demoStepwise('wreaj',500,[{op:'+15%',f:1.15}])">④ reajuste</button>
+      <button class="btn btn-g" onclick="demoStepwise('wqueda',500,[{op:'−15%',f:0.85}])">⑤ queda de preço</button>
+      <button class="btn btn-g" onclick="clearPipeStep()">↺ limpar</button>
+    </div>
+    <div class="pipe" id="pipeStep"></div>
+    <div class="eq" id="demoEqStep"></div>
+    <div class="narr" id="demoNarrStep"></div>
+    <div class="obs" id="demoObsStep"></div>
+    <div class="ctrls" id="stepControls" style="display:none">
+      <button class="btn btn-g" id="stepPrev" onclick="stepPrev()">◀ anterior</button>
+      <span id="stepIndicator" style="color:#8A6565;font-size:12px;font-family:var(--f-mono)">0/0</span>
+      <button class="btn btn-a" id="stepNext" onclick="stepNext()">próximo ▶</button>
+      <button class="btn btn-v" id="stepPlay" onclick="stepAuto()">▶ executar tudo</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Fechamento em roda · 3 min, antes do 6º momento</div>
+    <ul>
+      <li>Cada equipe anuncia <b>só</b> qual promoção era a enganosa e por quanto errava — sem refazer a conta toda</li>
+      <li>Pergunta que amarra tudo: "a categoria enganosa foi <b>a mesma</b> em todos os kits?" (não foi — cada kit erra em uma diferente)</li>
+      <li>Segunda pergunta: "qual categoria enganou <b>sem mentir em nenhum número</b>?" — a de preço pra baixo, que só omite que o desconto incide sobre o preço já inflado</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">6º momento · puzzle de fechamento, sala toda — projete só depois de todas as equipes apresentarem</div>
+    <div class="speech" style="margin:0 0 12px">
+      <p>"Vocês compraram uma ação por <b>R$ 200</b>. Ela <b>caiu 20%</b>.</p>
+      <p>De quantos por cento ela precisa <b>subir</b> para vocês venderem sem prejuízo?"</p>
+    </div>
+    <div class="ctrls" style="margin-top:0">
+      <button class="btn btn-v" onclick="demoStepwise('acao20',200,[{op:'−20%',f:0.8},{op:'+25%',f:1.25}])">▶ conferir a resposta</button>
+      <button class="btn btn-g" onclick="clearPipeStep()">↺ limpar</button>
+    </div>
+    <div class="obs">Recolha as apostas <b>antes</b> de projetar. A maioria responde 20% — e é justamente aí que está o aprendizado.</div>
+  </div>
+
+  <div class="tip"><b>Por que este puzzle fecha a atividade:</b> é o único momento em que a pergunta se <b>inverte</b> — não se pede o resultado de um fator, mas <b>o fator que desfaz outro fator</b>. A queda ×0,8 só é desfeita por 1 ÷ 0,8 = <b>1,25</b>, ou seja, +25% (e não +20%). <b>Relação geral:</b> uma queda de x% exige alta de <b>x/(100 − x) · 100 %</b> — 20% pede 25%; 50% pede 100%. É o mesmo raciocínio de "operação inversa" que fecha o algoritmo da próxima etapa.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← o fator</button>
+    <span class="nav-info">etapa 5 de 6 · 9 min</span>
+    <button class="btn btn-a" onclick="go(5)">algoritmo →</button>
+  </div>
+</div>
+
+<!-- ═══════ 6 · ALGORITMO ═══════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <p>"Escrevam o algoritmo geral: dado um preço e uma lista de descontos e acréscimos, <b>como calcular o valor final?</b>"</p>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t5">05:00</div>
+    <div class="tl" id="t5l">as equipes escrevem o algoritmo</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(5,300)">▶ 5 min</button>
+      <button class="btn btn-g" onclick="stopT(5)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(5,300)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="rig">
+    <div class="rig-h">O algoritmo · clique em cada passo para revelar</div>
+    <div class="algo" id="algoSteps"></div>
+    <div class="ctrls">
+      <button class="btn btn-a" id="algoAll">revelar todos</button>
+      <button class="btn btn-g" id="algoNone">fechar</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">🧠 Conexão com o Pensamento Computacional</div>
+    <ul>
+      <li><b>Reconhecimento de padrões:</b> na tira de 100, a coluna do que fica é sempre 100 − x — daí nasceu o fator</li>
+      <li><b>Generalização:</b> a regra 1 ± x/100 não foi dada pronta: as equipes a leram no próprio material e a escreveram com uma letra</li>
+      <li><b>Abstração:</b> não importa se é desconto, acréscimo, imposto ou juros — o modelo é o mesmo</li>
+      <li><b>Otimização de algoritmo:</b> "calcular a parte e subtrair" → "multiplicar direto". Menos passos, mesmo resultado</li>
+      <li><b>Composição:</b> encadear fatores é compor funções — o conceito central de um pipeline de processamento</li>
+    </ul>
+  </div>
+
+  <div class="tip"><b>Fechamento da manhã:</b> "O professor de matemática provavelmente já faz variações desta atividade. O que nomeamos agora é que isso <b>já é pensamento computacional</b>: reconhecer padrões, abstrair o essencial e escrever um algoritmo. Essa nomeação conecta a prática que já existe à BNCC Computação."</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← análise</button>
+    <span class="nav-info">etapa 6 de 6 · fim da atividade</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAV ═══ */
+const tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+let cur=0;
+function go(i){if(cur<i)tabs[cur].classList.add('done');tabs.forEach(t=>t.classList.remove('on'));panes.forEach(p=>p.classList.remove('on'));tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ═══ TIMERS ═══ */
+const TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){stopT(id);TM[id]={rem:dur};const el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');el.textContent=fmtT(dur);el.classList.remove('done','low');TM[id].iv=setInterval(()=>{TM[id].rem--;const r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));el.classList.toggle('low',r<=15&&r>0);if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';el.classList.remove('low');el.classList.add('done');lb.textContent='tempo!';}},1000);}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};document.getElementById('t'+id).textContent=fmtT(dur);document.getElementById('t'+id).classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* ═══ PIPELINE GENÉRICO (para animação automática) ═══ */
+function fmt$(v){return 'R$ '+v.toFixed(2).replace('.',',');}
+function fmtPct(v){return v.toFixed(1).replace('.',',')+'%';}
+
+// Versão automática (usada na calculadora e eventualmente em outros)
+function buildPipe(target, price, steps){
+  target.innerHTML='';
+  const n0=document.createElement('div');n0.className='pnode anim';
+  n0.innerHTML='<div class="pval">'+fmt$(price)+'</div><div class="plbl">preço original</div>';
+  target.appendChild(n0);
+
+  let v=price, delay=0;
+  steps.forEach((s,i)=>{
+    v = Math.round(v * s.f * 100) / 100;
+    const currentV = v;
+    delay += 600;
+    setTimeout(()=>{
+      const ar=document.createElement('span');ar.className='parrow';ar.textContent='→';target.appendChild(ar);
+      const fc=document.createElement('span');fc.className='pfactor';
+      const fStr=s.f.toFixed(s.f===Math.round(s.f*10)/10?1:2).replace('.',',');
+      fc.textContent=s.op+' (×'+fStr+')';
+      target.appendChild(fc);
+      const ar2=document.createElement('span');ar2.className='parrow';ar2.textContent='→';target.appendChild(ar2);
+    }, delay);
+    delay += 400;
+    setTimeout(()=>{
+      const prevNodes = target.querySelectorAll('.pnode:not(.old) .pval:not(.old)');
+      if(prevNodes.length){
+        const lastPval = prevNodes[prevNodes.length-1];
+        const pnode = lastPval.closest('.pnode');
+        if(pnode){
+          pnode.querySelector('.pval').classList.add('old');
+          pnode.querySelector('.plbl').textContent = 'anterior';
+        }
+      }
+      const nd=document.createElement('div');nd.className='pnode anim';
+      const cls = (i===steps.length-1) ? 'final' : '';
+      nd.innerHTML='<div class="pval '+cls+'">'+fmt$(currentV)+'</div><div class="plbl">'+(i===steps.length-1?'preço final':'após '+s.op)+'</div>';
+      target.appendChild(nd);
+    }, delay);
+  });
+  return { delay, final: v, factors: steps.map(s=>s.f) };
+}
+
+/* ═══ DEMONSTRAÇÃO PASSO A PASSO (etapa 2) — COM RESUMO APÓS CLIQUE EXTRA ═══ */
+let stepData = null;      // {id, price, steps, values, factors, labels, totalFactor, finalPrice, descontoPct, descontoVal}
+let stepIndex = 0;
+let stepSummaryShown = false;
+
+function clearPipeStep(){
+  document.getElementById('pipeStep').innerHTML='';
+  document.getElementById('demoEqStep').textContent='';
+  document.getElementById('demoNarrStep').textContent='';
+  document.getElementById('demoObsStep').textContent='';
+  document.getElementById('stepControls').style.display='none';
+  stepData = null;
+  stepIndex = 0;
+  stepSummaryShown = false;
+}
+
+function demoStepwise(id, price, steps){
+  clearPipeStep();
+  // Pré-calcular todos os valores
+  const values = [price];
+  let v = price;
+  steps.forEach(s => {
+    v = Math.round(v * s.f * 100) / 100;
+    values.push(v);
+  });
+  const totalFactor = steps.reduce((acc,s)=>acc*s.f,1);
+  const finalPrice = values[values.length-1];
+  const descontoPct = Math.round((1 - totalFactor)*10000)/100;
+  const descontoVal = Math.round((price - finalPrice)*100)/100;
+  // Rótulos: primeiro é "preço original", depois "após op1", ..., último "preço final"
+  const labels = ['preço original'];
+  steps.forEach((s,i) => {
+    labels.push(i === steps.length-1 ? 'preço final' : 'após '+s.op);
+  });
+  // Fatores: para exibir entre os nós (do passo i para i+1)
+  const factors = steps.map(s => s.f);
+  // Guardar dados
+  stepData = { id, price, steps, values, factors, labels, totalFactor, finalPrice, descontoPct, descontoVal };
+  stepIndex = 0;
+  stepSummaryShown = false;
+  renderStep();
+  document.getElementById('stepControls').style.display='flex';
+  document.getElementById('stepIndicator').textContent = '1/'+(values.length+1); // +1 para o resumo
+  updateStepButtons();
+}
+
+function renderStep(){
+  const target = document.getElementById('pipeStep');
+  const data = stepData;
+  if(!data) return;
+  const { values, factors, labels, price, steps } = data;
+  const totalValues = values.length; // número de nós de valor
+  const totalSteps = totalValues; // incluindo o nó inicial
+  // O índice stepIndex vai de 0 a totalSteps (sendo totalSteps o estado de resumo)
+  const maxIdx = Math.min(stepIndex, totalSteps-1);
+  // Reconstruir pipeline até maxIdx
+  target.innerHTML = '';
+  // Adicionar nó inicial (preço original)
+  const n0 = document.createElement('div'); n0.className = 'pnode anim';
+  n0.innerHTML = '<div class="pval">'+fmt$(price)+'</div><div class="plbl">preço original</div>';
+  target.appendChild(n0);
+  // Para cada passo até maxIdx
+  for(let i=0; i<maxIdx; i++){
+    // Seta + fator
+    const ar = document.createElement('span'); ar.className = 'parrow'; ar.textContent = '→'; target.appendChild(ar);
+    const fc = document.createElement('span'); fc.className = 'pfactor';
+    const fStr = factors[i].toFixed(factors[i]===Math.round(factors[i]*10)/10?1:2).replace('.',',');
+    fc.textContent = (i<steps.length ? steps[i].op : '?')+' (×'+fStr+')';
+    target.appendChild(fc);
+    const ar2 = document.createElement('span'); ar2.className = 'parrow'; ar2.textContent = '→'; target.appendChild(ar2);
+    // Nó com o valor
+    const nd = document.createElement('div'); nd.className = 'pnode anim';
+    const isFinal = (i === steps.length-1);
+    const cls = isFinal ? 'final' : '';
+    nd.innerHTML = '<div class="pval '+cls+'">'+fmt$(values[i+1])+'</div><div class="plbl">'+labels[i+1]+'</div>';
+    target.appendChild(nd);
+    // Se não for o último passo, marcar o nó anterior como "old" (mas não o atual)
+    if(i < maxIdx-1){
+      const prevNodes = target.querySelectorAll('.pnode:not(.old) .pval:not(.old)');
+      if(prevNodes.length > 1){
+        const pnode = prevNodes[prevNodes.length-2].closest('.pnode');
+        if(pnode){
+          pnode.querySelector('.pval').classList.add('old');
+          pnode.querySelector('.plbl').textContent = 'anterior';
+        }
+      }
+    }
+  }
+
+  // Atualizar indicador: mostrar o passo atual / total (valores + resumo)
+  const totalDisplay = totalValues + 1; // +1 para o resumo
+  let currentDisplay;
+  if(stepSummaryShown){
+    currentDisplay = totalDisplay;
+  } else {
+    currentDisplay = (stepIndex < totalValues) ? stepIndex + 1 : totalValues;
+  }
+  document.getElementById('stepIndicator').textContent = currentDisplay+'/'+totalDisplay;
+  updateStepButtons();
+
+  // Limpar campos de resumo se ainda não estiver no modo resumo
+  if(!stepSummaryShown){
+    document.getElementById('demoEqStep').textContent = '';
+    document.getElementById('demoNarrStep').textContent = stepIndex < totalValues-1 ? 'Clique em "próximo" para avançar.' : 'Clique em "próximo" para ver o resumo.';
+    document.getElementById('demoObsStep').textContent = '';
+  } else {
+    // Exibir resumo completo
+    let expr = fmt$(price)+' ';
+    steps.forEach((s,i)=>{
+      const fStr = s.f.toFixed(s.f===Math.round(s.f*10)/10?1:2).replace('.',',');
+      expr += '× '+fStr+' ';
+    });
+    expr += '= '+fmt$(data.finalPrice);
+    document.getElementById('demoEqStep').innerHTML = expr;
+    let narr = '';
+    if(data.descontoPct > 0){
+      narr = 'Desconto real: <b>'+fmtPct(data.descontoPct)+'</b> ('+fmt$(data.descontoVal)+')';
+    } else if(data.descontoPct < 0){
+      narr = 'Acréscimo real: <b>'+fmtPct(Math.abs(data.descontoPct))+'</b> ('+fmt$(Math.abs(data.descontoVal))+')';
+    } else {
+      narr = 'Preço inalterado.';
+    }
+    document.getElementById('demoNarrStep').innerHTML = narr;
+    let obs = '';
+    if(data.id==='wcash'){
+      obs = 'CASHBACK: some o que volta ao bolso. Paga R$ 500 e recebe R$ 75 → gastou de fato R$ 425. f = 425 ÷ 500 = 0,85 → 15% real. Na folha: preço final é o valor JÁ descontado do cashback.';
+    } else if(data.id==='wprog'){
+      obs = 'PROGRESSIVO: os descontos NÃO se somam. 0,60 × 0,90 = 0,54 → 46% real (e não 50%). O segundo desconto incide sobre o valor já reduzido.';
+    } else if(data.id==='wbaixo'){
+      obs = 'PREÇO PRA BAIXO: o aumento vem antes. 500 → 600 (×1,2), depois −25% (×0,75) → 450. f = 1,2 × 0,75 = 0,90 → só 10% real, embora a placa anuncie 25%. Nenhum número é falso; o que engana é a ORDEM.';
+    } else if(data.id==='wreaj'){
+      obs = 'REAJUSTE: f > 1 significa aumento. f = 575 ÷ 500 = 1,15 → +15%. Atenção à base: a porcentagem é sempre sobre o preço ANTIGO.';
+    } else if(data.id==='wqueda'){
+      obs = 'QUEDA: f = 425 ÷ 500 = 0,85 → 15% de desconto. É o caso mais direto — e serve de referência para conferir os outros.';
+    } else if(data.id==='acao20'){
+      obs = 'A ação caiu 20% e valia R$ 160. Para voltar aos R$ 200 NÃO basta subir 20% (isso daria R$ 192): a base encolheu. É preciso +25% — o fator inverso, 1 ÷ 0,8 = 1,25. A alta de recuperação é sempre MAIOR que a queda.';
+    }
+    document.getElementById('demoObsStep').textContent = obs;
+  }
+}
+
+function updateStepButtons(){
+  const data = stepData;
+  if(!data) return;
+  const totalValues = data.values.length;
+  // total de estados: valores + resumo
+  const totalStates = totalValues + 1;
+  const currentState = stepSummaryShown ? totalStates-1 : stepIndex;
+  document.getElementById('stepPrev').disabled = (currentState <= 0);
+  document.getElementById('stepNext').disabled = (currentState >= totalStates-1);
+  // Texto do botão próximo
+  if(stepSummaryShown){
+    document.getElementById('stepNext').textContent = 'fim ✓';
+  } else if(stepIndex >= totalValues-1){
+    document.getElementById('stepNext').textContent = 'ver resumo ▶';
+  } else {
+    document.getElementById('stepNext').textContent = 'próximo ▶';
+  }
+}
+
+function stepNext(){
+  if(!stepData) return;
+  const totalValues = stepData.values.length;
+  // Se já mostrou o resumo, não faz nada
+  if(stepSummaryShown) return;
+  // Se ainda há valores a mostrar
+  if(stepIndex < totalValues-1){
+    stepIndex++;
+    renderStep();
+  } else {
+    // Último valor já mostrado, agora exibe o resumo
+    stepSummaryShown = true;
+    renderStep();
+  }
+}
+
+function stepPrev(){
+  if(!stepData) return;
+  // Se está no resumo, voltar para o último valor
+  if(stepSummaryShown){
+    stepSummaryShown = false;
+    // stepIndex permanece no último valor (totalValues-1)
+    renderStep();
+    return;
+  }
+  if(stepIndex > 0){
+    stepIndex--;
+    renderStep();
+  }
+}
+
+function stepAuto(){
+  if(!stepData) return;
+  // Executa automaticamente até o resumo
+  const totalValues = stepData.values.length;
+  let i = stepIndex;
+  let summaryDone = stepSummaryShown;
+  const iv = setInterval(()=>{
+    if(!summaryDone){
+      if(i < totalValues-1){
+        i++;
+        stepIndex = i;
+        renderStep();
+      } else {
+        // Último valor, agora exibe resumo
+        stepSummaryShown = true;
+        renderStep();
+        summaryDone = true;
+      }
+    } else {
+      clearInterval(iv);
+    }
+  }, 800);
+}
+
+/* ═══ SURPRESA PASSO A PASSO (etapa 3) ═══ */
+let surpriseData = null;   // estrutura similar a stepData
+let surpriseIndex = 0;
+let surpriseSummaryShown = false;
+
+function clearSurprise(){
+  document.getElementById('pipeSurprise').innerHTML='';
+  document.getElementById('eqSurprise').textContent='';
+  document.getElementById('narrSurprise').textContent='peça previsões antes de revelar';
+  document.getElementById('obsSurprise').textContent='';
+  document.getElementById('surpriseControls').style.display='none';
+  surpriseData = null;
+  surpriseIndex = 0;
+  surpriseSummaryShown = false;
+}
+
+function demoSurpriseStepwise(price, steps, label){
+  clearSurprise();
+  // Pré-calcular valores
+  const values = [price];
+  let v = price;
+  steps.forEach(s => {
+    v = Math.round(v * s.f * 100) / 100;
+    values.push(v);
+  });
+  const totalFactor = steps.reduce((acc,s)=>acc*s.f,1);
+  const finalPrice = values[values.length-1];
+  const descontoPct = Math.round((1 - totalFactor)*10000)/100;
+  const descontoVal = Math.round((price - finalPrice)*100)/100;
+  const labels = ['preço original'];
+  steps.forEach((s,i) => {
+    labels.push(i === steps.length-1 ? 'preço final' : 'após '+s.op);
+  });
+  const factors = steps.map(s => s.f);
+  // Guardar dados
+  surpriseData = { price, steps, values, factors, labels, totalFactor, finalPrice, descontoPct, descontoVal, label };
+  surpriseIndex = 0;
+  surpriseSummaryShown = false;
+  renderSurprise();
+  document.getElementById('surpriseControls').style.display='flex';
+  document.getElementById('surpriseIndicator').textContent = '1/'+(values.length+1);
+  updateSurpriseButtons();
+  // Atualizar narrativa inicial
+  document.getElementById('narrSurprise').innerHTML = 'Acompanhe o passo a passo. Clique em "próximo" para avançar.';
+}
+
+function renderSurprise(){
+  const target = document.getElementById('pipeSurprise');
+  const data = surpriseData;
+  if(!data) return;
+  const { values, factors, labels, price, steps } = data;
+  const totalValues = values.length;
+  const maxIdx = Math.min(surpriseIndex, totalValues-1);
+  target.innerHTML = '';
+  // Nó inicial
+  const n0 = document.createElement('div'); n0.className = 'pnode anim';
+  n0.innerHTML = '<div class="pval">'+fmt$(price)+'</div><div class="plbl">preço original</div>';
+  target.appendChild(n0);
+  for(let i=0; i<maxIdx; i++){
+    const ar = document.createElement('span'); ar.className = 'parrow'; ar.textContent = '→'; target.appendChild(ar);
+    const fc = document.createElement('span'); fc.className = 'pfactor';
+    const fStr = factors[i].toFixed(factors[i]===Math.round(factors[i]*10)/10?1:2).replace('.',',');
+    fc.textContent = (i<steps.length ? steps[i].op : '?')+' (×'+fStr+')';
+    target.appendChild(fc);
+    const ar2 = document.createElement('span'); ar2.className = 'parrow'; ar2.textContent = '→'; target.appendChild(ar2);
+    const nd = document.createElement('div'); nd.className = 'pnode anim';
+    const isFinal = (i === steps.length-1);
+    const cls = isFinal ? 'final' : '';
+    nd.innerHTML = '<div class="pval '+cls+'">'+fmt$(values[i+1])+'</div><div class="plbl">'+labels[i+1]+'</div>';
+    target.appendChild(nd);
+    if(i < maxIdx-1){
+      const prevNodes = target.querySelectorAll('.pnode:not(.old) .pval:not(.old)');
+      if(prevNodes.length > 1){
+        const pnode = prevNodes[prevNodes.length-2].closest('.pnode');
+        if(pnode){
+          pnode.querySelector('.pval').classList.add('old');
+          pnode.querySelector('.plbl').textContent = 'anterior';
+        }
+      }
+    }
+  }
+
+  const totalDisplay = totalValues + 1;
+  let currentDisplay;
+  if(surpriseSummaryShown){
+    currentDisplay = totalDisplay;
+  } else {
+    currentDisplay = (surpriseIndex < totalValues) ? surpriseIndex + 1 : totalValues;
+  }
+  document.getElementById('surpriseIndicator').textContent = currentDisplay+'/'+totalDisplay;
+  updateSurpriseButtons();
+
+  // Atualizar eq, narr e obs
+  if(!surpriseSummaryShown){
+    document.getElementById('eqSurprise').textContent = '';
+    document.getElementById('obsSurprise').textContent = '';
+    if(surpriseIndex >= totalValues-1){
+      document.getElementById('narrSurprise').innerHTML = 'Clique em "próximo" para ver o resumo.';
+    } else {
+      document.getElementById('narrSurprise').innerHTML = 'Avançando...';
+    }
+  } else {
+    // Resumo
+    let expr = fmt$(price)+' ';
+    steps.forEach((s,i)=>{
+      const fStr = s.f.toFixed(s.f===Math.round(s.f*10)/10?1:2).replace('.',',');
+      expr += '× '+fStr+' ';
+    });
+    expr += '= '+fmt$(data.finalPrice);
+    document.getElementById('eqSurprise').innerHTML = expr;
+    let narr = '';
+    if(data.descontoPct > 0){
+      narr = 'Desconto real: <b>'+fmtPct(data.descontoPct)+'</b> ('+fmt$(data.descontoVal)+')';
+    } else if(data.descontoPct < 0){
+      narr = 'Acréscimo real: <b>'+fmtPct(Math.abs(data.descontoPct))+'</b> ('+fmt$(Math.abs(data.descontoVal))+')';
+    } else {
+      narr = 'Preço inalterado.';
+    }
+    document.getElementById('narrSurprise').innerHTML = narr;
+    let obs = '';
+    if(data.label === '10%'){
+      obs = 'O preço NÃO voltou ao original. O desconto de 10% incidiu sobre R$ 220, não sobre R$ 200.';
+    } else if(data.label === '20%'){
+      obs = 'Com +20% e −20%, o preço final é R$ 192, perda de R$ 8. Quanto maior a taxa, maior a perda.';
+    } else if(data.label === '50%'){
+      obs = 'Com +50% e −50%, o preço final é R$ 150, perda de R$ 50 (25% do original).';
+    }
+    document.getElementById('obsSurprise').textContent = obs;
+  }
+}
+
+function updateSurpriseButtons(){
+  const data = surpriseData;
+  if(!data) return;
+  const totalValues = data.values.length;
+  const totalStates = totalValues + 1;
+  const currentState = surpriseSummaryShown ? totalStates-1 : surpriseIndex;
+  document.getElementById('surprisePrev').disabled = (currentState <= 0);
+  document.getElementById('surpriseNext').disabled = (currentState >= totalStates-1);
+  if(surpriseSummaryShown){
+    document.getElementById('surpriseNext').textContent = 'fim ✓';
+  } else if(surpriseIndex >= totalValues-1){
+    document.getElementById('surpriseNext').textContent = 'ver resumo ▶';
+  } else {
+    document.getElementById('surpriseNext').textContent = 'próximo ▶';
+  }
+}
+
+function surpriseNext(){
+  if(!surpriseData) return;
+  const totalValues = surpriseData.values.length;
+  if(surpriseSummaryShown) return;
+  if(surpriseIndex < totalValues-1){
+    surpriseIndex++;
+    renderSurprise();
+  } else {
+    surpriseSummaryShown = true;
+    renderSurprise();
+  }
+}
+
+function surprisePrev(){
+  if(!surpriseData) return;
+  if(surpriseSummaryShown){
+    surpriseSummaryShown = false;
+    renderSurprise();
+    return;
+  }
+  if(surpriseIndex > 0){
+    surpriseIndex--;
+    renderSurprise();
+  }
+}
+
+function surpriseAuto(){
+  if(!surpriseData) return;
+  const totalValues = surpriseData.values.length;
+  let i = surpriseIndex;
+  let summaryDone = surpriseSummaryShown;
+  const iv = setInterval(()=>{
+    if(!summaryDone){
+      if(i < totalValues-1){
+        i++;
+        surpriseIndex = i;
+        renderSurprise();
+      } else {
+        surpriseSummaryShown = true;
+        renderSurprise();
+        summaryDone = true;
+      }
+    } else {
+      clearInterval(iv);
+    }
+  }, 800);
+}
+
+/* ═══ CALCULADORA DE FATORES (etapa 5) ═══ */
+let chips=[];
+function addChip(){
+  const op=document.getElementById('cOp').value;
+  const t=parseFloat(document.getElementById('cT').value);
+  if(isNaN(t)||t<=0)return;
+  const f=op==='d'?1-t/100:1+t/100;
+  const label=(op==='d'?'−':'+')+t+'%';
+  chips.push({label,f,op});
+  renderChips();
+}
+function removeChip(i){chips.splice(i,1);renderChips();}
+function renderChips(){
+  const c=document.getElementById('chain');c.innerHTML='';
+  chips.forEach((ch,i)=>{
+    const el=document.createElement('span');
+    el.className='chip '+(ch.op==='d'?'desc':'acr');
+    el.innerHTML=ch.label+' (×'+ch.f.toFixed(ch.f===Math.round(ch.f*10)/10?1:2).replace('.',',')+') <span class="x" onclick="event.stopPropagation();removeChip('+i+')">✕</span>';
+    c.appendChild(el);
+  });
+  document.getElementById('pipe3').innerHTML='';
+  document.getElementById('eq3').textContent='';
+  document.getElementById('narr3').textContent=chips.length?chips.length+' operação(ões) na cadeia':'';
+}
+function clearCalc(){chips=[];renderChips();document.getElementById('pipe3').innerHTML='';document.getElementById('eq3').textContent='';document.getElementById('narr3').textContent='';}
+function calcChain(){
+  if(!chips.length)return;
+  const price=parseFloat(document.getElementById('cP').value)||200;
+  const steps=chips.map(ch=>({op:ch.label,f:ch.f}));
+  const r=buildPipe(document.getElementById('pipe3'),price,steps);
+  const totalF=chips.reduce((a,c)=>a*c.f,1);
+  setTimeout(()=>{
+    const pct=Math.round((1-totalF)*10000)/100;
+    document.getElementById('eq3').innerHTML='fator total: <b>×'+totalF.toFixed(4).replace('.',',')+'</b>';
+    document.getElementById('narr3').textContent=pct>0?'desconto real: '+fmtPct(pct):pct<0?'acréscimo real: '+fmtPct(Math.abs(pct)):'preço inalterado';
+  },r.delay+500);
+}
+
+/* ═══ ALGORITMO (etapa 6) ═══ */
+const ALGO=[
+  'Para cada operação da lista, <b>converta em fator multiplicativo</b>:\n desconto de x% → ×(1 − x/100)  ·  acréscimo de x% → ×(1 + x/100)',
+  '<b>Multiplique todos os fatores entre si</b> para obter o fator total',
+  '<b>Multiplique o preço original pelo fator total</b> para obter o preço final',
+  'O desconto real é <b>1 − fator total</b>, expresso em porcentagem'
+];
+const ag=document.getElementById('algoSteps');
+ALGO.forEach((txt,i)=>{
+  if(i>0){const aw=document.createElement('div');aw.className='adown';aw.textContent='↓';ag.appendChild(aw);}
+  const el=document.createElement('div');el.className='astep';el.dataset.i=i;
+  el.innerHTML=txt.replace('\n','<br>');
+  el.addEventListener('click',()=>{el.classList.toggle('on');
+    const prev=el.previousElementSibling;if(prev&&prev.classList.contains('adown'))prev.classList.toggle('on',el.classList.contains('on'));});
+  ag.appendChild(el);
+});
+document.getElementById('algoAll').addEventListener('click',()=>{
+  ag.querySelectorAll('.astep').forEach((s,i)=>setTimeout(()=>{s.classList.add('on');
+    const prev=s.previousElementSibling;if(prev&&prev.classList.contains('adown'))prev.classList.add('on');},i*300));
+});
+document.getElementById('algoNone').addEventListener('click',()=>{
+  ag.querySelectorAll('.astep,.adown').forEach(s=>s.classList.remove('on'));
+});
+
+
+/* ═══ ETAPA 4 · TIRA DE 100 (descoberta guiada) ═══ */
+const TIRA_RATES=[10,20,25,30,40,50];
+let tiraOp='d', tiraX=30, tiraStage=0;   /* 0 = só contagem · 1 = decimal · 2 = geral */
+
+(function initTiraRates(){
+  const box=document.getElementById('tiraRates');
+  TIRA_RATES.forEach(x=>{
+    const b=document.createElement('button');
+    b.className='btn btn-g';b.dataset.x=x;b.textContent=x+'%';
+    b.onclick=()=>tiraSetX(x);
+    box.appendChild(b);
+  });
+})();
+
+function tiraSetOp(op){tiraOp=op;tiraStage=0;renderTira();}
+function tiraSetX(x){tiraX=x;tiraStage=0;renderTira();}
+function tiraReset(){tiraStage=0;renderTira();}
+function tiraReveal(){if(tiraStage<2){tiraStage++;renderTira();}}
+
+function renderTira(){
+  document.querySelectorAll('#tiraOps .btn').forEach(b=>b.className='btn '+(b.dataset.op===tiraOp?'btn-a':'btn-g'));
+  document.querySelectorAll('#tiraRates .btn').forEach(b=>b.className='btn '+(+b.dataset.x===tiraX?'btn-a':'btn-g'));
+
+  const g=document.getElementById('tiraGrid');g.innerHTML='';
+  const keep = tiraOp==='d' ? 100-tiraX : 100;
+  const cut  = tiraOp==='d' ? tiraX : 0;
+  const add  = tiraOp==='a' ? tiraX : 0;
+  const mk=(cls,i)=>{const c=document.createElement('span');c.className='tcell '+cls;
+    if(cls!=='keep'){c.classList.add('pop');c.style.animationDelay=(i*10)+'ms';}g.appendChild(c);};
+  for(let i=0;i<keep;i++)mk('keep',i);
+  for(let i=0;i<cut;i++)mk('cut',i);
+  for(let i=0;i<add;i++)mk('add',i);
+
+  document.getElementById('tiraLeg').innerHTML = tiraOp==='d'
+    ? '<span><i style="background:var(--h-accent)"></i> ficam: '+keep+'</span><span><i style="border:1px dashed #fff"></i> saem: '+cut+'</span>'
+    : '<span><i style="background:var(--h-accent)"></i> tira inteira: 100</span><span><i style="background:#2E7D32"></i> colados: +'+add+'</span>';
+
+  const total = keep + add;
+  const fator = total/100;
+  const fStr = fator.toFixed(2).replace('.',',');
+  const preco = (200*fator).toFixed(2).replace('.',',');
+  const eq=document.getElementById('tiraEq'), nr=document.getElementById('tiraNarr'), bt=document.getElementById('tiraBtn');
+
+  if(tiraStage===0){
+    eq.innerHTML = tiraOp==='d'
+      ? '100 − '+tiraX+' &nbsp;⟶&nbsp; ficam <b>'+total+'</b> de 100'
+      : '100 + '+tiraX+' &nbsp;⟶&nbsp; agora há <b>'+total+'</b> de 100';
+    nr.textContent='Pergunte: que parte do inteiro é isso? Espere a resposta das equipes antes de revelar.';
+    bt.textContent='▸ as equipes já disseram? revelar';bt.disabled=false;
+  } else if(tiraStage===1){
+    eq.innerHTML = total+'/100 = <b>'+fStr+'</b>';
+    nr.innerHTML = 'R$ 200 × '+fStr+' = <b>R$ '+preco+'</b> — o mesmo resultado de '+(tiraOp==='d'?'calcular o desconto e subtrair':'calcular o acréscimo e somar')+', em um passo só.';
+    bt.textContent='▸ e se o número não for '+tiraX+'?';bt.disabled=false;
+  } else {
+    eq.innerHTML = tiraOp==='d'
+      ? 'ficam (100 − x) &nbsp;⟶&nbsp; (100 − x)/100 = <b>1 − x/100</b>'
+      : 'há (100 + x) &nbsp;⟶&nbsp; (100 + x)/100 = <b>1 + x/100</b>';
+    nr.textContent='Esta linha só deve aparecer na tela depois que alguma equipe tiver dito algo equivalente.';
+    bt.textContent='regra visível ✓';bt.disabled=true;
+  }
+}
+renderTira();
+
+/* ═══ ETAPA 4 · TABELA DO PADRÃO ═══ */
+const PAD={d:[10,25,30,40,50],a:[10,20,25,50]};
+let padOp='d';
+const padRev={d:new Set(),a:new Set()};
+const padGenOn={d:false,a:false};
+
+function padSetOp(op){padOp=op;renderPad();}
+function padToggle(x){const s=padRev[padOp];s.has(x)?s.delete(x):s.add(x);renderPad();}
+function padAll(){PAD[padOp].forEach(x=>padRev[padOp].add(x));renderPad();}
+function padHide(){padRev[padOp].clear();padGenOn[padOp]=false;renderPad();}
+function padGeneral(){padGenOn[padOp]=true;renderPad();}
+
+function renderPad(){
+  document.querySelectorAll('#padOps .btn').forEach(b=>b.className='btn '+(b.dataset.op===padOp?'btn-a':'btn-g'));
+  const d = padOp==='d';
+  const t = document.getElementById('padTab');
+  let html = '<thead><tr>'
+    + '<th>anúncio</th>'
+    + '<th>'+(d?'saem':'colam')+'</th>'
+    + '<th>'+(d?'ficam':'fica ao todo')+'</th>'
+    + '<th>quanto do inteiro fica</th></tr></thead><tbody>';
+  PAD[padOp].forEach(x=>{
+    const tot = d ? 100-x : 100+x;
+    const shown = padRev[padOp].has(x);
+    const val = (tot/100).toFixed(2).replace('.',',');
+    html += '<tr onclick="padToggle('+x+')">'
+      + '<td>'+(d?'−':'+')+x+'%</td>'
+      + '<td>'+x+'</td>'
+      + '<td>'+tot+'</td>'
+      + '<td class="'+(shown?'rev':'hid')+'">'+(shown?'×'+val:'?')+'</td></tr>';
+  });
+  if(padGenOn[padOp]){
+    html += '<tr class="gen">'
+      + '<td>'+(d?'−':'+')+' x %</td>'
+      + '<td>x</td>'
+      + '<td>'+(d?'100 − x':'100 + x')+'</td>'
+      + '<td>×('+(d?'1 − x/100':'1 + x/100')+')</td></tr>';
+  }
+  t.innerHTML = html+'</tbody>';
+  const faltam = PAD[padOp].length - padRev[padOp].size;
+  document.getElementById('padNarr').textContent = padGenOn[padOp]
+    ? 'A última linha não foi calculada: ela foi lida nas linhas de cima. Isso é generalização.'
+    : (faltam ? 'clique numa linha para revelar a última coluna · faltam '+faltam
+              : 'Pergunte antes de generalizar: "o que a terceira coluna tem a ver com a primeira?"');
+}
+renderPad();
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.key==='ArrowRight'&&cur<5)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);
+});
+</script>
+</body>
+</html>

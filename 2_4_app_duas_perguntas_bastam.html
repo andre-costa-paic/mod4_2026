@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0E14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Duas Perguntas Bastam</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --f-head:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --bg:#0B0E14; --bg2:#111621; --bg3:#161D2B;
+  --line:#212A3A; --line2:#2E3A4D;
+  --cy:#22D3EE; --cy-d:#0E7C8B;
+  --vi:#A78BFA; --vi-d:#6D4AC4;
+  --gr:#34D399; --gr-d:#0F7050;
+  --am:#FBBF24; --am-d:#8A6410;
+  --rd:#F87171; --rd-d:#9B2C3D;
+  --tx:#E8ECF2; --tx2:#98A1B0; --tx3:#5E6879;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--f-mono);background:var(--bg);color:var(--tx);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:linear-gradient(rgba(34,211,238,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.028) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px calc(28px + env(safe-area-inset-bottom));min-height:100%}
+.scr{display:none;animation:in .22s ease}
+.scr.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── topo ───────────────────────────────── */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0 14px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.top-l{font-family:var(--f-head);font-size:14px;font-weight:700;letter-spacing:.02em;color:var(--tx)}
+.top-s{font-size:10px;color:var(--tx3);letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+.back{background:none;border:1px solid var(--line2);color:var(--tx2);font-family:var(--f-mono);font-size:11px;padding:7px 12px;border-radius:5px;cursor:pointer;letter-spacing:.06em;flex-shrink:0}
+.back:active{background:var(--bg3)}
+
+/* ── home ───────────────────────────────── */
+.hero{text-align:center;padding:30px 0 22px}
+.hero svg{margin-bottom:16px}
+.hero h1{font-family:var(--f-head);font-size:clamp(26px,7.5vw,34px);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin-bottom:9px}
+.hero h1 em{font-style:normal;color:var(--cy)}
+.hero p{font-size:12px;color:var(--tx2);line-height:1.65;max-width:330px;margin:0 auto}
+
+.menu{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+.mi{
+  background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--cy);
+  border-radius:7px;padding:15px 16px;cursor:pointer;text-align:left;width:100%;
+  font-family:var(--f-mono);color:var(--tx);display:flex;gap:14px;align-items:center;transition:border-color .15s,background .15s;
+}
+.mi:active{background:var(--bg3)}
+.mi.v{border-left-color:var(--vi)}
+.mi.a{border-left-color:var(--am)}
+.mi.g{border-left-color:var(--gr)}
+.mi-ic{font-size:21px;flex-shrink:0;width:26px;text-align:center}
+.mi-t{font-family:var(--f-head);font-size:15px;font-weight:600;margin-bottom:3px}
+.mi-d{font-size:11px;color:var(--tx2);line-height:1.55}
+
+/* ── hud ────────────────────────────────── */
+.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:16px}
+.hu{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:10px 8px;text-align:center}
+.hu-l{font-size:9px;color:var(--tx3);letter-spacing:.13em;text-transform:uppercase;margin-bottom:5px}
+.hu-v{font-family:var(--f-head);font-size:19px;font-weight:700;line-height:1}
+.hu.cred .hu-v{color:var(--cy)}
+.hu.cred.low .hu-v{color:var(--am)}
+.hu.cred.crit .hu-v{color:var(--rd)}
+.hu.sc .hu-v{color:var(--gr)}
+.hu.mq .hu-v{color:var(--vi);font-size:16px}
+
+/* ── caixa preta ────────────────────────── */
+.box{background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:20px 16px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+.box::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(167,139,250,.13),transparent 62%);pointer-events:none}
+.box-h{font-size:10px;color:var(--tx3);letter-spacing:.16em;text-transform:uppercase;text-align:center;margin-bottom:14px;position:relative;z-index:1}
+.box-art{display:flex;align-items:center;justify-content:center;gap:10px;position:relative;z-index:1}
+.bio{font-size:10px;color:var(--tx3);letter-spacing:.1em;min-width:52px;text-align:center}
+.bio b{display:block;font-family:var(--f-head);font-size:20px;font-weight:700;margin-top:3px;letter-spacing:0}
+.bio.i b{color:var(--cy)}
+.bio.o b{color:var(--gr)}
+.bcore{width:78px;height:70px;border:1.5px solid var(--line2);border-radius:6px;display:flex;align-items:center;justify-content:center;background:var(--bg3);flex-shrink:0}
+.bcore span{font-family:var(--f-head);font-size:31px;font-weight:700;color:var(--vi)}
+.barrow{color:var(--line2);font-size:15px}
+.box.pulse .bcore{border-color:var(--cy);box-shadow:0 0 0 3px rgba(34,211,238,.1)}
+
+/* ── entrada ────────────────────────────── */
+.field{display:flex;gap:8px;margin-bottom:12px}
+.field input{
+  flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line2);border-radius:6px;
+  padding:13px 14px;font-family:var(--f-mono);font-size:16px;color:var(--tx);outline:none;
+}
+.field input:focus{border-color:var(--cy)}
+.field input::placeholder{color:var(--tx3)}
+.btn{
+  background:var(--cy-d);border:1px solid var(--cy);color:#001A1F;border-radius:6px;
+  padding:13px 17px;font-family:var(--f-head);font-size:13px;font-weight:700;cursor:pointer;
+  letter-spacing:.04em;flex-shrink:0;transition:opacity .15s;
+}
+.btn:active{opacity:.75}
+.btn:disabled{opacity:.32;cursor:not-allowed}
+.btn.wide{width:100%}
+.btn.vi{background:var(--vi-d);border-color:var(--vi);color:#0E0620}
+.btn.gr{background:var(--gr-d);border-color:var(--gr);color:#00170F}
+.btn.gh{background:transparent;color:var(--tx2);border-color:var(--line2)}
+.btn.am{background:var(--am-d);border-color:var(--am);color:#1C1400}
+/* atalhos removidos */
+
+/* ── log ────────────────────────────────── */
+.log{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:12px 13px;margin-bottom:14px;max-height:190px;overflow-y:auto}
+.log-h{font-size:9px;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:9px;display:flex;justify-content:space-between}
+.le{font-size:13px;line-height:1.95;display:flex;gap:9px;align-items:baseline}
+.le .n{color:var(--tx3);font-size:11px;min-width:18px}
+.le .q{color:var(--cy)}
+.le .ar{color:var(--tx3)}
+.le .r{color:var(--tx);font-weight:700}
+.le .dup{color:var(--am);font-size:10px;margin-left:auto;letter-spacing:.06em}
+.le .cost{color:var(--tx3);font-size:10px;margin-left:8px}
+.log-empty{font-size:12px;color:var(--tx3);text-align:center;padding:12px 0;line-height:1.7}
+
+/* ── declaração ─────────────────────────── */
+.decl{background:var(--bg2);border:1px solid var(--vi-d);border-radius:7px;padding:14px 15px;margin-bottom:12px}
+.decl-h{font-size:9px;color:var(--vi);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
+.eq{display:flex;align-items:center;gap:7px;font-family:var(--f-head);font-size:17px;font-weight:600;margin-bottom:12px;flex-wrap:wrap}
+.eq input{
+  width:66px;background:var(--bg);border:1px solid var(--line2);border-radius:5px;
+  padding:9px 8px;font-family:var(--f-mono);font-size:15px;color:var(--vi);text-align:center;outline:none;
+}
+.eq input:focus{border-color:var(--vi)}
+.eq .lbl{color:var(--tx2)}
+
+/* ── mensagens ──────────────────────────── */
+.msg{border-radius:7px;padding:13px 15px;margin-bottom:13px;font-size:13px;line-height:1.65;border-left:3px solid}
+.msg.ok{background:rgba(52,211,153,.09);border-color:var(--gr);color:var(--gr)}
+.msg.err{background:rgba(248,113,113,.09);border-color:var(--rd);color:var(--rd)}
+.msg.warn{background:rgba(251,191,36,.09);border-color:var(--am);color:var(--am)}
+.msg.info{background:rgba(34,211,238,.07);border-color:var(--cy-d);color:var(--tx2)}
+.msg b{display:block;font-family:var(--f-head);font-size:14px;margin-bottom:5px}
+.lock{background:rgba(248,113,113,.08);border:1px solid var(--rd-d);border-radius:7px;padding:15px;text-align:center;margin-bottom:13px}
+.lock-t{font-family:var(--f-head);font-size:13px;color:var(--rd);margin-bottom:7px}
+.lock-c{font-family:var(--f-head);font-size:33px;font-weight:700;color:var(--rd);line-height:1}
+
+/* ── resultado ──────────────────────────── */
+.res{text-align:center;padding:22px 0 16px}
+.res-ic{font-size:44px;margin-bottom:12px}
+.res-t{font-family:var(--f-head);font-size:21px;font-weight:700;margin-bottom:7px}
+.res-t.ok{color:var(--gr)}.res-t.no{color:var(--rd)}
+.res-s{font-size:12.5px;color:var(--tx2);line-height:1.7;max-width:360px;margin:0 auto 18px}
+.res-s b{color:var(--tx)}
+.pts{font-family:var(--f-head);font-size:52px;font-weight:700;color:var(--gr);line-height:1;margin-bottom:5px}
+.pts.zero{color:var(--tx3)}
+.pts-l{font-size:10px;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px}
+.reveal{background:var(--bg2);border:1px solid var(--line);border-radius:7px;padding:14px;margin-bottom:16px}
+.reveal-l{font-size:9px;color:var(--tx3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.reveal-f{font-family:var(--f-head);font-size:23px;font-weight:700;color:var(--cy)}
+.reveal-n{font-size:11px;color:var(--tx2);margin-top:7px;line-height:1.6}
+
+/* ── código ─────────────────────────────── */
+.code{background:var(--bg2);border:1.5px dashed var(--cy-d);border-radius:8px;padding:20px 15px;text-align:center;margin-bottom:14px}
+.code-l{font-size:9.5px;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:11px}
+.code-v{font-family:var(--f-head);font-size:38px;font-weight:700;color:var(--cy);letter-spacing:.09em;line-height:1;word-break:break-all}
+.code-n{font-size:11px;color:var(--tx2);margin-top:12px;line-height:1.65}
+
+/* ── tabela ─────────────────────────────── */
+table.t{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+table.t th{background:var(--bg3);color:var(--tx2);font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:9px 8px;text-align:left;border-bottom:1px solid var(--line2)}
+table.t td{padding:9px 8px;border-bottom:1px solid var(--line);color:var(--tx2)}
+table.t td b{color:var(--tx)}
+table.t .c{color:var(--cy);font-weight:700}
+table.t .g{color:var(--gr);font-weight:700}
+table.t .v{color:var(--vi);font-weight:700}
+table.t tr:last-child td{border-bottom:none}
+
+/* ── slider ─────────────────────────────── */
+.sl{margin-bottom:16px}
+.sl-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.sl-l{font-size:11px;color:var(--tx2);letter-spacing:.06em}
+.sl-v{font-family:var(--f-head);font-size:23px;font-weight:700;color:var(--vi)}
+input[type=range]{width:100%;height:30px;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--line2);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--vi);margin-top:-10px;border:2px solid var(--bg)}
+input[type=range]::-moz-range-track{height:4px;background:var(--line2);border-radius:2px}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--vi);border:2px solid var(--bg)}
+
+/* ── diversos ───────────────────────────── */
+.note{font-size:11px;color:var(--tx3);line-height:1.75;margin-bottom:14px}
+.note b{color:var(--tx2)}
+.sec{font-size:9.5px;color:var(--tx3);letter-spacing:.15em;text-transform:uppercase;margin:22px 0 11px}
+.sec:first-child{margin-top:0}
+.chip{display:inline-block;font-size:10px;padding:3px 9px;border-radius:4px;letter-spacing:.06em;margin-right:5px}
+.chip.cy{background:rgba(34,211,238,.13);color:var(--cy)}
+.chip.vi{background:rgba(167,139,250,.13);color:var(--vi)}
+.chip.gr{background:rgba(52,211,153,.13);color:var(--gr)}
+.chip.am{background:rgba(251,191,36,.13);color:var(--am)}
+.gap{height:9px}
+.plot{background:var(--bg2);border:1px solid var(--line);border-radius:7px;padding:11px 8px 7px;margin-bottom:13px}
+footer{text-align:center;font-size:10px;color:var(--tx3);padding:26px 0 6px;line-height:1.8;border-top:1px solid var(--line);margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════ HOME ═══════════ -->
+<div id="s-home" class="scr on">
+  <div class="hero">
+    <svg width="150" height="82" viewBox="0 0 150 82" fill="none">
+      <line x1="2" y1="41" x2="34" y2="41" stroke="#22D3EE" stroke-width="1.4" opacity=".8"/>
+      <path d="M29 37 L37 41 L29 45 Z" fill="#22D3EE"/>
+      <rect x="42" y="14" width="66" height="54" rx="5" fill="#161D2B" stroke="#2E3A4D" stroke-width="1.4"/>
+      <text x="75" y="53" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="30" font-weight="700" fill="#A78BFA">?</text>
+      <circle cx="49" cy="21" r="1.4" fill="#3C4657"/><circle cx="101" cy="21" r="1.4" fill="#3C4657"/>
+      <circle cx="49" cy="61" r="1.4" fill="#3C4657"/><circle cx="101" cy="61" r="1.4" fill="#3C4657"/>
+      <line x1="116" y1="41" x2="148" y2="41" stroke="#34D399" stroke-width="1.4" opacity=".8"/>
+      <path d="M143 37 L151 41 L143 45 Z" fill="#34D399"/>
+      <text x="12" y="33" font-family="JetBrains Mono,monospace" font-size="10" fill="#22D3EE">x</text>
+      <text x="122" y="33" font-family="JetBrains Mono,monospace" font-size="10" fill="#34D399">f(x)</text>
+    </svg>
+    <h1>Duas Perguntas<br><em>Bastam</em></h1>
+    <p>Dentro da caixa existe uma regra. Você não vai vê-la — vai descobri-la. Cada pergunta custa.</p>
+  </div>
+
+  <div class="menu">
+    <button class="mi" onclick="startTreino()">
+      <span class="mi-ic">🎯</span>
+      <span><span class="mi-t">Treino livre</span><span class="mi-d"> 3 máquinas · perguntas ilimitadas e sem custo</span></span>
+    </button>
+    <button class="mi v" onclick="go('setup')">
+      <span class="mi-ic">🏆</span>
+      <span><span class="mi-t">Torneio</span><span class="mi-d"> 6 máquinas · 100 créditos cada · placar e boletim</span></span>
+    </button>
+    <button class="mi g" onclick="go('build')">
+      <span class="mi-ic">🔧</span>
+      <span><span class="mi-t">Construtor</span><span class="mi-d"> Monte sua máquina e gere o código do desafio</span></span>
+    </button>
+    <button class="mi g" onclick="go('duel')">
+      <span class="mi-ic">⚔️</span>
+      <span><span class="mi-t">Desafio por código</span><span class="mi-d"> Enfrente a máquina construída por outra equipe</span></span>
+    </button>
+    <button class="mi a" onclick="go('panel')">
+      <span class="mi-ic">🔑</span>
+      <span><span class="mi-t">Painel do formador</span><span class="mi-d"> Gabarito · leitor de códigos · placar · modo ruído</span></span>
+    </button>
+  </div>
+
+  <div class="msg info">
+    <b>Funciona sem internet</b>
+    Salve esta página no celular pelo menu do navegador (<i>Adicionar à tela de início</i>). Depois disso ela abre offline, como um aplicativo. Nada é enviado para lugar nenhum: tudo acontece dentro do seu aparelho.
+  </div>
+  <footer>EF09MA06 · EF08MA12 · EF08MA07<br>Protocolo de Apropriação Gradual do Pensamento Computacional</footer>
+</div>
+
+<!-- ═══════════ SETUP TORNEIO ═══════════ -->
+<div id="s-setup" class="scr">
+  <div class="top"><div><div class="top-l">Torneio</div><div class="top-s">identificação da equipe</div></div><button class="back" onclick="go('home')">← início</button></div>
+  <div class="sec">Nome da equipe</div>
+  <div class="field"><input id="teamName" type="text" placeholder="ex.: Equipe Girassol" maxlength="22" autocomplete="off"></div>
+  <div class="note">O nome aparece no boletim final. Ele não é enviado a lugar nenhum — serve só para você identificar o próprio resultado no placar da turma.</div>
+  <div class="sec">Como funciona</div>
+  <table class="t">
+    <tr><td><b>Créditos iniciais</b></td><td class="c">100 por máquina</td></tr>
+    <tr><td><b>Cada pergunta</b></td><td class="c">−20 créditos</td></tr>
+    <tr><td><b>Declaração errada</b></td><td class="c">−30 e trava 10 s</td></tr>
+    <tr><td><b>Acertou</b></td><td class="g">os créditos que sobraram viram pontos</td></tr>
+  </table>
+  <div class="msg warn"><b>Declaração é definitiva</b>Você pode errar e tentar de novo, mas cada erro custa caro. Pense antes de declarar.</div>
+  <button class="btn vi wide" onclick="startTorneio()">Começar o torneio →</button>
+</div>
+
+<!-- ═══════════ MÁQUINA ═══════════ -->
+<div id="s-play" class="scr">
+  <div class="top"><div><div class="top-l" id="pTitle">Máquina 01</div><div class="top-s" id="pSub">torneio</div></div><button class="back" onclick="quitPlay()">✕ sair</button></div>
+
+  <div class="hud">
+    <div class="hu cred" id="huCred"><div class="hu-l">Créditos</div><div class="hu-v" id="vCred">100</div></div>
+    <div class="hu"><div class="hu-l">Perguntas</div><div class="hu-v" id="vSond">0</div></div>
+    <div class="hu sc" id="huThird"><div class="hu-l">Pontos</div><div class="hu-v" id="vScore">0</div></div>
+  </div>
+
+  <div class="box" id="theBox">
+    <div class="box-h" id="boxLabel">caixa-preta · lacrada</div>
+    <div class="box-art">
+      <div class="bio i"><span>entrada</span><b id="bIn">—</b></div>
+      <div class="barrow">▶</div>
+      <div class="bcore"><span id="bCore">?</span></div>
+      <div class="barrow">▶</div>
+      <div class="bio o"><span>saída</span><b id="bOut">—</b></div>
+    </div>
+  </div>
+
+  <div id="lockBox" style="display:none" class="lock">
+    <div class="lock-t">MÁQUINA TRAVADA — declaração incorreta</div>
+    <div class="lock-c" id="lockC">10</div>
+  </div>
+
+  <div id="tariffNote" class="msg warn" style="display:none"></div>
+
+  <div id="playUI">
+    <div class="field">
+      <input id="probe" type="text" inputmode="text" placeholder="valor de x" autocomplete="off">
+      <button class="btn" id="btnProbe" onclick="doProbe()">Sondar</button>
+    </div>
+    <!-- atalhos removidos -->
+
+    <div class="log">
+      <div class="log-h"><span>Registro de sondagens</span><span id="logCount">0</span></div>
+      <div id="logBody"><div class="log-empty">Nenhuma pergunta ainda.<br>Escolha um valor de x e sonde a máquina.</div></div>
+    </div>
+
+    <div class="decl">
+      <div class="decl-h">Declarar a lei da máquina</div>
+      <div class="eq">
+        <span class="lbl">f(x) =</span>
+        <input id="dA" type="text" inputmode="text" placeholder="a" autocomplete="off">
+        <span class="lbl">· x +</span>
+        <input id="dB" type="text" inputmode="text" placeholder="b" autocomplete="off">
+      </div>
+      <button class="btn vi wide" onclick="doDeclare()">Declarar</button>
+      <div class="gap"></div>
+      <button class="btn gh wide" onclick="doNotFunction()">Esta máquina não é uma função</button>
+    </div>
+    <div id="playMsg"></div>
+  </div>
+</div>
+
+<!-- ═══════════ RESULTADO DA MÁQUINA ═══════════ -->
+<div id="s-res" class="scr">
+  <div class="top"><div><div class="top-l" id="rTitle">Resultado</div><div class="top-s" id="rSub"></div></div></div>
+  <div class="res">
+    <div class="res-ic" id="rIcon">✓</div>
+    <div class="res-t ok" id="rHead">Máquina decifrada</div>
+    <div class="res-s" id="rText"></div>
+    <div class="pts" id="rPts">60</div>
+    <div class="pts-l">pontos nesta máquina</div>
+  </div>
+  <div class="reveal">
+    <div class="reveal-l">A regra que estava na caixa</div>
+    <div class="reveal-f" id="rFormula">f(x) = 2x + 5</div>
+    <div class="reveal-n" id="rNote"></div>
+  </div>
+  <div id="rExtra"></div>
+  <button class="btn wide" id="rNext" onclick="nextMachine()">Próxima máquina →</button>
+</div>
+
+<!-- ═══════════ BOLETIM ═══════════ -->
+<div id="s-final" class="scr">
+  <div class="top"><div><div class="top-l">Boletim final</div><div class="top-s" id="fTeam"></div></div><button class="back" onclick="go('home')">← início</button></div>
+  <div class="res" style="padding-bottom:6px">
+    <div class="pts" id="fTotal">0</div>
+    <div class="pts-l">pontos no total</div>
+  </div>
+  <table class="t" id="fTable"></table>
+  <div class="code">
+    <div class="code-l">Código de resultado</div>
+    <div class="code-v" id="fCode">—</div>
+    <div class="code-n">Leia este código para o formador. Ele reconstrói seu resultado no placar da turma sem precisar de internet.</div>
+  </div>
+  <div id="fVerdict"></div>
+  <button class="btn gh wide" onclick="go('home')">Voltar ao início</button>
+</div>
+
+<!-- ═══════════ CONSTRUTOR ═══════════ -->
+<div id="s-build" class="scr">
+  <div class="top"><div><div class="top-l">Construtor</div><div class="top-s">monte a sua máquina</div></div><button class="back" onclick="go('home')">← início</button></div>
+  <div class="note">Escolha os dois números que ficarão escondidos dentro da caixa. O aplicativo devolve um código curto — anote no papel e entregue à equipe adversária. <b>Não mostre a tela.</b></div>
+
+  <div class="sl">
+    <div class="sl-h"><span class="sl-l">a — o salto a cada passo</span><span class="sl-v" id="bAv">2</span></div>
+    <input type="range" id="bA" min="-40" max="40" value="4" oninput="buildPreview()">
+  </div>
+  <div class="sl">
+    <div class="sl-h"><span class="sl-l">b — o valor de partida</span><span class="sl-v" id="bBv">5</span></div>
+    <input type="range" id="bB" min="-40" max="40" value="10" oninput="buildPreview()">
+  </div>
+
+  <div class="reveal">
+    <div class="reveal-l">Sua máquina</div>
+    <div class="reveal-f" id="bPrev">f(x) = 2x + 5</div>
+    <div class="reveal-n" id="bCheck"></div>
+  </div>
+
+  <button class="btn gr wide" onclick="genCode()">Gerar código do desafio</button>
+  <div class="gap"></div>
+  <div id="bOutBox"></div>
+</div>
+
+<!-- ═══════════ DESAFIO POR CÓDIGO ═══════════ -->
+<div id="s-duel" class="scr">
+  <div class="top"><div><div class="top-l">Desafio por código</div><div class="top-s">máquina de outra equipe</div></div><button class="back" onclick="go('home')">← início</button></div>
+  <div class="note">Digite o código que a equipe adversária entregou. Você começa com 100 créditos, como no torneio. <b>Se você gastar mais de duas perguntas, a equipe que construiu marca ponto.</b></div>
+  <div class="field">
+    <input id="duelCode" type="text" placeholder="ex.: EZE-9" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em">
+    <button class="btn gr" onclick="startDuel()">Abrir</button>
+  </div>
+  <div id="duelMsg"></div>
+</div>
+
+<!-- ═══════════ PAINEL DO FORMADOR ═══════════ -->
+<div id="s-panel" class="scr">
+  <div class="top"><div><div class="top-l">Painel do formador</div><div class="top-s">não projete para a turma antes do fim</div></div><button class="back" onclick="go('home')">← início</button></div>
+
+  <div class="sec">Gabarito — treino</div>
+  <table class="t" id="gabT"></table>
+  <div class="sec">Gabarito — torneio</div>
+  <table class="t" id="gabM"></table>
+  <div class="msg warn"><b>Sequência de dificuldade</b>Cada máquina acrescenta exatamente uma dificuldade nova. Não altere a ordem: a progressão é a espinha didática da oficina.</div>
+
+  <div class="sec">Ler código de resultado</div>
+  <div class="field">
+    <input id="rdTeam" type="text" placeholder="nome da equipe" maxlength="22" autocomplete="off">
+  </div>
+  <div class="field">
+    <input id="rdCode" type="text" placeholder="código" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em">
+    <button class="btn am" onclick="readRes()">Somar</button>
+  </div>
+  <div id="rdMsg"></div>
+  <div id="board"></div>
+
+  <div class="sec">Ler código de máquina construída</div>
+  <div class="field">
+    <input id="rdMach" type="text" placeholder="código da máquina" maxlength="9" autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em">
+    <button class="btn am" onclick="readMach()">Revelar</button>
+  </div>
+  <div id="rdMachMsg"></div>
+
+  <div class="sec">Modo ruído — demonstração final</div>
+  <div class="note">A mesma máquina, agora com erro aleatório em cada resposta. O protocolo campeão falha: duas perguntas deixam de determinar a regra. É a ponte para inteligência artificial e dados.</div>
+  <div class="plot" id="noisePlot"></div>
+  <div class="field" style="gap:6px">
+    <button class="btn wide" onclick="noiseProbe(1)">+1 sondagem</button>
+    <button class="btn gh" onclick="noiseProbe(10)">+10</button>
+    <button class="btn gh" onclick="noiseReset()">zerar</button>
+  </div>
+  <div id="noiseMsg"></div>
+</div>
+
+</div>
+<script>
+"use strict";
+
+/* ═════════ CODEC (verificado exaustivamente: 6561 máquinas, 0 colisões) ═════════ */
+const AL="ABCDEFGHJKLMNPQRSTUVWXYZ23456789", MOD=6561, MUL=2731, ADD=977;
+let INV=1; for(let i=1;i<MOD;i++){ if((MUL*i)%MOD===1){ INV=i; break; } }
+const b32=(n,l)=>{let s="";for(let i=0;i<l;i++){s=AL[n%32]+s;n=Math.floor(n/32);}return s;};
+const ub32=s=>{let n=0;for(const c of s){const i=AL.indexOf(c);if(i<0)return -1;n=n*32+i;}return n;};
+const ck=s=>{let t=0;for(const c of s)t+=AL.indexOf(c);return AL[t%32];};
+const clean=s=>(s||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+
+function encMachine(a,b){
+  const ai=Math.round((a+20)*2), bi=Math.round((b+20)*2);
+  if(ai<0||ai>80||bi<0||bi>80)return null;
+  const body=b32(((ai*81+bi)*MUL+ADD)%MOD,3);
+  return body+"-"+ck(body);
+}
+function decMachine(code){
+  const c=clean(code); if(c.length!==4)return null;
+  const body=c.slice(0,3); if(ck(body)!==c[3])return null;
+  const S=ub32(body); if(S<0||S>=MOD)return null;
+  const N=((((S-ADD)%MOD)+MOD)%MOD)*INV%MOD;
+  const ai=Math.floor(N/81), bi=N%81;
+  if(ai>80||bi>80)return null;
+  return {a:ai/2-20,b:bi/2-20};
+}
+function encRes(score,solved,sond){
+  score=Math.max(0,Math.min(600,Math.round(score)));
+  solved=Math.max(0,Math.min(6,solved)); sond=Math.max(0,Math.min(120,sond));
+  const body=b32(((score*7)+solved)*121+sond,4);
+  return body.slice(0,2)+"-"+body.slice(2)+ck(body);
+}
+function decRes(code){
+  const c=clean(code); if(c.length!==5)return null;
+  const body=c.slice(0,4); if(ck(body)!==c[4])return null;
+  const N=ub32(body); if(N<0)return null;
+  const sond=N%121, r=Math.floor(N/121), solved=r%7, score=Math.floor(r/7);
+  if(score>600||solved>6)return null;
+  return {score,solved,sond};
+}
+
+/* ═════════ MÁQUINAS ═════════
+   Os nomes evocativos NÃO aparecem durante o jogo — só no boletim e no
+   painel. "Descendente" entregaria a<0; "Teimosa" entregaria a=0.        */
+const TREINO=[
+  {a:1,b:4,nome:"Aquecimento"},
+  {a:5,b:0,nome:"Sem base"},
+  {a:3,b:-2,nome:"Com desconto"}
+];
+const TORNEIO=[
+  {a:3,b:0,  nome:"Direta",      novo:"b = 0 — o caso mais simples"},
+  {a:2,b:5,  nome:"Com base",    novo:"b ≠ 0 — aparece o valor de partida"},
+  {a:-4,b:12,nome:"Descendente", novo:"a < 0 — a saída diminui"},
+  {a:0.5,b:3,nome:"Lenta",       novo:"a fracionário — e tarifa: sondar 0 ou 1 custa 35 (não 20). O protocolo padrão ainda funciona, mas deixa de ser o mais barato.",
+              tarifa:{0:35,1:35}},
+  {a:0,b:7,  nome:"Teimosa",     novo:"a = 0 — responde sempre o mesmo"},
+  {a:2,b:3,  nome:"Fantasma",    ghost:true, novo:"não é função — viola a univocidade"}
+];
+
+/* ═════════ ESTADO ═════════ */
+let S={mode:"torneio",team:"",list:[],idx:0,m:null,credits:100,log:[],locked:false,
+       results:[],lastRes:null,ghostMem:{},lockT:null};
+let board=[];
+
+const $=id=>document.getElementById(id);
+const fmt=n=>{
+  if(!isFinite(n))return "—";
+  const r=Math.round(n*1000)/1000;
+  return (Number.isInteger(r)?String(r):r.toFixed(2).replace(/0$/,"")).replace(".",",");
+};
+function parseNum(s){
+  if(s==null)return NaN;
+  const t=String(s).trim().replace(/\s/g,"").replace(",",".");
+  if(t===""||!/^-?\d*\.?\d+$/.test(t))return NaN;
+  return parseFloat(t);
+}
+function go(n){
+  document.querySelectorAll(".scr").forEach(e=>e.classList.remove("on"));
+  $("s-"+n).classList.add("on");
+  window.scrollTo(0,0);
+}
+function probeCost(x){
+  if(S.m && S.m.tarifa && Object.prototype.hasOwnProperty.call(S.m.tarifa,x)) return S.m.tarifa[x];
+  return 20;
+}
+function fLabel(a,b){
+  if(a===0)return "f(x) = "+fmt(b);
+  let s="f(x) = ";
+  s+= a===1?"x" : a===-1?"−x" : fmt(a).replace("-","−")+"x";
+  if(b>0)s+=" + "+fmt(b);
+  else if(b<0)s+=" − "+fmt(-b);
+  return s;
+}
+
+/* ═════════ FLUXO ═════════ */
+function startTreino(){
+  S={...S,mode:"treino",team:"",list:TREINO,idx:0,results:[],lastRes:null};
+  loadMachine();
+}
+function startTorneio(){
+  const t=($("teamName").value||"").trim();
+  S={...S,mode:"torneio",team:t||"Equipe sem nome",list:TORNEIO,idx:0,results:[],lastRes:null};
+  loadMachine();
+}
+function startDuel(){
+  const d=decMachine($("duelCode").value);
+  if(!d){
+    $("duelMsg").innerHTML='<div class="msg err"><b>Código inválido</b>Confira as letras com a equipe adversária. O código tem 4 caracteres, como <b>EZE-9</b>. As letras I e O e os dígitos 0 e 1 nunca aparecem.</div>';
+    return;
+  }
+  $("duelMsg").innerHTML="";
+  S={...S,mode:"duelo",team:"",list:[{a:d.a,b:d.b,nome:"Máquina adversária"}],idx:0,results:[],lastRes:null};
+  loadMachine();
+}
+function loadMachine(){
+  S.m=S.list[S.idx];
+  S.credits=(S.mode==="treino")?Infinity:100;
+  S.log=[]; S.locked=false; S.ghostMem={};
+  if(S.lockT){clearInterval(S.lockT);S.lockT=null;}
+  $("lockBox").style.display="none";
+  $("playUI").style.display="";
+  $("playMsg").innerHTML="";
+  $("probe").value=""; $("dA").value=""; $("dB").value="";
+  $("bIn").textContent="—"; $("bOut").textContent="—"; $("bCore").textContent="?";
+
+  const n=S.idx+1;
+  if(S.mode==="treino"){ $("pTitle").textContent="Treino "+String(n).padStart(2,"0"); $("pSub").textContent="perguntas ilimitadas"; }
+  else if(S.mode==="duelo"){ $("pTitle").textContent="Desafio"; $("pSub").textContent="máquina de outra equipe"; }
+  else { $("pTitle").textContent="Máquina "+String(n).padStart(2,"0"); $("pSub").textContent=S.team+" · "+n+" de "+S.list.length; }
+  $("boxLabel").textContent="caixa-preta · lacrada";
+
+  const tn=$("tariffNote");
+  if(S.m.tarifa){
+    const xs=Object.keys(S.m.tarifa).map(k=>"x = "+k).join(" e ");
+    const vl=Object.values(S.m.tarifa)[0];
+    tn.style.display="";
+    tn.innerHTML="<b>Tarifa especial nesta máquina</b>Sondar "+xs+" custa "+vl+" créditos aqui — não 20. Os demais valores de x continuam custando 20 cada.";
+  } else {
+    tn.style.display="none"; tn.innerHTML="";
+  }
+
+  const third=$("huThird");
+  if(S.mode==="torneio"){ third.className="hu sc"; third.querySelector(".hu-l").textContent="Pontos"; }
+  else { third.className="hu mq"; third.querySelector(".hu-l").textContent="Modo"; }
+  render();
+  go("play");
+}
+function render(){
+  $("vCred").textContent = S.credits===Infinity ? "∞" : S.credits;
+  $("vSond").textContent = S.log.length;
+  const hc=$("huCred");
+  hc.className="hu cred"+(S.credits!==Infinity && S.credits<=20?" crit":(S.credits!==Infinity && S.credits<=40?" low":""));
+  if(S.mode==="torneio") $("vScore").textContent=S.results.reduce((s,r)=>s+r.pts,0);
+  else $("vScore").textContent = S.mode==="treino"?"livre":"duelo";
+
+  $("logCount").textContent=S.log.length;
+  const lb=$("logBody");
+  if(!S.log.length){
+    lb.innerHTML='<div class="log-empty">Nenhuma pergunta ainda.<br>Escolha um valor de x e sonde a máquina.</div>';
+  } else {
+    const cnt={};
+    lb.innerHTML=S.log.map((e,i)=>{
+      cnt[e.x]=(cnt[e.x]||0)+1;
+      const dup=cnt[e.x]>1?'<span class="dup">x repetido</span>':"";
+      const tar=(e.cost&&e.cost!==20)?'<span class="cost">−'+e.cost+'</span>':"";
+      return '<div class="le"><span class="n">'+String(i+1).padStart(2,"0")+'</span>'+
+             '<span class="q">f('+fmt(e.x)+')</span><span class="ar">=</span>'+
+             '<span class="r">'+fmt(e.y)+'</span>'+tar+dup+'</div>';
+    }).join("");
+    lb.scrollTop=lb.scrollHeight;
+  }
+  const dis=S.locked||(S.credits!==Infinity&&S.credits<20);
+  $("btnProbe").disabled=dis;
+  if(S.credits!==Infinity&&S.credits<20&&!S.locked){
+    $("playMsg").innerHTML='<div class="msg warn"><b>Créditos insuficientes para sondar</b>Você ainda pode declarar. Use o que já descobriu.</div>';
+  }
+}
+// função qp removida (atalhos removidos)
+
+function doProbe(){
+  if(S.locked)return;
+  const x=parseNum($("probe").value);
+  if(isNaN(x)){
+    $("playMsg").innerHTML='<div class="msg err"><b>Valor inválido</b>Digite um número. Use vírgula para decimais, como 2,5.</div>';
+    return;
+  }
+  let cost=20;
+  if(S.credits!==Infinity){
+    cost=probeCost(x);
+    if(S.credits<cost){
+      $("playMsg").innerHTML='<div class="msg warn"><b>Créditos insuficientes para esta sondagem</b>Sondar x = '+fmt(x)+' custaria '+cost+' créditos aqui, e você tem '+S.credits+'. Tente um valor mais barato ou declare com o que já sabe.</div>';
+      render();
+      return;
+    }
+    S.credits-=cost;
+  }
+  let y;
+  if(S.m.ghost){
+    const prev=S.ghostMem[x];
+    const opts=[-5,-3,3,5].filter(o=>prev===undefined||S.m.a*x+S.m.b+o!==prev);
+    y=S.m.a*x+S.m.b+opts[Math.floor(Math.random()*opts.length)];
+    S.ghostMem[x]=y;
+  } else {
+    y=S.m.a*x+S.m.b;
+  }
+  y=Math.round(y*1e6)/1e6;
+  S.log.push({x,y,cost:(S.credits!==Infinity?cost:0)});
+  $("bIn").textContent=fmt(x);
+  $("bOut").textContent=fmt(y);
+  $("bCore").textContent="?";
+  const bx=$("theBox"); bx.classList.add("pulse"); setTimeout(()=>bx.classList.remove("pulse"),320);
+  $("playMsg").innerHTML="";
+  $("probe").value="";
+  render();
+}
+
+function doDeclare(){
+  if(S.locked)return;
+  const a=parseNum($("dA").value), b=parseNum($("dB").value);
+  if(isNaN(a)||isNaN(b)){
+    $("playMsg").innerHTML='<div class="msg err"><b>Declaração incompleta</b>Preencha os dois números. Se a máquina não tem valor de partida, escreva 0 no campo b.</div>';
+    return;
+  }
+  if(S.m.ghost){ wrong("A máquina rejeitou a declaração. Nenhuma lei descreve o comportamento dela."); return; }
+  if(Math.abs(a-S.m.a)<1e-9 && Math.abs(b-S.m.b)<1e-9) finish(true,false);
+  else wrong("A lei declarada não reproduz as respostas da máquina.");
+}
+function doNotFunction(){
+  if(S.locked)return;
+  if(S.m.ghost) finish(true,true);
+  else wrong("Esta máquina é, sim, uma função: para cada entrada existe uma única saída. Confira sondando duas vezes o mesmo x.");
+}
+function wrong(reason){
+  if(S.credits!==Infinity)S.credits=Math.max(0,S.credits-30);
+  $("playMsg").innerHTML='<div class="msg err"><b>Declaração incorreta — 30 créditos</b>'+reason+'</div>';
+  if(S.mode==="treino"){ render(); return; }
+  S.locked=true;
+  $("playUI").style.display="none";
+  $("lockBox").style.display="";
+  let t=10; // tempo de trava alterado de 30 para 10 segundos
+  $("lockC").textContent=t;
+  S.lockT=setInterval(()=>{
+    t--; $("lockC").textContent=t;
+    if(t<=0){
+      clearInterval(S.lockT); S.lockT=null; S.locked=false;
+      $("lockBox").style.display="none"; $("playUI").style.display="";
+      render();
+    }
+  },1000);
+  render();
+}
+
+function finish(okay,wasGhost){
+  if(S.lockT){clearInterval(S.lockT);S.lockT=null;}
+  const sond=S.log.length;
+  let pts=0;
+  if(S.mode!=="treino"){
+    pts=Math.max(0,S.credits);
+    if(wasGhost)pts+=140;
+  }
+  S.lastRes={pts,sond,ghost:!!wasGhost};
+  if(S.mode==="torneio")S.results.push({nome:S.m.nome,pts,sond,ghost:!!wasGhost});
+
+  $("rTitle").textContent = S.mode==="treino" ? "Treino "+String(S.idx+1).padStart(2,"0")
+                          : S.mode==="duelo" ? "Desafio" : "Máquina "+String(S.idx+1).padStart(2,"0");
+  $("rSub").textContent = sond+(sond===1?" pergunta":" perguntas")+" · resolvida";
+  $("rIcon").textContent = wasGhost?"👻":(sond<=2?"🎯":"✓");
+  $("rHead").className="res-t ok";
+  $("rHead").textContent = wasGhost?"Fantasma desmascarada":"Máquina decifrada";
+  $("rFormula").textContent = wasGhost ? "não é uma função" : fLabel(S.m.a,S.m.b);
+  $("rPts").textContent = S.mode==="treino" ? "—" : pts;
+  $("rPts").className = "pts"+((S.mode!=="treino"&&pts===0)?" zero":"");
+
+  let txt="", note="", extra="";
+  if(wasGhost){
+    txt="Você percebeu que a mesma entrada devolvia saídas diferentes. Uma função associa a cada entrada <b>uma única</b> saída — e esta caixa não fazia isso.";
+    note="Não havia lei a descobrir. A máquina não é uma função, e por isso nenhum protocolo poderia resolvê-la.";
+    extra='<div class="msg ok"><b>+140 de bônus</b>A Fantasma não se decifra com contas: se decifra percebendo que a pergunta estava errada desde o começo.</div>';
+  } else if(sond<=2){
+    txt="Duas perguntas ou menos. <b>Este é o desempenho ótimo</b> — e nenhuma equipe pode fazer melhor, por um motivo que a oficina vai demonstrar.";
+    note="Sondar x = 0 devolve o valor de partida direto. Sondar x = 1 devolve a soma dos dois. A subtração entrega o salto.";
+  } else {
+    txt="Resolvida com <b>"+sond+" perguntas</b>. Funcionou — mas houve caminho mais curto. Quais das suas perguntas trouxeram informação que você ainda não tinha?";
+    note="Com x = 0 e x = 1, qualquer máquina destas cai em duas perguntas.";
+    extra='<div class="msg info"><b>Fica a pergunta</b>Se você repetisse esta máquina agora, quantas perguntas usaria?</div>';
+  }
+  $("rText").innerHTML=txt; $("rNote").innerHTML=note; $("rExtra").innerHTML=extra;
+
+  const last=S.idx>=S.list.length-1;
+  $("rNext").textContent = S.mode==="duelo" ? "Concluir desafio →"
+                         : last ? (S.mode==="treino"?"Concluir treino →":"Ver boletim final →") : "Próxima máquina →";
+  go("res");
+}
+
+function nextMachine(){
+  if(S.mode==="duelo"){ showDuelEnd(); return; }
+  if(S.idx>=S.list.length-1){
+    if(S.mode==="treino"){ go("home"); return; }
+    showFinal(); return;
+  }
+  S.idx++; loadMachine();
+}
+function showDuelEnd(){
+  const r=S.lastRes;
+  const win=r.sond<=2;
+  $("duelMsg").innerHTML=
+    '<div class="msg '+(win?"ok":"warn")+'"><b>'+(win?"Você resolveu no ótimo":"A equipe construtora marca ponto")+'</b>'+
+    'Você usou '+r.sond+(r.sond===1?" pergunta":" perguntas")+' e fez <b>'+r.pts+'</b> pontos. '+
+    (win?"Nenhuma máquina afim resiste a duas perguntas bem escolhidas — nem a que eles construíram."
+        :"A regra do duelo: acima de duas perguntas, o ponto vai para quem construiu a máquina.")+'</div>';
+  $("duelCode").value="";
+  go("duel");
+}
+function showFinal(){
+  const tot=S.results.reduce((s,r)=>s+r.pts,0);
+  const sond=S.results.reduce((s,r)=>s+r.sond,0);
+  const solved=S.results.length;
+  $("fTeam").textContent=S.team;
+  $("fTotal").textContent=tot;
+  $("fTable").innerHTML=
+    "<tr><th>Máquina</th><th>Perguntas</th><th>Pontos</th></tr>"+
+    S.results.map((r,i)=>
+      "<tr><td><b>"+String(i+1).padStart(2,"0")+"</b> "+r.nome+"</td>"+
+      '<td class="'+(r.sond<=2?"g":"")+'">'+r.sond+"</td>"+
+      '<td class="c">'+r.pts+"</td></tr>").join("")+
+    '<tr><td><b>Total</b></td><td><b>'+sond+'</b></td><td class="g"><b>'+tot+"</b></td></tr>";
+  $("fCode").textContent=encRes(tot,solved,sond);
+
+  const perfect=S.results.filter(r=>r.sond<=2).length;
+  let v;
+  if(perfect===solved) v='<div class="msg ok"><b>Todas no ótimo</b>Vocês encontraram o protocolo e o aplicaram sem exceção. Ele funcionou em todas as máquinas porque não depende de qual máquina é — e isso é exatamente o que caracteriza um algoritmo.</div>';
+  else if(perfect>=solved-2) v='<div class="msg info"><b>Quase sempre no ótimo</b>Vocês acertaram o método em '+perfect+' de '+solved+' máquinas. Vale olhar quais foram as exceções: elas costumam ser a de a fracionário e a que responde sempre o mesmo.</div>';
+  else v='<div class="msg warn"><b>Método em construção</b>Vocês resolveram tudo, mas gastando mais perguntas do que o necessário. A pergunta que resolve isso é sempre a mesma: qual valor de x faz a máquina entregar um dos números de graça?</div>';
+  $("fVerdict").innerHTML=v;
+  go("final");
+}
+function quitPlay(){
+  if(S.lockT){clearInterval(S.lockT);S.lockT=null;}
+  go("home");
+}
+
+/* ═════════ CONSTRUTOR ═════════ */
+function buildPreview(){
+  const a=parseInt($("bA").value,10)/2, b=parseInt($("bB").value,10)/2;
+  $("bAv").textContent=fmt(a); $("bBv").textContent=fmt(b);
+  $("bPrev").textContent=fLabel(a,b);
+  let n="";
+  if(a===0)n="Salto zero: a máquina responderá sempre "+fmt(b)+". É uma função constante — válida, e difícil de reconhecer.";
+  else if(b===0)n="Sem valor de partida: sondar x = 0 devolverá 0 e entregará essa informação de imediato.";
+  else if(a%1!==0)n="Salto fracionário: exige atenção na subtração, mas não protege a máquina.";
+  else n="Máquina afim comum. Duas perguntas bem escolhidas resolvem — sempre.";
+  $("bCheck").textContent=n;
+  $("bOutBox").innerHTML="";
+}
+function genCode(){
+  const a=parseInt($("bA").value,10)/2, b=parseInt($("bB").value,10)/2;
+  const code=encMachine(a,b);
+  if(!code){ $("bOutBox").innerHTML='<div class="msg err"><b>Fora do alcance</b>Use valores entre −20 e 20.</div>'; return; }
+  $("bOutBox").innerHTML=
+    '<div class="code"><div class="code-l">Código do desafio</div><div class="code-v">'+code+'</div>'+
+    '<div class="code-n">Anote no papel e entregue à equipe adversária. Não mostre esta tela: o código não revela nada, mas o resto da página revela tudo.</div></div>'+
+    '<div class="msg info"><b>Regra do duelo</b>Vocês marcam ponto se a equipe adversária gastar mais de duas perguntas. Vale a pena tentar esconder a máquina — e vale ainda mais descobrir por que não dá.</div>';
+}
+
+/* ═════════ PAINEL ═════════ */
+function fillGab(){
+  $("gabT").innerHTML="<tr><th>#</th><th>Regra</th><th>f(0)</th><th>f(1)</th></tr>"+
+    TREINO.map((m,i)=>"<tr><td><b>T"+(i+1)+"</b></td><td class='c'>"+fLabel(m.a,m.b)+"</td><td>"+fmt(m.b)+"</td><td>"+fmt(m.a+m.b)+"</td></tr>").join("");
+  $("gabM").innerHTML="<tr><th>#</th><th>Regra</th><th>Dificuldade nova</th></tr>"+
+    TORNEIO.map((m,i)=>
+      "<tr><td><b>M"+(i+1)+"</b><br><span style='font-size:10px;color:var(--tx3)'>"+m.nome+"</span></td>"+
+      "<td class='"+(m.ghost?"v":"c")+"'>"+(m.ghost?"não é função":fLabel(m.a,m.b))+
+      (m.ghost?"":"<br><span style='font-size:10px;color:var(--tx3)'>f(0)="+fmt(m.b)+" · f(1)="+fmt(m.a+m.b)+"</span>")+"</td>"+
+      "<td style='font-size:11px'>"+m.novo+"</td></tr>").join("");
+}
+function readRes(){
+  const d=decRes($("rdCode").value);
+  if(!d){ $("rdMsg").innerHTML='<div class="msg err"><b>Código inválido</b>Peça que a equipe leia novamente. São 5 caracteres, como <b>KL-R57</b>.</div>'; return; }
+  const nm=($("rdTeam").value||"").trim()||("Equipe "+(board.length+1));
+  board.push({nome:nm,...d});
+  board.sort((x,y)=>y.score-x.score||x.sond-y.sond);
+  $("rdMsg").innerHTML='<div class="msg ok"><b>'+nm+' registrada</b>'+d.score+' pontos · '+d.solved+' máquinas · '+d.sond+' perguntas.</div>';
+  $("rdTeam").value=""; $("rdCode").value="";
+  drawBoard();
+}
+function drawBoard(){
+  if(!board.length){ $("board").innerHTML=""; return; }
+  $("board").innerHTML="<table class='t'><tr><th>#</th><th>Equipe</th><th>Perg.</th><th>Pontos</th></tr>"+
+    board.map((b,i)=>"<tr><td>"+(i+1)+"</td><td><b>"+b.nome.replace(/[<>]/g,"")+"</b></td><td>"+b.sond+"</td><td class='g'>"+b.score+"</td></tr>").join("")+
+    "</table><div class='note'>O placar vive apenas nesta aba. Se fechar a página, ele se perde — mas os códigos das equipes permitem reconstruí-lo em um minuto.</div>";
+}
+function readMach(){
+  const d=decMachine($("rdMach").value);
+  $("rdMachMsg").innerHTML = d
+    ? '<div class="msg ok"><b>Máquina revelada</b>'+fLabel(d.a,d.b)+' &nbsp;·&nbsp; f(0) = '+fmt(d.b)+' &nbsp;·&nbsp; f(1) = '+fmt(d.a+d.b)+'</div>'
+    : '<div class="msg err"><b>Código inválido</b>Confira com a equipe que construiu a máquina.</div>';
+}
+
+/* ═════════ MODO RUÍDO ═════════ */
+const NA=1.5, NB=4;
+let noise=[];
+function noiseProbe(k){
+  for(let i=0;i<k;i++){
+    const x=Math.round(Math.random()*100)/10;
+    const y=NA*x+NB+(Math.random()*6-3);
+    noise.push({x,y});
+  }
+  drawNoise();
+}
+function noiseReset(){ noise=[]; drawNoise(); }
+function drawNoise(){
+  const W=380,H=210,P=26;
+  const sx=x=>P+(x/10)*(W-P-12), sy=y=>H-P-(y/22)*(H-P-14);
+  let g='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="display:block">';
+  g+='<line x1="'+P+'" y1="8" x2="'+P+'" y2="'+(H-P)+'" stroke="#2E3A4D"/>';
+  g+='<line x1="'+P+'" y1="'+(H-P)+'" x2="'+(W-8)+'" y2="'+(H-P)+'" stroke="#2E3A4D"/>';
+  g+='<line x1="'+sx(0)+'" y1="'+sy(NB)+'" x2="'+sx(10)+'" y2="'+sy(NA*10+NB)+'" stroke="#34D399" stroke-width="2" opacity=".85"/>';
+  noise.forEach(p=>{ g+='<circle cx="'+sx(p.x)+'" cy="'+sy(p.y)+'" r="3.2" fill="#22D3EE" opacity=".8"/>'; });
+  if(noise.length>=2){
+    const n=noise.length;
+    const mx=noise.reduce((s,p)=>s+p.x,0)/n, my=noise.reduce((s,p)=>s+p.y,0)/n;
+    let num=0,den=0;
+    noise.forEach(p=>{num+=(p.x-mx)*(p.y-my);den+=(p.x-mx)**2;});
+    if(den>1e-9){
+      const a=num/den, b=my-a*mx;
+      g+='<line x1="'+sx(0)+'" y1="'+sy(b)+'" x2="'+sx(10)+'" y2="'+sy(a*10+b)+'" stroke="#FBBF24" stroke-width="1.6" stroke-dasharray="5 4"/>';
+      g+='</svg>';
+      $("noisePlot").innerHTML=g;
+      $("noiseMsg").innerHTML=
+        '<div class="msg '+(noise.length<5?"warn":"info")+'"><b>'+noise.length+(noise.length===1?" sondagem":" sondagens")+'</b>'+
+        'Regra real: <b>'+fLabel(NA,NB)+'</b><br>Estimada pelos dados: <b>'+fLabel(Math.round(a*100)/100,Math.round(b*100)/100)+'</b><br><br>'+
+        (noise.length<5
+          ? "Com poucas sondagens a estimativa erra — e o protocolo campeão da oficina falha aqui. Continue sondando."
+          : "Quanto mais sondagens, mais a estimativa se aproxima da regra real. É por isso que sistemas de inteligência artificial precisam de muitos dados: não para compensar falta de inteligência, mas para compensar <b>ruído</b>.")+
+        '</div>';
+      return;
+    }
+  }
+  g+='</svg>';
+  $("noisePlot").innerHTML=g;
+  $("noiseMsg").innerHTML = noise.length
+    ? '<div class="msg warn"><b>'+noise.length+' sondagem</b>Uma resposta só não determina nada — nem sem ruído, muito menos com ele.</div>'
+    : '<div class="note">A reta verde é a regra real, escondida. Sonde e veja a estimativa aparecer aos poucos.</div>';
+}
+
+/* ═════════ ATALHOS E INÍCIO ═════════ */
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter")return;
+  const a=document.activeElement;
+  if(!a)return;
+  if(a.id==="probe")doProbe();
+  else if(a.id==="dA"||a.id==="dB")doDeclare();
+  else if(a.id==="teamName")startTorneio();
+  else if(a.id==="duelCode")startDuel();
+  else if(a.id==="rdCode")readRes();
+  else if(a.id==="rdMach")readMach();
+});
+fillGab(); buildPreview(); drawNoise();
+</script>
+</body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · Tecnologia em Julgamento</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#7B2D8B;--accent-soft:#F3EAF6;--accent-deep:#4A1A54;
+--h-bg:#2A1233;--h-accent:#D4A0E8;--h-sub:#B8A0C8;
+--ink:#1A1220;--ink-mid:#3E3548;--ink-soft:#6E6578;--border:#DED6E4;--bg:#FAF8FC;--bg-card:#fff;--radius:14px;
+--cat1:#117A65;--cat1s:#E4F4EF;--cat2:#B8860B;--cat2s:#FDF6E0;--cat3:#B0264A;--cat3s:#FBEAEF;--cat4:#1A5276;--cat4s:#E7F1F8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(212,160,232,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:860px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 11px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--cat1)}.tab.done .tn{background:var(--cat1s);color:var(--cat1);border-color:var(--cat1)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.speech{background:linear-gradient(135deg,var(--h-bg),#4A2060);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'§';position:absolute;right:16px;top:-4px;font-family:var(--f-head);font-size:100px;color:rgba(212,160,232,.08);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#EFE0F8;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(123,45,139,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:var(--cat3s);border:1px solid rgba(176,38,74,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7A1832;line-height:1.6}
+
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+.tm.low{color:var(--cat3)}.tm.done{color:var(--cat1)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.1)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── CATEGORIAS ── */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:1rem 0}
+@media(max-width:640px){.cats{grid-template-columns:repeat(2,1fr)}}
+.cat{border-radius:var(--radius);padding:.9rem .8rem;text-align:center;border:2px solid}
+.c1{background:var(--cat1s);border-color:var(--cat1);color:var(--cat1)}
+.c2{background:var(--cat2s);border-color:var(--cat2);color:var(--cat2)}
+.c3{background:var(--cat3s);border-color:var(--cat3);color:var(--cat3)}
+.c4{background:var(--cat4s);border-color:var(--cat4);color:var(--cat4)}
+.cat-ico{font-size:22px;margin-bottom:4px}
+.cat-t{font-family:var(--f-head);font-size:12.5px;font-weight:600;line-height:1.3}
+
+/* ── CARTAS ── */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:1rem 0}
+@media(max-width:640px){.cards{grid-template-columns:1fr}}
+.crd{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;cursor:pointer;transition:all .2s;position:relative}
+.crd:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(123,45,139,.1);transform:translateY(-1px)}
+.crd.open{background:var(--accent-soft);border-color:var(--accent)}
+.crd-n{font-family:var(--f-mono);font-size:10px;font-weight:600;color:var(--accent);margin-bottom:5px}
+.crd-t{font-size:13.5px;color:var(--ink);line-height:1.6;font-weight:500}
+.crd-detail{display:none;margin-top:10px;padding-top:9px;border-top:1px dashed var(--border)}
+.crd.open .crd-detail{display:block}
+.crd-q{font-size:12px;color:var(--ink-mid);line-height:1.55;font-style:italic}
+.crd-hint{font-size:10px;color:var(--ink-soft);margin-top:6px;text-align:right}
+.crd.open .crd-hint{display:none}
+
+/* ── VOTAÇÃO (plenária) ── */
+.vote{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:1.2rem 0}
+.vbtn{font-family:var(--f-head);font-size:14px;font-weight:600;padding:12px 22px;border-radius:var(--radius);cursor:pointer;border:2.5px solid;transition:all .2s;min-width:80px;text-align:center}
+.vbtn:hover{transform:scale(1.04)}
+.vbtn.v1{border-color:var(--cat1);color:var(--cat1);background:var(--cat1s)}
+.vbtn.v2{border-color:var(--cat2);color:var(--cat2);background:var(--cat2s)}
+.vbtn.v3{border-color:var(--cat3);color:var(--cat3);background:var(--cat3s)}
+.vbtn.v4{border-color:var(--cat4);color:var(--cat4);background:var(--cat4s)}
+.vbtn.sel{transform:scale(1.08);box-shadow:0 0 0 4px rgba(123,45,139,.2)}
+
+/* ── PRINCÍPIOS ── */
+.princ{display:flex;flex-direction:column;gap:9px;margin:1rem 0}
+.pr{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:.9rem 1.1rem;cursor:pointer;transition:all .2s}
+.pr:hover{border-color:var(--accent)}
+.pr.open{background:var(--accent-soft);border-color:var(--accent)}
+.pr-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:4px}
+.pr-d{font-size:12.5px;color:var(--ink-mid);line-height:1.6;display:none}
+.pr.open .pr-d{display:block}
+.pr-hint{font-size:10px;color:var(--ink-soft)}
+.pr.open .pr-hint{display:none}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+.quote{background:var(--h-bg);border-radius:var(--radius);padding:1.2rem 1.5rem;margin:1rem 0;text-align:center}
+.quote p{font-family:var(--f-head);font-size:clamp(14px,2.6vw,19px);font-weight:400;font-style:italic;color:#EFE0F8;line-height:1.55}
+.quote cite{display:block;margin-top:8px;font-size:12px;color:var(--h-sub);font-style:normal}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">Tecnologia <em>em Julgamento</em></div>
+  <span class="top-badge">⚖ Comitê de Ética Digital · 60 min · 4 grupos</span>
+  <span class="top-badge">condução ao vivo</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Abertura</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>Deliberação</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>Galeria</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>Julgamento</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>Princípios</button>
+      <button class="tab" onclick="go(5)"><span class="tn">6</span>Ponte</button>
+    </div>
+  </div>
+
+<!-- ═══════ 1 · ABERTURA ═══════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>"Vocês acabam de ser nomeados o <b>Comitê de Ética Digital</b> da escola.</p>
+    <p>Dez casos reais chegaram à mesa de vocês e precisam de um parecer <b>ainda hoje</b>.</p>
+    <p>Não existe manual — existe argumento."</p>
+  </div>
+
+  <div class="cats">
+    <div class="cat c1"><div class="cat-ico">✅</div><div class="cat-t">Ético e<br>recomendado</div></div>
+    <div class="cat c2"><div class="cat-ico">⚠️</div><div class="cat-t">Depende<br>do contexto</div></div>
+    <div class="cat c3"><div class="cat-ico">❌</div><div class="cat-t">Antiético</div></div>
+    <div class="cat c4"><div class="cat-ico">❓</div><div class="cat-t">Precisamos<br>discutir mais</div></div>
+  </div>
+
+  <!-- <div class="inst">
+    <div class="inst-t">O que deve estar pronto</div>
+    <ul>
+      <li>Painéis (cartolina dividida em 4 quadrantes) <b>já fixados na parede</b> — a sala configurada como tribunal gera curiosidade</li>
+      <li>1 envelope com 10 cartas-situação por grupo</li>
+      <li>Post-its em 2 cores: uma para justificativas, outra (vermelha) para discordâncias</li>
+      <li>4 plaquinhas de votação por grupo</li>
+      <li>Cronômetro visível</li>
+    </ul>
+  </div> -->
+
+  <div class="quote">
+    <p>"A questão que devemos nos fazer não é se a tecnologia funciona, mas o que ela faz com as relações, os valores e o poder dentro da escola."</p>
+    <cite>— Neil Selwyn, Educação e Tecnologia: questões críticas (2017)</cite>
+  </div>
+
+  <div class="tip"><b>Ponte com a acolhida:</b> "Há pouco vocês descobriram que 7 em cada 10 estudantes usam IA sem orientação e que 9 em cada 10 plataformas os monitoravam. Agora vocês vão julgar dez situações reais que acontecem em escolas como as suas — e decidir o que é aceitável."</div>
+
+  <div class="nav">
+    <span class="nav-info">fase 1 de 6 · 5 min</span>
+    <button class="btn btn-a" onclick="go(1)">deliberação →</button>
+  </div>
+</div>
+
+<!-- ═══════ 2 · DELIBERAÇÃO ═══════ -->
+<div class="pane" id="p1">
+  <div class="speech">
+    <p>"Abram o envelope. Discutam caso a caso. Colem cada carta em um dos quatro quadrantes.</p>
+    <!-- <p><b>Toda carta colada exige um post-it de justificativa</b> em uma frase ao lado."</p> -->
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t1">20:00</div>
+    <div class="tl" id="t1l">deliberação em grupos</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(1,1200)">▶ 20 min</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(1,1200)">↺</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">As 10 cartas-situação · clique para expandir</div>
+  </div>
+  <div class="cards" id="cardGrid"></div>
+
+  <!-- <div class="warn"><b>A categoria ⚠️ exige nomear QUAL contexto muda o julgamento.</b> Não vale como refúgio genérico. Se o grupo colar tudo no ⚠️, devolva: "qual contexto muda o julgamento dessa carta? Se não sabem dizer, ela precisa ir para outro quadrante."</div> -->
+
+  <div class="tip"><b>Você NÃO emite juízo.</b> O silêncio avaliativo sustenta o protagonismo. Circule, cronometre, provoque com perguntas — mas não diga se concorda ou discorda.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← abertura</button>
+    <span class="nav-info">fase 2 de 6 · 20 min</span>
+    <button class="btn btn-a" onclick="go(2)">galeria →</button>
+  </div>
+</div>
+
+<!-- ═══════ 3 · GALERIA SILENCIOSA ═══════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>"Agora vocês circulam pelos painéis dos outros grupos <b>sem falar</b>.</p>
+    <p>Cada grupo marca as 3 classificações das quais <b>mais discorda</b>.</p>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t2">08:00</div>
+    <div class="tl" id="t2l">galeria silenciosa</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(2,480)">▶ 8 min</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(2,480)">↺</button>
+    </div>
+  </div>
+
+  <div class="warn"><b>Segure o silêncio.</b> A galeria silenciosa é o momento em que o grupo mais quer conversar. Resista — é o silêncio que transforma a discordância em pauta de julgamento. </div>
+
+  <div class="inst">
+    <div class="inst-t">Depois da galeria · 3 min</div>
+    <p>Identifique as 3 ou 4 cartas com mais marcações vermelhas. São elas que irão a julgamento na plenária. Anuncie quais são.</p>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← deliberação</button>
+    <span class="nav-info">fase 3 de 6 · 8 min</span>
+    <button class="btn btn-a" onclick="go(3)">julgamento →</button>
+  </div>
+</div>
+
+<!-- ═══════ 4 · JULGAMENTO ═══════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p>"As cartas mais contestadas vão a julgamento. Para cada caso:</p>
+    <p><b>Defesa</b> — 2 min · <b>Contestação</b> — 2 min · <b>Réplica</b> — 1 min · <b>Voto</b>"</p>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Protocolo do julgamento</div>
+    <ul>
+      <li><b>Grupo autor</b> defende a classificação que deu à carta — 2 minutos</li>
+      <li><b>Grupo discordante</b> (quem colou o post-it vermelho) contesta — 2 minutos</li>
+      <li><b>Réplica</b> do grupo autor — 1 minuto</li>
+      <li>Plenária <b>vota levantando as plaquinhas</b>. A carta é movida ou mantida conforme o voto</li>
+    </ul>
+  </div>
+
+  <div class="tw">
+    <div class="tm" id="t3">02:00</div>
+    <div class="tl" id="t3l">tempo de fala</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(3,120)">▶ defesa 2 min</button>
+      <button class="btn btn-g" onclick="startT(3,120);document.getElementById('t3l').textContent='contestação'">contestação 2 min</button>
+      <button class="btn btn-g" onclick="startT(3,60);document.getElementById('t3l').textContent='réplica'">réplica 1 min</button>
+      <button class="btn btn-g" onclick="stopT(3)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(3,120)">↺</button>
+    </div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Votação da plenária</div>
+  </div>
+  <div class="vote">
+    <div class="vbtn v1" onclick="this.classList.toggle('sel')">✅ Ético</div>
+    <div class="vbtn v2" onclick="this.classList.toggle('sel')">⚠️ Depende</div>
+    <div class="vbtn v3" onclick="this.classList.toggle('sel')">❌ Antiético</div>
+    <div class="vbtn v4" onclick="this.classList.toggle('sel')">❓ Discutir+</div>
+  </div>
+
+  <!-- <div class="warn"><b>Quem excede o tempo tem a palavra cortada</b> — sem exceções, inclusive para o formador. É a regra que dá credibilidade a todo o protocolo.</div> -->
+
+  <!-- <div class="inst">
+    <div class="inst-t">Perguntas de mediação — quando o debate esfriar</div>
+    <ul>
+      <li>Nessa situação, <b>quem é beneficiado e quem é exposto</b>?</li>
+      <li>O problema está na tecnologia em si ou <b>no modo de uso</b>?</li>
+      <li>Que dados estão sendo coletados, <b>quem consentiu</b> e quem lucra?</li>
+      <li>Essa prática <b>fortalece ou substitui</b> a mediação do professor?</li>
+      <li>O que muda se pensarmos no estudante como <b>sujeito integral</b>, e não apenas como desempenho?</li>
+    </ul>
+  </div> -->
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← galeria</button>
+    <span class="nav-info">fase 4 de 6 · 30 min</span>
+    <button class="btn btn-a" onclick="go(4)">princípios →</button>
+  </div>
+</div>
+
+<!-- ═══════ 5 · PRINCÍPIOS ═══════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>"Agora eu trago a lente. Cinco princípios que pesquisadores e organismos internacionais propõem — e que vocês, sem saber, <b>já usaram</b> nos seus argumentos."</p>
+  </div>
+
+  <div class="princ" id="princGrid"></div>
+
+  <div class="quote">
+    <p>"O uso não mediado de sistemas de IA generativa pode inibir o desenvolvimento de competências fundamentais, como: ler com profundidade, escrever com rigor, argumentar com coerência e calcular com compreensão."</p>
+    <cite>— UNESCO, Guidance for Generative AI in Education and Research (2023)</cite>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">O texto de referência · para distribuir</div>
+    <p><b>SELWYN, Neil.</b> "Educação e Tecnologia: questões críticas." In: FERREIRA; ROSADO; CARVALHO (org.) <i>Educação e Tecnologia: abordagens críticas.</i> Rio de Janeiro: SESES/UNESA, 2017, p. 85–103.</p>
+    <p style="margin-top:8px"><b>Acesso aberto (CC BY-NC-ND 4.0):</b> <span style="font-family:var(--f-mono);font-size:12px;word-break:break-all">https://ticpe.files.wordpress.com/2017/04/ebook-ticpe-2017.pdf</span></p>
+    <p style="margin-top:8px">É o capítulo que desloca a pergunta de <i>"a tecnologia funciona?"</i> para <i>"o que ela faz com as relações, os valores e o poder?"</i> — que é exatamente o exercício que os formadores acabaram de vivenciar. Distribua antes ou depois da formação.</p>
+  </div>
+
+  <div class="tip"><b>Metalinguagem no fechamento:</b> a própria dinâmica é um exercício das competências que ela discute — escuta ativa, argumentação, protagonismo, revisão de posição. Vale dizer isso em voz alta.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← julgamento</button>
+    <span class="nav-info">fase 5 de 6 · 15 min</span>
+    <button class="btn btn-a" onclick="go(5)">ponte →</button>
+  </div>
+</div>
+
+<!-- ═══════ 6 · PONTE ═══════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <!-- <p>"Como vocês levariam esta dinâmica para uma turma de 8.º ou 9.º ano <b>na escola de vocês</b>?</p> -->
+    <p>E qual situação acrescentariam, a partir da <b>realidade da sua regional</b>?"</p>
+  </div>
+
+  <!-- <div class="tw">
+    <div class="tm" id="t5">10:00</div>
+    <div class="tl" id="t5l">registro em grupo</div>
+    <div class="tbs">
+      <button class="btn btn-a" onclick="startT(5,600)">▶ 10 min</button>
+      <button class="btn btn-g" onclick="stopT(5)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(5,600)">↺</button>
+    </div>
+  </div> -->
+
+  <div class="inst">
+    <div class="inst-t">Cada grupo registra</div>
+    <ul>
+      <li>Como adaptaria a dinâmica: quantas cartas, quais situações, que formato de votação</li>
+      <li>Uma situação real da sua regional que entraria no baralho</li>
+      <li>Que princípio da sistematização mais ressoou com a realidade da escola</li>
+    </ul>
+  </div>
+
+  <!-- <div class="tip"><b>O melhor indicador de sucesso:</b> quando os participantes começam a citar casos reais das próprias escolas sem que ninguém peça. Reserve tempo para isso — é o momento em que a formação vira planejamento.</div> -->
+
+  <div class="quote">
+    <p>"A escola da educação integral não pode se dar ao luxo de banir este debate — ela precisa ser o espaço público onde ele acontece."</p>
+    <cite>— Tema da formação: Ética e tecnologia: recriando a educação na contemporaneidade</cite>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(4)">← princípios</button>
+    <span class="nav-info">fase 6 de 6 · fim da atividade</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAV ═══ */
+const tabs=[...document.querySelectorAll('#tabs .tab')],panes=[...document.querySelectorAll('.pane')];
+let cur=0;
+function go(i){if(cur<i)tabs[cur].classList.add('done');tabs.forEach(t=>t.classList.remove('on'));panes.forEach(p=>p.classList.remove('on'));tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ═══ TIMERS ═══ */
+const TM={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){
+  stopT(id);TM[id]={rem:dur};
+  const el=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+  el.textContent=fmtT(dur);el.classList.remove('done','low');
+  TM[id].iv=setInterval(()=>{TM[id].rem--;const r=TM[id].rem;el.textContent=fmtT(Math.max(0,r));
+    el.classList.toggle('low',r<=15&&r>0);
+    if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;el.textContent='00:00';el.classList.remove('low');el.classList.add('done');lb.textContent='tempo esgotado';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;document.getElementById('t'+id+'l').textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};document.getElementById('t'+id).textContent=fmtT(dur);document.getElementById('t'+id).classList.remove('low','done');document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* ═══ 10 CARTAS-SITUAÇÃO ═══ */
+const CARTAS=[
+  {n:1,t:'Um professor usa o ChatGPT para gerar exercícios personalizados para cada nível de aluno da turma, revisando e adaptando os resultados antes de aplicar.',
+   q:'A IA está sendo usada como ferramenta do professor ou como substituta do planejamento? O que mudaria se ele não revisasse?'},
+  {n:2,t:'A escola adota uma plataforma que monitora em tempo real quais sites cada estudante acessa durante a aula, enviando alertas automáticos ao coordenador.',
+   q:'Quem consentiu com essa vigilância? Os estudantes sabem que estão sendo monitorados? E fora do horário de aula?'},
+  {n:3,t:'Um aluno entrega uma redação inteira escrita pelo ChatGPT. O professor percebe, mas a escola não tem nenhuma orientação sobre o assunto.',
+   q:'O problema é do aluno, da escola ou da ausência de política? E se o aluno tivesse declarado que usou a IA — mudaria algo?'},
+  {n:4,t:'A secretaria de educação distribui tablets com um aplicativo gamificado que coleta dados de desempenho e os compartilha com a empresa desenvolvedora, que os usa para melhorar seu produto comercial.',
+   q:'Os dados pertencem a quem — ao estudante, à escola ou à empresa? Os pais sabiam desse compartilhamento?'},
+  {n:5,t:'Professores criam um grupo de WhatsApp da turma para enviar tarefas e avisos. Alunos que não têm celular ficam sem acesso às informações.',
+   q:'A praticidade para a maioria justifica a exclusão da minoria? Que alternativas existem?'},
+  {n:6,t:'Uma professora filma a aula e posta trechos nas suas redes sociais pessoais, mostrando "momentos fofos" dos alunos, sem pedir autorização.',
+   q:'De quem é a imagem? O fato de ser "fofo" muda a questão do consentimento? E se o aluno tiver 8 anos?'},
+  {n:7,t:'A escola proíbe totalmente o uso de celular em qualquer momento, inclusive no intervalo, recolhendo os aparelhos na entrada.',
+   q:'Proibir é proteger ou é evitar o debate? O que acontece com a autonomia do estudante? E se houver uma emergência?'},
+  {n:8,t:'Um sistema de inteligência artificial é usado para prever quais alunos têm maior risco de evasão, gerando uma lista para a coordenação. Os alunos não sabem que estão nessa lista.',
+   q:'Prevenir evasão é legítimo — mas e o rótulo? O que acontece quando um aluno descobre que foi "classificado como risco"?'},
+  {n:9,t:'Formadores de uma CREDE usam um grupo de Telegram para compartilhar fotos de provas de alunos com erros, como exemplo do que "não deveria acontecer".',
+   q:'A intenção pedagógica justifica a exposição? E se o aluno ou a família vir a imagem?'},
+  {n:10,t:'Uma escola rural sem internet estável recebe a orientação de usar uma plataforma online obrigatória para lançamento de frequência, e os professores precisam ir até a cidade para acessá-la.',
+   q:'Quando a política pressupõe infraestrutura que não existe, quem arca com o custo? Isso é um problema técnico ou ético?'}
+];
+const cg=document.getElementById('cardGrid');
+CARTAS.forEach(c=>{
+  const el=document.createElement('div');el.className='crd';
+  el.innerHTML='<div class="crd-n">CASO '+c.n+'</div><div class="crd-t">'+c.t+'</div>'
+    +'<div class="crd-hint">clique para ver a pergunta</div>'
+    +'<div class="crd-detail"><div class="crd-q">💬 '+c.q+'</div></div>';
+  el.addEventListener('click',()=>el.classList.toggle('open'));
+  cg.appendChild(el);
+});
+
+/* ═══ 5 PRINCÍPIOS ═══ */
+const PRINC=[
+  {t:'Tecnologia não é neutra',d:'Todo artefato técnico carrega intenções e produz efeitos — sobre quem, para quê e a serviço de quem? (Vieira Pinto, 2005; Selwyn, 2017)'},
+  {t:'Transparência e consentimento',d:'Dados de estudantes exigem consentimento informado. "Aceitar os termos" não é consentimento quando quem aceita tem 12 anos e ninguém explicou o que está sendo coletado.'},
+  {t:'IA como apoio, professor como mediador',d:'A abordagem centrada no humano (UNESCO, 2023) defende que a IA pode apoiar, mas nunca substituir a mediação pedagógica do professor. A decisão final é sempre humana.'},
+  {t:'Equidade de acesso',d:'Uma política que pressupõe celular e internet para todos pode excluir exatamente quem mais precisa da escola. A desigualdade de acesso não é detalhe técnico — é questão ética.'},
+  {t:'A escola integral como espaço do debate',d:'A educação integral forma o sujeito por inteiro. Por isso a escola é o espaço público por excelência para este debate — não um lugar de onde ele deva ser banido.'}
+];
+const pg=document.getElementById('princGrid');
+PRINC.forEach(p=>{
+  const el=document.createElement('div');el.className='pr';
+  el.innerHTML='<div class="pr-t">'+p.t+'</div><div class="pr-hint">clique para expandir</div><div class="pr-d">'+p.d+'</div>';
+  el.addEventListener('click',()=>el.classList.toggle('open'));
+  pg.appendChild(el);
+});
+
+/* ═══ TECLADO ═══ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'&&cur<5)go(cur+1);
+  if(e.key==='ArrowLeft'&&cur>0)go(cur-1);
+});
+</script>
+</body>
+</html>

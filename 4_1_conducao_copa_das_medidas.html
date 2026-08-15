@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · Copa das Medidas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--h-bg:#06130E;--h-line:#17332A;--h-sub:#8FA79B;
+--gold:#E8B84B;--gold-d:#9A7517;--gold-s:#FCF4E0;--gold-b:#E2C88A;
+--field:#0F6B44;--field-hi:#3FBF7F;--field-s:#E6F4ED;--field-b:#A3D4BC;
+--accent:#0F6B44;--accent-soft:#E6F4ED;--accent-deep:#083B26;
+--red:#B0263C;--red-s:#FBE9EC;--red-hi:#F28399;
+--orange:#C4661B;--orange-s:#FDF0E2;--orange-hi:#F0A45F;
+--ink:#0D1512;--ink-mid:#3A4844;--ink-soft:#6C7B76;--border:#DDE5E1;--bg:#F7FAF8;--bg-card:#fff;--radius:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  background-image:repeating-linear-gradient(90deg,rgba(63,191,127,.05) 0 40px,transparent 40px 80px)}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--gold)}
+.top-badge{font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(232,184,75,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:920px;margin:0 auto;padding:0 1.2rem 3rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.85rem 0 0;margin-bottom:1.3rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:10.5px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:9px 10px 11px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:5px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.tab .tn{min-width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--gold-d)}.tab.done .tn{background:var(--gold-s);color:var(--gold-d);border-color:var(--gold-d)}
+.pane{display:none;animation:fade .22s ease}.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#0C2419);border-radius:var(--radius);padding:1.6rem 1.8rem;margin-bottom:1.2rem;position:relative;overflow:hidden}
+.speech::before{content:'';position:absolute;right:-40px;top:-40px;width:170px;height:170px;border:2px solid rgba(232,184,75,.1);border-radius:50%}
+.speech::after{content:'';position:absolute;right:10px;bottom:-60px;width:110px;height:110px;border:2px solid rgba(63,191,127,.09);border-radius:50%}
+.speech p{font-family:var(--f-head);font-size:clamp(16px,3vw,22px);font-weight:400;font-style:italic;color:#D8E5DE;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:10px}
+.speech p b{color:var(--gold);font-weight:600;font-style:normal}
+
+/* ── INST ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1rem 1.3rem;margin-bottom:1rem}
+.inst.g{border-left-color:var(--gold-d)}
+.inst-t{font-family:var(--f-head);font-size:13.5px;font-weight:600;color:var(--accent-deep);margin-bottom:8px}
+.inst.g .inst-t{color:var(--gold-d)}
+.inst p,.inst li{font-size:13.5px;color:var(--ink-mid);line-height:1.7}
+.inst ul,.inst ol{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst.g li::before{color:var(--gold-d)}
+.inst b{color:var(--ink)}
+.tip{background:var(--accent-soft);border:1px solid rgba(15,107,68,.2);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.warn{background:var(--gold-s);border:1px solid var(--gold-b);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#6B4F0D;line-height:1.6}
+.ok{background:var(--field-s);border:1px solid var(--field-b);border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.danger{background:var(--red-s);border:1px solid #E4A9B4;border-radius:var(--radius);padding:.85rem 1.1rem;margin:1rem 0;font-size:13px;color:#7A1626;line-height:1.6}
+.tip b,.warn b,.ok b,.danger b{font-weight:700}
+
+/* ── GOLD BANNER ── */
+.gold-banner{background:linear-gradient(135deg,#1A1408,#2B2110);border:1px solid var(--gold-d);border-radius:var(--radius);padding:1.2rem 1.3rem;margin-bottom:1.2rem;text-align:center}
+.gb-t{font-family:var(--f-head);font-size:clamp(18px,3.8vw,26px);font-weight:700;color:var(--gold);margin-bottom:7px}
+.gb-d{font-size:12.5px;color:#BFAE85;line-height:1.6;font-style:italic}
+
+/* ── TIMER ── */
+.tw{display:flex;flex-direction:column;align-items:center;gap:8px;margin:1.3rem 0}
+.tm{font-family:var(--f-mono);font-size:clamp(44px,11vw,88px);font-weight:600;color:var(--ink);line-height:1;transition:color .3s}
+/* Dígitos brancos em fundos escuros (dentro de .rig) */
+.rig .tm { color: #fff; }
+.tm.low{color:var(--red)}.tm.done{color:var(--field)}
+.tl{font-size:12px;color:var(--ink-soft);min-height:18px}
+.tbs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:11.5px;font-weight:700;padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.2)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:#3A2B05}
+.btn-gold:hover{filter:brightness(1.08)}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+
+/* ══════ RIG ══════ */
+.rig{background:var(--h-bg);border:1px solid var(--h-line);border-radius:var(--radius);padding:1.15rem 1rem 1.35rem;margin-bottom:1.2rem}
+.rig.palco{position:fixed;inset:0;z-index:300;border-radius:0;border:none;margin:0;overflow-y:auto;padding:3vh 4vw;display:flex;flex-direction:column;justify-content:center}
+.rig-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  font-family:var(--f-body);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  border-bottom:1px solid var(--h-line);padding-bottom:10px;margin-bottom:15px}
+.rig-h span{color:#6F877C;letter-spacing:.03em;text-transform:none;font-size:11px;font-weight:400}
+.fs-btn{background:none;border:1px solid var(--h-line);color:var(--h-sub);font-family:var(--f-mono);font-size:10px;padding:5px 11px;border-radius:5px;cursor:pointer;letter-spacing:.04em}
+.fs-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fld{display:flex;align-items:center;gap:7px;background:#0D2119;border:1px solid #1D3E32;border-radius:5px;padding:6px 11px}
+.fld label{font-family:var(--f-body);font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#7A938A}
+.fld input,.fld select{background:transparent;border:none;color:#fff;font-family:var(--f-mono);font-size:13px;font-weight:700;outline:none;min-width:0}
+.fld input{width:88px}
+.fld select option{background:#0D2119;color:#fff}
+.rig-tip{text-align:center;font-size:11.5px;color:#5D746A;margin-top:12px;font-style:italic}
+
+/* ── PROVA CARD ── */
+.pcard{background:linear-gradient(135deg,#0B1F17,#0E2B1F);border:1px solid var(--h-line);border-left:4px solid var(--gold);border-radius:var(--radius);padding:1.2rem 1.3rem;margin-bottom:1.1rem}
+.pc-eyebrow{font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.pc-t{font-family:var(--f-head);font-size:clamp(20px,4.2vw,28px);font-weight:700;color:#fff;line-height:1.15;margin-bottom:5px}
+.pc-q{font-family:var(--f-head);font-size:15px;font-style:italic;color:#BCD2C7;line-height:1.5;margin-bottom:13px}
+.pc-rules{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.pc-rules{grid-template-columns:1fr}}
+.pc-r{border-radius:5px;padding:9px 12px;font-size:12px;line-height:1.5}
+.pc-r.no{background:rgba(176,38,60,.14);border:1px solid rgba(242,131,153,.35);color:#F2A9B6}
+.pc-r.yes{background:rgba(63,191,127,.12);border:1px solid rgba(63,191,127,.35);color:#8FDCB4}
+.pc-r b{display:block;font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;opacity:.85}
+.pc-unit{display:inline-block;margin-top:12px;font-family:var(--f-mono);font-size:11.5px;color:var(--gold);border:1px solid var(--gold-d);border-radius:100px;padding:4px 14px}
+
+/* ── GRADE DE ESTIMATIVAS ── */
+.egrid{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+.erow{display:grid;grid-template-columns:14px 1fr 108px auto;gap:10px;align-items:center;
+  background:#0D2119;border:1px solid #1D3E32;border-radius:6px;padding:8px 12px;transition:all .25s}
+@media(max-width:600px){.erow{grid-template-columns:14px 1fr 92px;grid-template-areas:'d n i' 'r r r';row-gap:7px}
+  .erow .eres{grid-area:r}}
+.edot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.ename{font-family:var(--f-head);font-size:13px;font-weight:600;color:#fff}
+.einput{background:#132E24;border:1px solid #24503F;border-radius:5px;color:#fff;font-family:var(--f-mono);font-size:14px;font-weight:700;padding:6px 9px;text-align:right;width:100%;outline:none}
+.einput:focus{border-color:var(--gold)}
+.eres{font-family:var(--f-mono);font-size:11.5px;color:#6F877C;text-align:right;min-width:150px;white-space:nowrap}
+.eres b{font-size:13px}
+.erow.b1{background:rgba(232,184,75,.13);border-color:var(--gold)}
+.erow.b1 .eres b{color:var(--gold)}
+.erow.b2{background:rgba(63,191,127,.11);border-color:rgba(63,191,127,.5)}
+.erow.b2 .eres b{color:var(--field-hi)}
+.erow.b3{background:rgba(196,102,27,.11);border-color:rgba(240,164,95,.45)}
+.erow.b3 .eres b{color:var(--orange-hi)}
+.erow.b4{background:rgba(176,38,60,.10);border-color:rgba(242,131,153,.4)}
+.erow.b4 .eres b{color:var(--red-hi)}
+.erow.b5{background:rgba(176,38,60,.22);border-color:var(--red-hi)}
+.erow.b5 .eres b{color:var(--red-hi)}
+.epos{font-family:var(--f-mono);font-size:11px;font-weight:700;color:var(--gold)}
+
+/* ── REVEAL ── */
+.realbox{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:13px}
+.bigreal{text-align:center;margin:14px 0 4px;padding:16px 10px;background:#0D2119;border:1px solid var(--gold-d);border-radius:6px}
+.bigreal-l{font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#7A938A;margin-bottom:7px}
+.bigreal-v{font-family:var(--f-mono);font-size:clamp(28px,7vw,52px);font-weight:700;color:var(--gold);line-height:1}
+@keyframes flash{0%{transform:scale(.9);opacity:0}55%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+.bigreal.show .bigreal-v{animation:flash .55s cubic-bezier(.3,.9,.3,1.25) both}
+.rig.palco .bigreal-v{font-size:clamp(44px,11vw,110px)}
+
+/* ── CLASSIFICAÇÃO ── */
+.stand{width:100%;border-collapse:collapse;margin-top:11px;font-family:var(--f-mono);font-size:12.5px}
+.stand th{font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#7A938A;padding:7px 8px;border-bottom:1px solid var(--h-line);text-align:left}
+.stand td{padding:8px;border-bottom:1px solid #12291F;color:#A9BFB5}
+.stand td.nm{color:#fff;font-family:var(--f-head);font-weight:600}
+.stand td.pt{color:var(--gold);font-weight:700;font-size:15px}
+.stand tr.q td{background:rgba(63,191,127,.07)}
+.stand tr.q td.rk{color:var(--field-hi);font-weight:700}
+.stand td.rk{width:26px}
+.dotc{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+/* ── CHAVEAMENTO ── */
+.bracket{display:grid;grid-template-columns:1fr 34px 1fr;gap:9px;align-items:center;margin:14px 0}
+@media(max-width:600px){.bracket{grid-template-columns:1fr;gap:7px}.br-mid{display:none}}
+.br-col{display:flex;flex-direction:column;gap:9px}
+.br-match{background:#0D2119;border:1px solid #1D3E32;border-radius:6px;overflow:hidden}
+.br-lbl{font-family:var(--f-body);font-size:8.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#6F877C;padding:6px 11px;border-bottom:1px solid #1D3E32}
+.br-side{display:flex;align-items:center;gap:9px;padding:9px 12px;font-family:var(--f-head);font-size:13px;font-weight:600;color:#C7D9D0}
+.br-side+.br-side{border-top:1px solid #12291F}
+.br-side .seed{font-family:var(--f-mono);font-size:9.5px;color:#5D746A;min-width:16px}
+.br-side.win{background:rgba(232,184,75,.14);color:#fff}
+.br-side.win .seed{color:var(--gold)}
+.br-side.lose{opacity:.4}
+.br-mid{display:flex;align-items:center;justify-content:center;font-family:var(--f-head);font-size:20px;color:var(--gold)}
+.br-final{background:linear-gradient(135deg,#1A1408,#2B2110);border-color:var(--gold-d)}
+.br-final .br-lbl{color:var(--gold);border-bottom-color:var(--gold-d)}
+
+/* ── DUELO ── */
+.duel{display:grid;grid-template-columns:1fr 42px 1fr;gap:10px;align-items:stretch;margin:13px 0}
+@media(max-width:600px){.duel{grid-template-columns:1fr;gap:8px}.duel-vs{display:none}}
+.dside{background:#0D2119;border:2px solid #1D3E32;border-radius:8px;padding:14px 13px;text-align:center;transition:all .3s}
+.dside.win{border-color:var(--gold);background:rgba(232,184,75,.11);box-shadow:0 0 22px rgba(232,184,75,.18)}
+.dside.lose{opacity:.5}
+.dside-n{font-family:var(--f-head);font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
+.dside-in{background:#132E24;border:1px solid #24503F;border-radius:6px;color:#fff;font-family:var(--f-mono);font-size:clamp(19px,4.5vw,26px);font-weight:700;padding:9px;text-align:center;width:100%;outline:none}
+.dside-in:focus{border-color:var(--gold)}
+.dside-e{font-family:var(--f-mono);font-size:12.5px;color:#6F877C;margin-top:9px;min-height:19px}
+.dside-e b{font-size:16px}
+.dside.win .dside-e b{color:var(--gold)}
+.duel-vs{display:flex;align-items:center;justify-content:center;font-family:var(--f-head);font-size:22px;font-weight:700;color:var(--gold);font-style:italic}
+.crowd{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+@media(max-width:600px){.crowd{grid-template-columns:repeat(2,1fr)}}
+.cw{background:#0B1B15;border:1px solid #1D3E32;border-radius:5px;padding:7px 8px}
+.cw-n{font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#6F877C;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw input{background:transparent;border:none;border-bottom:1px solid #24503F;color:#C7D9D0;font-family:var(--f-mono);font-size:13px;font-weight:700;width:100%;outline:none;text-align:center;padding-bottom:3px}
+.cw input:focus{border-bottom-color:var(--gold)}
+
+/* ── PÓDIO ── */
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:9px;align-items:end;margin:16px 0}
+.pod{border-radius:7px 7px 0 0;padding:14px 10px 16px;text-align:center;border:1px solid;border-bottom:none}
+.pod-p{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:7px}
+.pod-n{font-family:var(--f-head);font-size:clamp(13px,2.6vw,17px);font-weight:700;line-height:1.2;margin-bottom:6px}
+.pod-s{font-family:var(--f-mono);font-size:12px}
+.pod.p1{background:linear-gradient(180deg,rgba(232,184,75,.24),rgba(232,184,75,.08));border-color:var(--gold);height:150px;display:flex;flex-direction:column;justify-content:flex-end}
+.pod.p1 .pod-p,.pod.p1 .pod-n{color:var(--gold)}
+.pod.p2{background:linear-gradient(180deg,rgba(180,196,190,.18),rgba(180,196,190,.05));border-color:#8FA79B;height:112px;display:flex;flex-direction:column;justify-content:flex-end}
+.pod.p2 .pod-p,.pod.p2 .pod-n{color:#C3D3CB}
+.pod.p3{background:linear-gradient(180deg,rgba(196,102,27,.2),rgba(196,102,27,.05));border-color:var(--orange);height:92px;display:flex;flex-direction:column;justify-content:flex-end}
+.pod.p3 .pod-p,.pod.p3 .pod-n{color:var(--orange-hi)}
+.pod-s{color:#8FA79B}
+
+/* ── FAIXAS / LEGENDA ── */
+.bands{display:flex;flex-direction:column;gap:5px;margin:11px 0}
+.bd{display:grid;grid-template-columns:96px 1fr;gap:11px;align-items:center;padding:8px 12px;border-radius:5px;font-size:12px;border:1px solid}
+.bd-r{font-family:var(--f-mono);font-size:11.5px;font-weight:700}
+.bd.b1{background:rgba(232,184,75,.13);border-color:var(--gold);color:var(--gold)}
+.bd.b2{background:rgba(63,191,127,.11);border-color:rgba(63,191,127,.5);color:var(--field-hi)}
+.bd.b3{background:rgba(196,102,27,.11);border-color:rgba(240,164,95,.45);color:var(--orange-hi)}
+.bd.b4{background:rgba(176,38,60,.10);border-color:rgba(242,131,153,.4);color:var(--red-hi)}
+.bd.b5{background:rgba(176,38,60,.22);border-color:var(--red-hi);color:var(--red-hi)}
+.bd span:last-child{color:#A9BFB5}
+
+/* ── ÂNCORAS ── */
+.anchors{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:12px 0}
+@media(max-width:620px){.anchors{grid-template-columns:1fr}}
+.an{background:#0D2119;border:1px solid #1D3E32;border-radius:6px;padding:9px 12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.an-n{font-size:12px;color:#C7D9D0}
+.an-v{font-family:var(--f-mono);font-size:12.5px;font-weight:700;color:var(--gold);white-space:nowrap}
+
+/* calibração */
+.calib{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+.crow{display:grid;grid-template-columns:14px 1fr repeat(3,78px) 1.1fr;gap:9px;align-items:center;background:#0D2119;border:1px solid #1D3E32;border-radius:6px;padding:8px 12px}
+@media(max-width:760px){.crow{grid-template-columns:14px 1fr 68px 68px 68px;grid-template-areas:'d n p s e' 'r r r r r';row-gap:6px}.crow .cconv{grid-area:r;text-align:left}}
+.cconv{font-family:var(--f-mono);font-size:11px;color:#6F877C;text-align:right}
+.cconv b{color:var(--field-hi)}
+
+/* sub-nav */
+.subnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sbtn{font-family:var(--f-body);font-size:11px;font-weight:700;padding:7px 15px;border-radius:100px;cursor:pointer;transition:all .15s;
+  border:1.5px solid var(--border);background:var(--bg-card);color:var(--ink-soft)}
+.sbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.sbtn.ready{border-color:var(--gold-d);color:var(--gold-d)}
+.sub{display:none}.sub.on{display:block}
+
+/* checklist */
+.check{display:flex;flex-direction:column;gap:7px;margin:1rem 0}
+.ck{display:flex;gap:11px;align-items:flex-start;background:var(--bg-card);border:.5px solid var(--border);border-radius:var(--radius);padding:.8rem 1.05rem;cursor:pointer;transition:all .2s}
+.ck:hover{border-color:var(--accent)}
+.ck.on{background:var(--field-s);border-color:var(--field)}
+.ck-box{width:19px;height:19px;border:2px solid var(--accent);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;transition:all .2s}
+.ck.on .ck-box{background:var(--field);border-color:var(--field)}
+.ck-box::after{content:"✓";opacity:0;transition:opacity .2s}
+.ck.on .ck-box::after{opacity:1}
+.ck-t{font-size:12.5px;color:var(--ink-mid);line-height:1.55}
+.ck-t b{color:var(--ink)}
+
+/* cartório rows */
+.cart{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.crt{background:#0D2119;border:1px solid #1D3E32;border-radius:6px;padding:10px 13px}
+.crt-h{display:flex;justify-content:space-between;align-items:baseline;gap:9px;margin-bottom:8px;flex-wrap:wrap}
+.crt-n{font-family:var(--f-head);font-size:13px;font-weight:600;color:#fff}
+.crt-u{font-family:var(--f-mono);font-size:10.5px;color:var(--gold)}
+.crt-f{display:flex;gap:8px;flex-wrap:wrap}
+.crt-f input{background:#132E24;border:1px solid #24503F;border-radius:5px;color:#fff;font-family:var(--f-mono);font-size:12.5px;padding:6px 9px;outline:none}
+.crt-f input:focus{border-color:var(--gold)}
+.crt-obj{flex:1;min-width:150px}
+.crt-val{width:112px;text-align:right;font-weight:700}
+
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.8rem;padding-top:.8rem;border-top:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+
+/* ══════════ RELÓGIO DA SESSÃO + BOTÕES DO TOPO ══════════ */
+.topctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sessclock{font-family:var(--f-mono);font-size:14px;font-weight:700;color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(232,184,75,.28);border-radius:4px;padding:4px 10px}
+.sessclock.over{color:#F2A9B6;border-color:var(--red-hi)}
+.mini{background:none;border:1px solid rgba(255,255,255,.2);color:var(--h-sub);font-family:var(--f-body);font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 10px;border-radius:4px;cursor:pointer}
+.mini:hover{border-color:var(--gold);color:var(--gold)}
+.mini.on{background:var(--gold);border-color:var(--gold);color:#2A1F04}
+
+
+/* ── botão e barra do formador ── */
+.fkey{font-family:var(--f-body);font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--h-sub);
+  background:rgba(255,255,255,.05);border:1px solid var(--h-line);border-radius:100px;padding:7px 15px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.fkey:hover{border-color:var(--gold);color:var(--gold)}
+body.fmode .fkey{background:var(--gold);border-color:var(--gold);color:#2A1F04}
+.fbar{background:#FEF7E0;border-bottom:1px solid #E0C87A;color:#5C3F08;font-size:11.5px;font-weight:600;
+  padding:7px 1.5rem;letter-spacing:.02em;position:relative;z-index:39}
+.fbar b{font-weight:800}
+body:not(.fmode) .fbar{display:none}
+
+/* ══════════ MODO PROJEÇÃO (invertido: fmode = formador) ══════════ */
+body:not(.fmode) .speech,body:not(.fmode) .inst:not(.pub),body:not(.fmode) .tip:not(.pub),body:not(.fmode) .warn:not(.pub),
+body:not(.fmode) .ok:not(.pub),body:not(.fmode) .danger,body:not(.fmode) .check,body:not(.fmode) .fold,body:not(.fmode) .nav,
+body:not(.fmode) .privado,body:not(.fmode) .tab-priv{display:none!important}
+body:not(.fmode) .container{max-width:1180px}
+body:not(.fmode) .pcard{padding:1.7rem 1.9rem}
+body:not(.fmode) .pc-t{font-size:clamp(28px,5.5vw,42px)}
+body:not(.fmode) .pc-q{font-size:clamp(17px,2.7vw,24px)}
+body:not(.fmode) .pc-r{font-size:14.5px}
+body:not(.fmode) .ename{font-size:15px}
+body:not(.fmode) .einput{font-size:17px}
+body:not(.fmode) .tm{font-size:clamp(56px,13vw,110px)}
+.projflag{display:none;position:fixed;right:12px;bottom:12px;z-index:400;background:var(--gold);color:#2A1F04;
+  font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 13px;border-radius:100px}
+body.fmode .projflag{display:block}
+
+/* ══════════ DOBRA DO FORMADOR ══════════ */
+.fold{background:var(--bg-card);border:1px dashed var(--gold-d);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
+.fold>summary{cursor:pointer;list-style:none;padding:.72rem 1.1rem;font-family:var(--f-body);font-size:10.5px;
+  font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--gold-d);background:var(--gold-s)}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary::before{content:"▸  "}
+.fold[open]>summary::before{content:"▾  "}
+.fold-in{padding:.9rem 1.1rem .3rem}
+.fold-in .inst,.fold-in .warn,.fold-in .tip,.fold-in .ok{margin-top:0}
+
+/* ══════════ ROTEIRO DE TEMPO ══════════ */
+.plan{width:100%;border-collapse:collapse;font-size:12.5px;margin:11px 0}
+.plan th{font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:#7A938A;padding:7px 8px;border-bottom:1px solid var(--h-line);text-align:left}
+.plan td{padding:7px 8px;border-bottom:1px solid #12291F;color:#A9BFB5}
+.plan td.mm{font-family:var(--f-mono);color:var(--gold);font-weight:700;white-space:nowrap}
+.plan td.nm{color:#fff;font-family:var(--f-head);font-weight:600}
+.plan tr.cut td{opacity:.45;text-decoration:line-through}
+
+/* ══════════ FOLHAS IMPRIMÍVEIS ══════════ */
+.printpage{background:#fff;border:1px solid var(--border);border-radius:6px;padding:16mm 14mm;margin:0 auto 20px;
+  max-width:200mm;color:#000;font-family:var(--f-body)}
+.pp-h{font-family:var(--f-head);font-size:14px;font-weight:700;border-bottom:2px solid #000;padding-bottom:6px;
+  margin-bottom:15px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;color:#000}
+.pp-h small{font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#555}
+.pp-eyebrow{font-family:var(--f-body);font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#555}
+.pp-big{font-family:var(--f-head);font-size:42px;font-weight:700;line-height:1.05;margin:8px 0 6px;color:#000}
+.pp-q{font-family:var(--f-head);font-size:20px;font-style:italic;margin-bottom:18px;line-height:1.4;color:#000}
+.pp-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.pp-box{border:2px solid #000;border-radius:6px;padding:11px 13px;font-size:13.5px;line-height:1.45}
+.pp-box b{display:block;font-family:var(--f-body);font-size:9.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+.pp-unit{display:inline-block;border:2px solid #000;border-radius:100px;padding:6px 18px;font-family:var(--f-mono);font-size:15px;font-weight:700}
+.pp-note{font-size:11px;color:#444;margin-top:14px;line-height:1.5}
+table.pt{width:100%;border-collapse:collapse;font-size:11.5px}
+table.pt th,table.pt td{border:1px solid #000;padding:7px 8px;text-align:left;vertical-align:top}
+table.pt th{background:#eee;font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+table.pt td.tall{height:34px}
+.pp-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pp-card{border:1.5px dashed #000;border-radius:6px;padding:11px 12px}
+.pp-card h4{font-family:var(--f-head);font-size:15px;margin-bottom:7px}
+.pp-tent{border:1.5px dashed #000;border-radius:6px;padding:16px 12px;text-align:center;margin-bottom:9px}
+.pp-tent .tn1{font-family:var(--f-head);font-size:34px;font-weight:700}
+.pp-tent .tn2{font-family:var(--f-body);font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#555;margin-top:5px}
+.pp-band{display:grid;grid-template-columns:110px 1fr;gap:10px;border:1.5px solid #000;border-radius:5px;padding:9px 11px;margin-bottom:7px;font-size:12.5px}
+.pp-band b{font-family:var(--f-mono)}
+
+/* ── AJUSTE: inputs de duração com fundo branco e texto preto ── */
+input[id^="dur"] {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-align: center;
+  width: 60px;
+}
+
+@media print{
+  @page{margin:11mm}
+  body{background:#fff}
+  .top,.tabs-wrap,.projflag,.no-print,.ctrls{display:none!important}
+  .pane{display:none!important}
+  #p7{display:block!important}
+  .container{max-width:none;padding:0;margin:0}
+  .printpage{border:none;border-radius:0;padding:0;margin:0 0 0 0;max-width:none;page-break-after:always;break-after:page}
+  .printpage:last-child{page-break-after:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">Copa das <em>Medidas</em></div>
+  <span class="top-badge">🏆 Estimativa e ordem de grandeza</span>
+  <span class="top-badge privado">90 min (versão enxuta: 70)</span>
+  <div class="topctl">
+    <span class="sessclock" id="sessClock">00:00</span>
+    <button class="mini" id="sessBtn" onclick="toggleSess()">▶ sessão</button>
+    <button class="mini" onclick="resetSess()">↺</button>
+    <button class="fkey" id="fkey" onclick="toggleF()">notas do formador</button>
+  </div>
+</div>
+<div class="projflag">modo projeção — a tela não mostra dicas nem respostas</div>
+<div class="fbar"><b>MODO FORMADOR ATIVO.</b> As notas em âmbar são só suas. Tecle <b>F</b> para voltar ao modo projeção.</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab tab-priv" onclick="go(0)"><span class="tn">0</span>Cartório · preparação</button>
+      <button class="tab on" onclick="go(1)"><span class="tn">1</span>Abertura</button>
+      <button class="tab" onclick="go(2)"><span class="tn">2</span>Calibração</button>
+      <button class="tab" onclick="go(3)"><span class="tn">3</span>Fase de grupos</button>
+      <button class="tab" onclick="go(4)"><span class="tn">4</span>Semifinais</button>
+      <button class="tab" onclick="go(5)"><span class="tn">5</span>Final</button>
+      <button class="tab" onclick="go(6)"><span class="tn">6</span>Pódio · debriefing</button>
+      <button class="tab tab-priv" onclick="go(7)"><span class="tn">🖨</span>Imprimíveis</button>
+    </div>
+  </div>
+
+<!-- ══════════ 0 · CARTÓRIO ══════════ -->
+<div class="pane privado" id="p0">
+  <div class="speech">
+    <p>Esta aba é <b>só sua, e é de antes</b>. Nada aqui vai para a projeção — o <b>modo projeção</b>, lá no topo, esconde tudo isto de uma vez.</p>
+    <p>A Copa inteira depende de uma coisa: <b>você precisa saber os valores reais antes de perguntar.</b> Meça tudo com calma, sozinho, e registre aqui.</p>
+  </div>
+
+  <div class="danger"><b>Os dados vivem só nesta janela.</b> Recarregou, perdeu. Três proteções, nesta ordem: (1) preencha a <b>Ficha do Cartório impressa</b> a caneta — ela é a fonte oficial; (2) clique em <b>“copiar estado”</b> abaixo e cole num bloco de notas; (3) não feche a aba. A página avisa antes de fechar, mas não confie nisso.</div>
+
+  <div class="inst">
+    <div class="inst-t">Montagem da sala — 20 minutos antes</div>
+    <ul>
+      <li><b>Seis mesas em ilha</b>, cada uma com a plaquinha da equipe, a folha A4 intacta, a régua, a calculadora e a Ficha da Equipe</li>
+      <li><b>Cartaz das faixas de erro</b> colado onde todos veem — ele governa a Copa inteira e será olhado umas dez vezes</li>
+      <li><b>Cartaz das âncoras universais</b> na parede oposta</li>
+      <li>Objetos das provas <b>já posicionados</b>: recipiente opaco numa mesa de apoio, novelo em outra, fita crepe marcando a linha de partida</li>
+      <li><b>A trena fica no seu bolso.</b> Trena à vista é prova arruinada</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">ROTEIRO DE TEMPO <span>a versão enxuta corta as linhas riscadas</span></div>
+    <table class="plan">
+      <tr><th>Etapa</th><th>Completa</th><th>Acumulado</th><th>O que não pode ser cortado</th></tr>
+      <tr><td class="nm">Abertura + equipes</td><td class="mm">8 min</td><td class="mm">08</td><td>a tabela de faixas de erro</td></tr>
+      <tr><td class="nm">Calibração do corpo</td><td class="mm">10 min</td><td class="mm">18</td><td>palmo e passo; Vitrúvio em 30 s</td></tr>
+      <tr><td class="nm">Prova 1 · A Superfície</td><td class="mm">5 + 3 min</td><td class="mm">26</td><td>a armadilha cm²→m²</td></tr>
+      <tr><td class="nm">Prova 2 · O Recipiente</td><td class="mm">6 + 3 min</td><td class="mm">35</td><td>a ponte 1 cm³ = 1 mL</td></tr>
+      <tr class="cut"><td class="nm">Prova 3 · A Travessia</td><td class="mm">4 + 3 min</td><td class="mm">42</td><td>corte primeiro se atrasar</td></tr>
+      <tr><td class="nm">Classificação + leitura</td><td class="mm">4 min</td><td class="mm">46</td><td>“quem teve um ótimo e um desastre?”</td></tr>
+      <tr><td class="nm">Semifinal 1 · O Novelo</td><td class="mm">5 + 3 min</td><td class="mm">54</td><td>circunferência ≠ diâmetro</td></tr>
+      <tr class="cut"><td class="nm">Semifinal 2 · O Que Ainda Cabe</td><td class="mm">5 + 3 min</td><td class="mm">62</td><td>corte em segundo lugar</td></tr>
+      <tr><td class="nm">Final · O Ar da Sala</td><td class="mm">6 + 3 min</td><td class="mm">71</td><td>inegociável</td></tr>
+      <tr><td class="nm">Sabedoria da torcida</td><td class="mm">5 min</td><td class="mm">76</td><td>inegociável</td></tr>
+      <tr><td class="nm">Pódio + debriefing</td><td class="mm">12 min</td><td class="mm">88</td><td>as seis estratégias</td></tr>
+    </table>
+    <div class="rig-tip">88 min de conteúdo + transições ≈ 90–95. Cortando as duas linhas riscadas: 70 min. O relógio no topo mede a sessão de verdade.</div>
+  </div>
+
+  <div class="warn"><b>Onde o tempo costuma vazar.</b> Não é nas provas — é na fila em volta do objeto e na conferência das contas. Leia o <b>protocolo do enviado</b> na aba da fase de grupos e ensine-o <i>antes</i> de começar a Prova 1. Um minuto gasto ali economiza dez depois.</div>
+
+  <div class="rig">
+    <div class="rig-h">AS EQUIPES <span>nomes históricos de medidas do corpo — troque se quiser</span></div>
+    <div class="ctrls" style="margin-top:0;justify-content:flex-start">
+      <div class="fld"><label>nº de equipes</label>
+        <select id="ntSel"><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option></select></div>
+      <span style="font-size:11.5px;color:#6F877C;align-self:center">21 formadores → <b style="color:#C7D9D0">6 equipes de 3 a 4</b></span>
+    </div>
+    <div class="cart" id="teamEditor"></div>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O CARTÓRIO DAS PROVAS <span>meça duas vezes — a média vira o valor oficial</span></div>
+    <div class="cart" id="cartorio"></div>
+    <div class="rig-tip">o campo da direita é calculado, mas continua editável · a faixa esperada acende em vermelho se o número estiver fora de ordem de grandeza</div>
+    <div class="ctrls">
+      <button class="btn btn-g" onclick="copyState()">⧉ copiar estado</button>
+      <button class="btn btn-g" onclick="pasteState()">⇩ colar estado</button>
+      <button class="btn btn-g" onclick="copyReport()">📄 copiar relatório final</button>
+    </div>
+    <div class="rig-tip" id="stateMsg"></div>
+  </div>
+
+  <div class="warn"><b>Por que duas medições.</b> Durante a revelação o seu número vira a verdade oficial e alguém <i>vai</i> conferir. Se as duas medidas discordarem em mais de 2%, o campo avisa e você mede uma terceira. <b>A Copa perde a autoridade no instante em que o formador erra o valor real.</b></div>
+
+  <div class="check" id="prepCheck">
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Escolhi e medi os seis objetos</b> e registrei os valores no cartório acima.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Preparei o novelo:</b> enrolei o barbante um número exato de voltas no cilindro, contei as voltas e <b>medi o comprimento total esticado</b> antes de enrolar.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Preparei "O que ainda cabe":</b> pus objetos dentro do recipiente e medi, com a garrafa graduada, <b>quanta água ainda cabe</b>.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Medi a sala inteira</b> — comprimento, largura e pé-direito — para a final.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t">Marquei com fita crepe a <b>linha de partida da travessia</b> e escondi a trena.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t">Separei <b>uma folha A4 por equipe</b> — sem amassar, porque ela vai ser régua.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Imprimi e distribuí o material da aba 🖨</b> — cartazes, fichas de equipe, cartões de calibração e plaquinhas de mesa.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Testei o modo projeção</b> no projetor da sala e confirmei que dicas e armadilhas ficam invisíveis nele.</div></div>
+    <div class="ck" onclick="this.classList.toggle('on')"><div class="ck-box"></div><div class="ck-t"><b>Copiei o estado</b> para um bloco de notas e preenchi a Ficha do Cartório a caneta.</div></div>
+  </div>
+
+  <div class="tip"><b>Plano B de tempo, decidido agora e não no susto:</b> corte a <b>Prova 3 (A Travessia)</b> e a <b>Semifinal 2</b>, jogando o 2º colocado direto na final. A Copa fecha em 70 minutos sem perder o arco. <b>A final e a sabedoria da torcida são inegociáveis</b> — é ali que os dois dias fecham.</div>
+
+  <div class="nav"><span></span><button class="btn btn-a" onclick="go(1)">abertura →</button></div>
+</div>
+
+<!-- ══════════ 1 · ABERTURA ══════════ -->
+<div class="pane on" id="p1">
+  <div class="speech">
+    <p>Nos últimos dois dias vocês mediram tudo com o instrumento certo na mão. <b>Agora eu vou tirar os instrumentos.</b></p>
+    <p>Porque a escola onde vocês vão chegar na segunda-feira <b>não tem proveta, não tem balança, e muitas vezes não tem nem trena.</b> E mesmo assim ela precisa ensinar a medir.</p>
+    <p><b>Bem-vindos à Copa das Medidas.</b></p>
+  </div>
+
+  <div class="gold-banner">
+    <div class="gb-t">Fase de grupos · Semifinais · Final</div>
+    <div class="gb-d">seis equipes, seis provas, seis maneiras diferentes de descobrir um número que ninguém deixou você medir</div>
+  </div>
+
+  <div class="inst">
+    <div class="inst-t">Antes das regras — formar as equipes em 2 minutos</div>
+    <ul>
+      <li><b>21 formadores → 6 equipes</b> (três de 4 e três de 3). Não deixe se auto-agruparem por CREDE: <b>misture as regionais</b>, porque o debriefing final pede que cada CREDE fale de uma estratégia diferente</li>
+      <li>Cada equipe pega a <b>plaquinha de mesa</b> com o nome histórico já impresso — Palmo, Passo, Côvado, Braça, Légua, Polegada. O nome já é conteúdo: todos foram unidades oficiais</li>
+      <li>Cada equipe define <b>o enviado</b> (quem chega perto do objeto), <b>o escriba</b> (quem preenche a Ficha da Equipe) e <b>o calculista</b>. Os papéis giram a cada prova</li>
+    </ul>
+  </div>
+
+  <div class="inst g pub">
+    <div class="inst-t">As regras, ditas uma vez só</div>
+    <ul>
+      <li>Cada prova tem uma <b>ferramenta proibida</b> — justamente a que daria a resposta de graça</li>
+      <li>Cada prova tem uma <b>ferramenta permitida</b>. Fora dela, vale o corpo, a cabeça e o que estiver na sala</li>
+      <li>A equipe entrega <b>um número só</b>, na unidade pedida. Sem intervalos, sem "mais ou menos"</li>
+      <li>Vence quem tiver o <b>menor erro percentual</b> em relação ao valor real — que eu medi antes e está guardado</li>
+      <li><b>Erro de até 5% vale bônus.</b> Erro acima de 100% não é erro de conta: é erro de conceito, e a Copa vai dizer isso na cara</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">COMO O ERRO É LIDO <span>projete — esta tabela governa a Copa inteira</span></div>
+    <div class="bands">
+      <div class="bd b1"><span class="bd-r">até 5%</span><span><b>NA MOSCA</b> — bônus de 3 pontos. Estimativa de quem tem âncora calibrada.</span></div>
+      <div class="bd b2"><span class="bd-r">5% a 15%</span><span><b>EXCELENTE</b> — em estimativa, isto já é acerto pleno.</span></div>
+      <div class="bd b3"><span class="bd-r">15% a 40%</span><span><b>BOM</b> — a ordem de grandeza está certa, o método tem folga.</span></div>
+      <div class="bd b4"><span class="bd-r">40% a 100%</span><span><b>FORA</b> — em geral, uma âncora mal calibrada ou uma dimensão chutada.</span></div>
+      <div class="bd b5"><span class="bd-r">acima de 100%</span><span><b>ERRO DE ORDEM DE GRANDEZA</b> — não é a conta que falhou, é o conceito. Quase sempre uma conversão.</span></div>
+    </div>
+    <div class="rig-tip">a Copa premia quem chega perto, mas ensina mesmo é na última faixa</div>
+  </div>
+
+  <div class="ok"><b>Diga isto em voz alta, e diga devagar:</b> "numa estimativa, errar 12% é acertar. Errar por um fator de 10 é outra coisa — e é exatamente o erro que a gente viu na oficina do litro, quando alguém escreve que 1 m³ tem 100 dm³. <b>A Copa não vai punir a imprecisão. Vai caçar a troca de ordem de grandeza.</b>"</div>
+
+  <div class="inst pub">
+    <div class="inst-t">O formato</div>
+    <ul>
+      <li><b>Fase de grupos</b> — 3 provas <b>em sequência</b>; em cada uma, <b>as seis equipes trabalham ao mesmo tempo</b>. Pontos por colocação</li>
+      <li><b>Semifinais</b> — as 4 melhores. <b>Um duelo por vez</b>, com a sala inteira assistindo</li>
+      <li><b>Final</b> — duas equipes, uma pergunta só, e o número mais surpreendente do dia</li>
+      <li>Quem está fora não fica de fora: <b>as equipes eliminadas dão o palpite da torcida</b> — e no fim vocês vão ver o que a torcida fez</li>
+    </ul>
+  </div>
+
+  <!-- Timer da abertura (comentado, mas com duração ajustável) -->
+  <div class="tw" style="display:none">
+    <div class="tm" id="t1">08:00</div><div class="tl" id="t1l">pronto</div>
+    <div class="tbs">
+      <input type="number" id="dur1" value="480" style="width:60px;background:transparent;border:1px solid var(--h-line);border-radius:4px;padding:4px 6px;color:#fff;font-family:var(--f-mono);font-size:12px;text-align:center">
+      <button class="btn btn-a" onclick="startWithDuration(1)">▶</button>
+      <button class="btn btn-g" onclick="stopT(1)">⏸</button>
+      <button class="btn btn-g" onclick="resetWithDuration(1)">↺</button>
+    </div>
+  </div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(0)">← cartório</button><span class="nav-info">as regras da Copa</span><button class="btn btn-a" onclick="go(2)">calibração →</button></div>
+</div>
+
+<!-- ══════════ 2 · CALIBRAÇÃO ══════════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>Antes da primeira prova, um acordo: <b>vocês já carregam instrumentos de medida.</b> Estão presos no corpo de vocês, e nunca ficam na sala dos professores.</p>
+    <p>O problema é que <b>nunca ninguém os calibrou.</b> Vamos calibrar agora — e é a última vez que a régua vai ser usada nesta oficina.</p>
+  </div>
+
+  <div class="inst pub">
+    <div class="inst-t">Cada equipe escolhe UM representante e mede, com a régua</div>
+    <ul>
+      <li><b>PALMO</b> — mão aberta, da ponta do polegar à ponta do mindinho. Adultos: entre 18 e 22 cm</li>
+      <li><b>PASSO</b> — dê cinco passos naturais, meça o total e divida por cinco. <b>Não dê passos de desfile</b>: o passo tem que ser o de andar pela escola. Entre 60 e 80 cm</li>
+      <li><b>ENVERGADURA</b> — braços abertos, ponta a ponta dos dedos. Entre 160 e 190 cm</li>
+      <li><b>POLEGAR</b> — a largura da unha. Perto de 2 cm: é a régua de bolso que ninguém esquece em casa</li>
+      <li><b>Anote tudo no Cartão de Calibração</b> — é o único papel que a equipe leva da oficina para a escola</li>
+    </ul>
+  </div>
+
+  <div class="inst g pub">
+    <div class="inst-t">Onde cada unidade vai ser cobrada — diga agora, para a calibração não virar ritual vazio</div>
+    <ul>
+      <li><b>PASSO</b> → Prova 3, A Travessia. É a única ferramenta permitida lá</li>
+      <li><b>ENVERGADURA e PALMO</b> → a Final. Medir uma sala inteira sem trena só sai com o corpo</li>
+      <li><b>POLEGAR</b> → conferência rápida em qualquer prova, quando a régua estiver ocupada em outra mesa</li>
+      <li><b>Calibrou torto, erra a Copa inteira.</b> Uma equipe que superestima o passo em 10% vai errar a travessia em 10% — e o erro é sistemático, não é azar</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">CALIBRAÇÃO DAS EQUIPES <span>digite e veja a conversão na hora</span></div>
+    <div class="calib" id="calibList"></div>
+    <div class="rig-tip">a coluna da direita mostra o que a equipe consegue medir sem tocar em nada</div>
+  </div>
+
+  <div class="ok"><b>O teste de Vitrúvio — 30 segundos, e a sala se surpreende.</b> Peça que comparem a <b>envergadura</b> com a <b>altura</b> da pessoa. Em quase todo mundo, dá praticamente igual. Leonardo da Vinci desenhou exatamente isso em 1490, e o desenho continua correto na sua sala. <b>É a melhor porta de entrada possível para "o corpo é uma régua".</b></div>
+
+  <div class="rig">
+    <div class="rig-h">ÂNCORAS UNIVERSAIS <span>projete — e peça que fotografem, porque isto vai para a escola</span></div>
+    <div class="anchors">
+      <div class="an"><span class="an-n">Folha A4</span><span class="an-v">21 × 29,7 cm</span></div>
+      <div class="an"><span class="an-n">Folhas A4 para cobrir 1 m²</span><span class="an-v">16 folhas</span></div>
+      <div class="an"><span class="an-n">Área de uma folha A4</span><span class="an-v">623,7 cm²</span></div>
+      <div class="an"><span class="an-n">Massa de uma folha A4 (75 g/m²)</span><span class="an-v">≈ 4,7 g</span></div>
+      <div class="an"><span class="an-n">Espessura de 100 folhas</span><span class="an-v">≈ 1 cm</span></div>
+      <div class="an"><span class="an-n">Porta comum</span><span class="an-v">≈ 2,10 × 0,80 m</span></div>
+      <div class="an"><span class="an-n">Degrau de escada</span><span class="an-v">≈ 17 cm</span></div>
+      <div class="an"><span class="an-n">Cartão de banco</span><span class="an-v">8,6 × 5,4 cm</span></div>
+      <div class="an"><span class="an-n">Moeda de 1 real</span><span class="an-v">≈ 27 mm</span></div>
+      <div class="an"><span class="an-n">Piso cerâmico comum</span><span class="an-v">30 × 30 cm</span></div>
+      <div class="an"><span class="an-n">Caixa de leite</span><span class="an-v">1 L = 1 dm³</span></div>
+      <div class="an"><span class="an-n">Tijolo cerâmico</span><span class="an-v">≈ 19 × 9 × 5,7 cm</span></div>
+    </div>
+    <div class="rig-tip">confira as três últimas na sua escola — âncora que não foi conferida é chute com nome bonito</div>
+  </div>
+
+  <div class="warn"><b>A observação histórica que vale trinta segundos.</b> Polegada, pé, jarda, palmo, braça e côvado <b>foram unidades oficiais</b>, e todas saíram do corpo. O sistema métrico nasceu justamente porque o corpo do rei não era o corpo do camponês. Só que, para <b>estimar</b>, o corpo continua imbatível — é o único instrumento que nunca fica esquecido no armário. <b>O que mudou não foi o instrumento: foi a exigência de que todos usassem o mesmo.</b></div>
+
+  <!-- Timer da calibração (comentado, mas com duração ajustável) -->
+  <div class="tw" style="display:none">
+    <div class="tm" id="t2">10:00</div><div class="tl" id="t2l">pronto</div>
+    <div class="tbs">
+      <input type="number" id="dur2" value="600" style="width:60px;background:transparent;border:1px solid var(--h-line);border-radius:4px;padding:4px 6px;color:#fff;font-family:var(--f-mono);font-size:12px;text-align:center">
+      <button class="btn btn-a" onclick="startWithDuration(2)">▶</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸</button>
+      <button class="btn btn-g" onclick="resetWithDuration(2)">↺</button>
+    </div>
+  </div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(1)">← abertura</button><span class="nav-info">o corpo é um instrumento — mas precisa ser calibrado</span><button class="btn btn-a" onclick="go(3)">fase de grupos →</button></div>
+</div>
+
+<!-- ══════════ 3 · FASE DE GRUPOS ══════════ -->
+<div class="pane" id="p3">
+  <div class="speech">
+    <p><b>Fase de grupos.</b> Três provas, todas as equipes ao mesmo tempo. Uma folha por equipe para as contas.</p>
+    <p>Quando eu disser "entreguem", <b>o número está fechado</b> — e ninguém muda depois de ouvir o vizinho.</p>
+  </div>
+
+  <div class="inst g pub">
+    <div class="inst-t">O protocolo do enviado — leia antes da Prova 1 e não repita depois</div>
+    <ul>
+      <li><b>Só o enviado chega perto do objeto.</b> Um por equipe, por vez. O resto da equipe fica na mesa fazendo conta</li>
+      <li><b>60 segundos de acesso por equipe</b>, na ordem das plaquinhas. Eu conto no relógio ao lado</li>
+      <li>O enviado pode <b>voltar ao fim da fila</b> se precisar conferir — mas o relógio da prova não para</li>
+      <li>Objeto grande (quadro, parede, sala): <b>duas equipes por vez</b>, uma em cada metade</li>
+      <li><b>Ninguém desloca, encosta ou abre o objeto</b> sem pedir. Quem move, perde a vez</li>
+    </ul>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">RELÓGIO DE REVEZAMENTO <span>60 s por equipe — use durante a prova, sem parar o cronômetro principal</span></div>
+    <div class="tw" style="margin:8px 0 0">
+      <div class="tm" id="t99" style="font-size:clamp(30px,7vw,52px)">01:00</div><div class="tl" id="t99l">pronto</div>
+      <div class="tbs">
+        <input type="number" id="dur99" value="60" style="width:60px;background:transparent;border:1px solid var(--h-line);border-radius:4px;padding:4px 6px;color:#fff;font-family:var(--f-mono);font-size:12px;text-align:center">
+        <button class="btn btn-a" onclick="startWithDuration(99)">▶</button>
+        <button class="btn btn-g" onclick="stopT(99)">⏸</button>
+        <button class="btn btn-g" onclick="resetWithDuration(99)">↺</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="subnav">
+    <button class="sbtn on" onclick="sub('g',0)">Prova 1 · A Superfície</button>
+    <button class="sbtn" onclick="sub('g',1)">Prova 2 · O Recipiente</button>
+    <button class="sbtn" onclick="sub('g',2)">Prova 3 · A Travessia</button>
+    <button class="sbtn" onclick="sub('g',3)">📊 Classificação</button>
+  </div>
+
+  <div class="sub on" id="g0"></div>
+  <div class="sub" id="g1"></div>
+  <div class="sub" id="g2"></div>
+
+  <div class="sub" id="g3">
+    <div class="rig">
+      <div class="rig-h">CLASSIFICAÇÃO DA FASE DE GRUPOS <span>as 4 primeiras vão ao mata-mata</span>
+        <button class="fs-btn" onclick="palco('rigStand')">⛶</button></div>
+      <div id="rigStand"><table class="stand" id="standTbl"></table></div>
+      <div class="rig-tip" id="standTip">as provas ainda não foram reveladas</div>
+    </div>
+    <div class="ctrls"><button class="btn btn-gold" onclick="go(4);">fechar grupos e sortear o mata-mata →</button></div>
+    <div class="ok" style="margin-top:16px"><b>Antes de virar a chave, uma pergunta para a sala:</b> "olhem a coluna de erros. Alguma equipe teve <b>um resultado ótimo e um desastroso</b>? O que aconteceu naquela prova?" Quase sempre a resposta é uma conversão — e é a deixa perfeita para a fase seguinte.</div>
+  </div>
+</div>
+
+<!-- ══════════ 4 · SEMIFINAIS ══════════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p><b>Mata-mata.</b> Agora é um duelo por vez, e a sala inteira assiste.</p>
+    <p>Quem está fora tem trabalho: <b>cada equipe eliminada registra o palpite da torcida.</b> No fim eu conto o que aconteceu com esses palpites — e é a melhor coisa que vai acontecer hoje.</p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">O CHAVEAMENTO <span>semeado pela classificação dos grupos</span>
+      <button class="fs-btn" onclick="palco('rigBracket')">⛶ modo palco</button></div>
+    <div id="rigBracket">
+      <div class="bracket">
+        <div class="br-col">
+          <div class="br-match"><div class="br-lbl">Semifinal 1 · O Novelo</div>
+            <div class="br-side" id="s1a"><span class="seed">1º</span><span>—</span></div>
+            <div class="br-side" id="s1b"><span class="seed">4º</span><span>—</span></div></div>
+          <div class="br-match"><div class="br-lbl">Semifinal 2 · O Que Ainda Cabe</div>
+            <div class="br-side" id="s2a"><span class="seed">2º</span><span>—</span></div>
+            <div class="br-side" id="s2b"><span class="seed">3º</span><span>—</span></div></div>
+        </div>
+        <div class="br-mid">→</div>
+        <div class="br-col">
+          <div class="br-match br-final"><div class="br-lbl">🏆 Final · O Ar da Sala</div>
+            <div class="br-side" id="fa"><span class="seed">SF1</span><span>—</span></div>
+            <div class="br-side" id="fb"><span class="seed">SF2</span><span>—</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ctrls"><button class="btn btn-a" onclick="seedBracket()">↻ semear pela classificação</button></div>
+  </div>
+
+  <div class="inst g pub">
+    <div class="inst-t">Quem não duela vira observador — pegue a Ficha do Observador</div>
+    <ul>
+      <li>Cada equipe fora do duelo preenche <b>três campos</b>: qual âncora a dupla usou, qual estratégia, e <b>em que segundo ela quase caiu na armadilha</b></li>
+      <li>Depois da revelação eu peço <b>uma frase</b> de dois observadores. É o que transforma o duelo em aula</li>
+      <li><b>Ninguém sopra resposta.</b> Observador que fala perde o direito de comentar depois</li>
+      <li>Na final é diferente: aí a torcida <b>dá número</b>, e o número vai valer alguma coisa</li>
+    </ul>
+  </div>
+
+  <div class="subnav">
+    <button class="sbtn on" onclick="sub('s',0)">Semifinal 1 · O Novelo</button>
+    <button class="sbtn" onclick="sub('s',1)">Semifinal 2 · O Que Ainda Cabe</button>
+  </div>
+  <div class="sub on" id="s0"></div>
+  <div class="sub" id="s1"></div>
+</div>
+
+<!-- ══════════ 5 · FINAL ══════════ -->
+<div class="pane" id="p5">
+  <div class="speech">
+    <p><b>A final.</b> Uma pergunta que ninguém nunca fez a vocês, e que vocês vão responder em seis minutos.</p>
+    <p>Não há régua que meça isto. <b>Só há raciocínio.</b></p>
+  </div>
+
+  <div class="sub on" id="f0"></div>
+
+  <div class="rig" id="rigTorcida">
+    <div class="rig-h">A SABEDORIA DA TORCIDA <span>revele só depois de conhecer o campeão</span></div>
+    <div id="medOut" style="text-align:center;font-family:var(--f-mono);font-size:13px;color:#8FA79B;line-height:1.9;padding:6px 0">
+      registre os palpites da torcida na final e clique abaixo
+    </div>
+    <div class="ctrls"><button class="btn btn-gold" onclick="medianReveal()">revelar o que a torcida fez</button></div>
+    <div class="rig-tip">a mediana de vários palpites costuma bater a maioria dos palpites individuais</div>
+  </div>
+
+  <div class="ok" id="medNote" style="display:none"><b>O que dizer, exatamente.</b> "Nenhuma dessas equipes tinha o melhor método. Mas quando a gente junta todos os palpites e pega o do meio, ele passa na frente da maioria — porque <b>os erros de cada um apontam para lados diferentes e se cancelam</b>. É o mesmo motivo pelo qual um sistema de inteligência artificial precisa de milhares de exemplos: os dados do mundo real são ruidosos, e a quantidade não compensa falta de inteligência — <b>compensa ruído</b>."</div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(4)">← semifinais</button><span class="nav-info">a última prova da formação</span><button class="btn btn-a" onclick="go(6)">pódio →</button></div>
+</div>
+
+<!-- ══════════ 6 · PÓDIO E DEBRIEFING ══════════ -->
+<div class="pane" id="p6">
+  <div class="rig" id="rigPodio">
+    <div class="rig-h">O PÓDIO DA COPA DAS MEDIDAS <span>campeão pela final; 3º pela classificação de grupos</span>
+      <button class="fs-btn" onclick="palco('rigPodio')">⛶ modo palco</button></div>
+    <div class="podium" id="podium">
+      <div class="pod p2"><div class="pod-p">2º</div><div class="pod-n" id="pd2">—</div><div class="pod-s">vice</div></div>
+      <div class="pod p1"><div class="pod-p">🏆 1º</div><div class="pod-n" id="pd1">—</div><div class="pod-s">campeã</div></div>
+      <div class="pod p3"><div class="pod-p">3º</div><div class="pod-n" id="pd3">—</div><div class="pod-s">grupos</div></div>
+    </div>
+    <div class="ctrls"><button class="btn btn-gold" onclick="fillPodium()">↻ atualizar pódio</button></div>
+  </div>
+
+  <div class="speech">
+    <p>Vocês acabaram de medir uma sala inteira <b>sem trena</b>, um recipiente fechado <b>sem proveta</b> e um barbante enrolado <b>sem desenrolar</b>.</p>
+    <p>Nenhuma dessas coisas exigiu material. <b>Exigiram uma âncora e um raciocínio.</b></p>
+  </div>
+
+  <div class="rig">
+    <div class="rig-h">AS SEIS ESTRATÉGIAS QUE VOCÊS USARAM <span>revele uma a uma — é o produto da oficina</span>
+      <button class="fs-btn" onclick="palco('rigStrat')">⛶ modo palco</button></div>
+    <div id="rigStrat"><div id="stratList" style="display:flex;flex-direction:column;gap:7px"></div></div>
+    <div class="ctrls">
+      <button class="btn btn-a" onclick="revealStrat()">revelar a próxima</button>
+      <button class="btn btn-g" onclick="resetStrat()">↺</button>
+    </div>
+  </div>
+
+  <div class="ok"><b>A pergunta que amarra tudo:</b> "qual dessas seis estratégias vocês <b>nunca</b> ensinaram, mas poderiam ensinar já na semana que vem, sem comprar nada?" Deixe cada CREDE responder por uma. É a transposição didática acontecendo em voz alta.</div>
+
+  <div class="rig">
+    <div class="rig-h">O ERRO QUE IMPORTA <span>o fecho conceitual dos dois dias</span></div>
+    <div class="bands">
+      <div class="bd b2"><span class="bd-r">erro de 12%</span><span>a estimativa <b>funcionou</b>. Em medição real, é resultado bom.</span></div>
+      <div class="bd b5"><span class="bd-r">erro de 900%</span><span>alguém multiplicou por 10 onde devia multiplicar por 1000. <b>Não é imprecisão: é conceito.</b></span></div>
+    </div>
+    <div class="rig-tip">a Copa inteira existe para tornar essa diferença impossível de esquecer</div>
+  </div>
+
+  <div class="warn"><b>Feche com esta frase, e não acrescente nada depois dela:</b> "a escola de vocês pode não ter proveta, pode não ter balança, pode não ter trena. <b>Mas ela tem folha A4, tem barbante, tem arroz e tem sessenta corpos por sala.</b> Nenhuma criança precisa esperar a chegada de um kit para aprender a medir o mundo."</div>
+
+  <div class="inst g pub">
+    <div class="inst-t">Para levar para a regional — a Copa cabe em qualquer escola</div>
+    <ul>
+      <li><b>Nada aqui custa dinheiro.</b> Trena, régua e uma garrafa graduada são o único investimento, e a escola já tem</li>
+      <li><b>Funciona do 6º ao 9º ano</b> — muda só a prova: comprimento e área nos anos iniciais dos finais, volume e conversão no 8º e 9º</li>
+      <li><b>Funciona com turma grande</b>, porque a fase de grupos é simultânea e o mata-mata é assistido</li>
+      <li>A <b>tabela de âncoras</b> vira cartaz de sala e serve o ano inteiro</li>
+      <li>Vale como <b>avaliação</b>: o erro percentual é uma nota objetiva, e o caderno de cada equipe mostra o raciocínio</li>
+    </ul>
+  </div>
+
+  <!-- Timer do pódio/debriefing -->
+  <div class="tw">
+    <div class="tm" id="t6">12:00</div><div class="tl" id="t6l">pronto</div>
+    <div class="tbs">
+      <input type="number" id="dur6" value="720" style="width:60px;background:transparent;border:1px solid var(--h-line);border-radius:4px;padding:4px 6px;color:#fff;font-family:var(--f-mono);font-size:12px;text-align:center">
+      <button class="btn btn-a" onclick="startWithDuration(6)">▶</button>
+      <button class="btn btn-g" onclick="stopT(6)">⏸</button>
+      <button class="btn btn-g" onclick="resetWithDuration(6)">↺</button>
+    </div>
+  </div>
+
+  <div class="nav"><button class="btn btn-g" onclick="go(5)">← final</button><span class="nav-info">fim da Copa das Medidas</span><span></span></div>
+</div>
+
+<!-- ══════════ 7 · IMPRIMÍVEIS ══════════ -->
+<div class="pane privado" id="p7">
+  <div class="no-print">
+    <div class="speech">
+      <p>Tudo o que precisa ir para o papel está aqui. <b>Ctrl+P nesta aba imprime só estas folhas</b> — o resto da página some sozinho.</p>
+      <p>Imprima <b>depois</b> de nomear as equipes na aba 0: os nomes entram nas plaquinhas e nos cartões de calibração.</p>
+    </div>
+    <div class="tip"><b>Configuração da impressão:</b> A4, retrato, margens padrão, <b>desmarque “cabeçalhos e rodapés”</b>. Frente e verso só nas fichas de equipe.</div>
+    <div class="ctrls" style="justify-content:flex-start">
+      <button class="btn btn-gold" onclick="window.print()">🖨 imprimir tudo</button>
+      <button class="btn btn-g" onclick="renderPrint()">↻ atualizar com os nomes das equipes</button>
+    </div>
+  </div>
+  <div id="printGen"></div>
+</div>
+
+</div>
+
+<script>
+"use strict";
+/* ═══════════ NAV ═══════════ */
+var tabs=[].slice.call(document.querySelectorAll('#tabs .tab'));
+var panes=[].slice.call(document.querySelectorAll('.pane'));
+var cur=1;
+function go(i){
+  if(i<0||i>=panes.length)return;
+  var isPriv=(i===0||i===7);
+  if(isPriv&&!document.body.classList.contains('fmode'))return;
+  if(cur<i)tabs[cur].classList.add('done');
+  tabs.forEach(function(t){t.classList.remove('on');});
+  panes.forEach(function(p){p.classList.remove('on');});
+  tabs[i].classList.add('on');panes[i].classList.add('on');cur=i;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(i===4&&BR.s1[0]===null&&BR.s1[1]===null)seedBracket();
+  if(i===6)fillPodium();
+  if(i===7)renderPrint();
+}
+function step(d){
+  var i=cur+d,fm=document.body.classList.contains('fmode');
+  while(i>=0&&i<panes.length&&(i===0||i===7)&&!fm)i+=d;
+  if(i>=0&&i<panes.length)go(i);
+}
+function sub(g,i){
+  var btns=[].slice.call(document.querySelectorAll('#p'+(g==='g'?3:g==='s'?4:5)+' .sbtn'));
+  btns.forEach(function(b,k){b.classList.toggle('on',k===i);});
+  var n=g==='g'?4:2;
+  for(var k=0;k<n;k++){
+    var e=document.getElementById(g+k);
+    if(e)e.classList.toggle('on',k===i);
+  }
+  if(g==='g'&&i===3)drawStandings();
+}
+
+/* ═══════════ TIMERS ═══════════ */
+var TM={};
+var AC=null;
+function beep(freq,dur,vol){
+  try{
+    if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    var o=AC.createOscillator(),g=AC.createGain();
+    o.type='sine';o.frequency.value=freq;g.gain.value=vol||0.15;
+    o.connect(g);g.connect(AC.destination);o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);
+    o.stop(AC.currentTime+dur);
+  }catch(e){}
+}
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){
+  if(TM[id]&&TM[id].iv)return;
+  if(!TM[id])TM[id]={rem:dur};
+  var e0=document.getElementById('t'+id),l0=document.getElementById('t'+id+'l');
+  if(!e0)return;
+  e0.classList.remove('done','low');l0.textContent='em andamento';
+  TM[id].iv=setInterval(function(){
+    TM[id].rem--;var r=TM[id].rem;
+    var e1=document.getElementById('t'+id),lb=document.getElementById('t'+id+'l');
+    if(!e1){clearInterval(TM[id].iv);TM[id].iv=null;return;}
+    e1.textContent=fmtT(Math.max(0,r));
+    e1.classList.toggle('low',r<=30&&r>0);
+    if(r===60){beep(700,.16);if(lb)lb.textContent='1 minuto — fechem a conta';}
+    if(r===10){beep(700,.12);}
+    if(r<=0){clearInterval(TM[id].iv);TM[id].iv=null;e1.textContent='00:00';
+      e1.classList.remove('low');e1.classList.add('done');
+      beep(420,.5,.2);
+      if(lb)lb.textContent='tempo esgotado · entreguem o número';}
+  },1000);
+}
+function stopT(id){if(TM[id]&&TM[id].iv){clearInterval(TM[id].iv);TM[id].iv=null;
+  var l=document.getElementById('t'+id+'l');if(l)l.textContent='pausado';}}
+function resetT(id,dur){stopT(id);TM[id]={rem:dur};
+  var e1=document.getElementById('t'+id);if(!e1)return;
+  e1.textContent=fmtT(dur);e1.classList.remove('low','done');
+  document.getElementById('t'+id+'l').textContent='pronto';}
+
+/* Wrappers para duração ajustável */
+function startWithDuration(id) {
+  var durInput = document.getElementById('dur'+id);
+  var dur = parseInt(durInput.value, 10);
+  if (isNaN(dur) || dur < 1) dur = 60;
+  startT(id, dur);
+}
+function resetWithDuration(id) {
+  var durInput = document.getElementById('dur'+id);
+  var dur = parseInt(durInput.value, 10);
+  if (isNaN(dur) || dur < 1) dur = 60;
+  resetT(id, dur);
+}
+
+/* ═══════════ PALCO ═══════════ */
+function palco(id){
+  var el=document.getElementById(id);if(!el)return;
+  var box=el.closest('.rig')||el;
+  box.classList.toggle('palco');
+  document.body.style.overflow=box.classList.contains('palco')?'hidden':'';
+}
+function sairPalco(){
+  document.querySelectorAll('.rig.palco').forEach(function(r){r.classList.remove('palco');});
+  document.body.style.overflow='';
+}
+
+/* ═══════════ RELÓGIO DA SESSÃO ═══════════ */
+var SESS={el:0,iv:null};
+function paintSess(){
+  var c=document.getElementById('sessClock');
+  c.textContent=fmtT(SESS.el);
+  c.classList.toggle('over',SESS.el>90*60);
+}
+function toggleSess(){
+  var b=document.getElementById('sessBtn');
+  if(SESS.iv){clearInterval(SESS.iv);SESS.iv=null;b.textContent='▶ sessão';b.classList.remove('on');return;}
+  SESS.iv=setInterval(function(){SESS.el++;paintSess();},1000);
+  b.textContent='⏸ sessão';b.classList.add('on');
+}
+function resetSess(){
+  if(SESS.iv){clearInterval(SESS.iv);SESS.iv=null;}
+  SESS.el=0;paintSess();
+  var b=document.getElementById('sessBtn');b.textContent='▶ sessão';b.classList.remove('on');
+}
+
+/* ═══════════ MODO PROJEÇÃO ═══════════ */
+function toggleF(){
+  var on=document.body.classList.toggle('fmode');
+  document.getElementById('fkey').textContent=on?'ocultar notas':'notas do formador';
+  if(!on&&(cur===0||cur===7))go(1);
+}
+
+/* ═══════════ GUARDA CONTRA RECARGA ═══════════ */
+window.addEventListener('beforeunload',function(e){
+  var tocado=(typeof REAL==='object'&&REAL&&Object.keys(REAL).length)||SESS.el>0;
+  if(!tocado)return;
+  e.preventDefault();e.returnValue='';
+});
+
+/* ═══════════ HELPERS ═══════════ */
+function pnum(s){
+  if(s===null||s===undefined)return null;
+  var t=String(s).trim().replace(/\s/g,'');
+  if(t==='')return null;
+  if(t.indexOf(',')>=0){                      /* vírgula manda: ponto é milhar */
+    t=t.replace(/\./g,'').replace(',','.');
+  }else{
+    var parts=t.split('.');
+    /* "2.5" ou "117.65" => decimal · "117.600" ou "1.200.000" => milhar */
+    if(parts.length===2&&parts[1].length!==3){ /* decimal, mantém */ }
+    else if(parts.length>1){t=parts.join('');}
+  }
+  if(isNaN(Number(t)))return null;
+  return parseFloat(t);
+}
+function br(n,d){
+  if(n===null||n===undefined||!isFinite(n))return '—';
+  var s=(d===0?Math.round(n):n.toFixed(d)).toString().replace('.',',');
+  var p=s.split(',');
+  if(p[0].replace('-','').length>3)p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');
+  return p[1]?p[0]+','+p[1]:p[0];
+}
+function smart(n){
+  if(n===null||!isFinite(n))return '—';
+  var a=Math.abs(n);
+  if(a>=1000)return br(n,0);
+  if(a>=100)return br(n,1);
+  return br(n,2);
+}
+function esc(s){return String(s).replace(/[<>&]/g,'');}
+
+/* faixas de erro */
+function band(e){
+  if(e<=5)return {k:1,t:'NA MOSCA'};
+  if(e<=15)return {k:2,t:'excelente'};
+  if(e<=40)return {k:3,t:'bom'};
+  if(e<=100)return {k:4,t:'fora'};
+  return {k:5,t:'ordem de grandeza'};
+}
+function factorTxt(est,real){
+  if(!real)return '';
+  var f=est/real;
+  if(f>=2)return ' · '+br(f,1)+'× maior';
+  if(f<=0.5&&f>0)return ' · '+br(1/f,1)+'× menor';
+  return '';
+}
+
+/* ═══════════ EQUIPES ═══════════ */
+var COLORS=['#E8B84B','#3FBF7F','#5BA8E0','#E07A5B','#B48CE0','#E85B8A'];
+var DEFNAMES=['Palmo','Passo','Côvado','Braça','Légua','Polegada'];
+var NT=6;
+var TEAMS=[];
+function initTeams(){
+  TEAMS=[];
+  for(var i=0;i<6;i++)TEAMS.push({n:DEFNAMES[i],c:COLORS[i],palmo:null,passo:null,env:null});
+}
+initTeams();
+function activeTeams(){return TEAMS.slice(0,NT);}
+function renderTeamEditor(){
+  var box=document.getElementById('teamEditor');box.innerHTML='';
+  activeTeams().forEach(function(t,i){
+    var d=document.createElement('div');d.className='crt';
+    d.innerHTML='<div class="crt-f" style="align-items:center">'
+      +'<span class="dotc" style="background:'+t.c+'"></span>'
+      +'<input class="crt-obj" id="tn'+i+'" value="'+esc(t.n)+'" placeholder="nome da equipe">'
+      +'<span style="font-family:var(--f-mono);font-size:10.5px;color:#6F877C;align-self:center">equipe '+(i+1)+'</span></div>';
+    box.appendChild(d);
+    d.querySelector('#tn'+i).addEventListener('input',function(ev){
+      TEAMS[i].n=ev.target.value||DEFNAMES[i];
+      renderAll();renderPrint();
+    });
+  });
+}
+document.getElementById('ntSel').addEventListener('change',function(ev){
+  NT=+ev.target.value;renderTeamEditor();renderAll();
+});
+
+/* ═══════════ PROVAS ═══════════ */
+var PROVAS=[
+ {id:'p1',fase:'g',idx:0,tag:'Fase de grupos · Prova 1',nome:'A Superfície',
+  q:'Qual é a área desta superfície, em metros quadrados?',
+  obj:'quadro branco da sala (ou a porta, ou a janela)',
+  no:'trena, régua, fita métrica',
+  yes:'uma folha A4 por equipe — e só',
+  un:'m²',min:5,faixa:[0.5,8],faixaTxt:'quadro/porta/janela típicos: 0,5 a 8 m²',
+  dica:'A folha A4 tem 623,7 cm². Dezesseis folhas cobrem quase exatamente 1 m² — o erro é de 0,2%.',
+  armadilha:'Quem chega ao total em cm² e divide por 100 erra por um fator de 100. De cm² para m² são <b>duas casas de área</b>: divide-se por 10 000.',
+  pergunta:'Peça à equipe com <b>maior</b> erro que leia o método dela em uma frase, e depois à equipe com <b>menor</b> erro. Quase sempre a diferença não é a conta: é a unidade em que pararam.',
+  estrategia:'Ladrilhar — cobrir a superfície com uma unidade conhecida e contar.'},
+
+ {id:'p2',fase:'g',idx:1,tag:'Fase de grupos · Prova 2',nome:'O Recipiente',
+  q:'Quantos mililitros cabem neste recipiente, até a borda?',
+  obj:'balde, vaso, lixeira ou caneca grande — opaco e não graduado',
+  no:'qualquer recipiente graduado · encher com o que quer que seja',
+  yes:'régua de 30 cm',
+  un:'mL',min:6,faixa:[300,25000],faixaTxt:'caneca ≈ 300 mL · balde ≈ 10 000 mL · lixeira ≈ 20 000 mL',
+  dica:'Medir as dimensões e calcular. A ponte que resolve tudo: <b>1 cm³ = 1 mL</b>.',
+  armadilha:'Tratar um cilindro como se fosse um bloco retangular <b>superestima em 27%</b> — o cilindro ocupa π/4 ≈ 0,785 do bloco que o envolve. Quem faz d × d × h e depois <b>tira um quarto</b> fica a 4,5% do valor certo: já é “na mosca”.',
+  pergunta:'Pergunte quem <b>desenhou</b> o recipiente antes de medir. Costuma ser quem venceu. Desenhar é o passo que os alunos pulam.',
+  estrategia:'Calcular pela forma — medir dimensões, aplicar a fórmula, atravessar a ponte para a capacidade.'},
+
+ {id:'p3',fase:'g',idx:2,tag:'Fase de grupos · Prova 3',nome:'A Travessia',
+  q:'Qual é o comprimento desta sala, de parede a parede, em metros?',
+  obj:'a sala (marque a linha de partida com fita crepe)',
+  no:'trena, régua, barbante',
+  yes:'o passo calibrado da equipe',
+  un:'m',min:4,faixa:[4,20],faixaTxt:'sala de aula comum: 6 a 10 m',
+  dica:'Atravessar contando passos e multiplicar pelo passo calibrado na etapa anterior.',
+  armadilha:'A tentação de "melhorar" o passo na hora da prova. Passo de desfile mede outra coisa — <b>a calibração só vale se o gesto for o mesmo</b>.',
+  pergunta:'Compare o erro desta prova com o palmo/passo que a equipe registrou na calibração. <b>Erro sistemático tem assinatura</b>: quem calibrou 5% a mais erra 5% a mais aqui. Mostre isso na tabela.',
+  estrategia:'Repetir a âncora — contar quantas vezes a unidade do corpo cabe no todo.'},
+
+ {id:'s1',fase:'s',idx:0,tag:'Semifinal 1',nome:'O Novelo',
+  q:'Que comprimento tem este barbante, em centímetros?',
+  obj:'barbante enrolado um número exato de voltas numa garrafa ou lata',
+  no:'desenrolar, esticar, encostar trena no barbante',
+  yes:'régua para medir o cilindro · contar as voltas',
+  un:'cm',min:5,faixa:[50,2000],faixaTxt:'20 voltas numa garrafa de 8 cm de diâmetro ≈ 500 cm',
+  dica:'Uma volta é a <b>circunferência</b>: C = π × d. O total é o número de voltas vezes C.',
+  armadilha:'Usar o <b>diâmetro</b> no lugar da circunferência: o resultado sai <b>68% abaixo</b> do real (falta o fator π). É primo do erro de quem escreve A = πd² em vez de A = πr² — nos dois casos a confusão é entre <b>diâmetro e raio</b>, e o preço é um fator inteiro, não um arredondamento.',
+  pergunta:'Pergunte quem <b>contou as voltas duas vezes</b>. Contar errado as voltas custa menos que trocar d por C — e isso é uma lição sobre onde vale gastar cuidado.',
+  estrategia:'Multiplicar a repetição — medir uma volta e contar quantas voltas há.'},
+
+ {id:'s2',fase:'s',idx:1,tag:'Semifinal 2',nome:'O Que Ainda Cabe',
+  q:'Quanta água ainda cabe neste recipiente, em mililitros?',
+  obj:'recipiente com objetos dentro (pedras, papel amassado, cilindros de papel)',
+  no:'recipiente graduado · tirar os objetos · derramar nada',
+  yes:'régua de 30 cm',
+  un:'mL',min:5,faixa:[200,20000],faixaTxt:'depende do quanto você ocupou — meça, não estime',
+  dica:'Capacidade total <b>menos</b> o volume que já está ocupado. Duas estimativas, uma subtração.',
+  armadilha:'Estimar só a capacidade e esquecer de descontar — ou descontar o volume errado, porque objetos irregulares enganam muito.',
+  pergunta:'Esta prova tem <b>dois erros que podem se cancelar</b>. Pergunte à dupla se ela chegou perto por acerto ou por sorte — e mostre que só o registro do método distingue os dois casos.',
+  estrategia:'Subtrair o ocupado — capacidade é o que ainda cabe, não o que já está dentro.'},
+
+ {id:'f1',fase:'f',idx:0,tag:'🏆 A GRANDE FINAL',nome:'O Ar da Sala',
+  q:'Quantos litros de ar cabem nesta sala?',
+  obj:'a sala inteira — comprimento, largura e pé-direito',
+  no:'trena, régua, fita métrica — nada graduado',
+  yes:'o corpo calibrado (passo, palmo, envergadura), a porta como referência, e tudo o que aprenderam nos dois dias',
+  un:'L',min:6,faixa:[30000,400000],faixaTxt:'sala de 7 × 6 × 2,8 m ≈ 117 600 L — se seu número não tem seis dígitos, reveja a conversão',
+  dica:'Três dimensões, uma multiplicação e uma conversão. A altura é a parte difícil: a <b>porta tem cerca de 2,10 m</b> e é a melhor referência da sala.',
+  armadilha:'Parar em metros cúbicos. De m³ para litros multiplica-se por <b>1000</b> — quem esquece erra por um fator de mil, e o número fica absurdamente pequeno.',
+  pergunta:'Antes de revelar, pergunte à sala: <b>“a resposta tem quantos dígitos?”</b> Deixe votar. É a pergunta de ordem de grandeza mais barata que existe, e cabe em qualquer aula de segunda-feira.',
+  estrategia:'Compor dimensões — comprimento × largura × altura, e converter até a unidade pedida.'}
+];
+var REAL={},EST={},CROWD={},DONE={};
+PROVAS.forEach(function(p){EST[p.id]={};CROWD[p.id]={};});
+
+/* ─── CARTÓRIO ─── */
+function renderCartorio(){
+  var box=document.getElementById('cartorio');box.innerHTML='';
+  PROVAS.forEach(function(p){
+    var d=document.createElement('div');d.className='crt';
+    d.innerHTML='<div class="crt-h"><span class="crt-n">'+p.tag+' · '+p.nome+'</span><span class="crt-u">valor real em '+p.un+'</span></div>'
+      +'<div class="crt-f">'
+      +'<input class="crt-obj" id="obj_'+p.id+'" placeholder="objeto: '+p.obj+'">'
+      +'<input class="crt-val" id="m1_'+p.id+'" placeholder="medida 1" inputmode="decimal" style="width:96px">'
+      +'<input class="crt-val" id="m2_'+p.id+'" placeholder="medida 2" inputmode="decimal" style="width:96px">'
+      +'<input class="crt-val" id="real_'+p.id+'" placeholder="oficial" inputmode="decimal"></div>'
+      +'<div style="font-size:10.5px;color:#6F877C;margin-top:7px;line-height:1.5" id="chk_'+p.id+'">'+(p.faixaTxt||'')+'</div>';
+    box.appendChild(d);
+    var upd=function(){
+      var a=pnum(document.getElementById('m1_'+p.id).value);
+      var b=pnum(document.getElementById('m2_'+p.id).value);
+      var rf=document.getElementById('real_'+p.id);
+      var msg=[];
+      if(a!==null&&b!==null){
+        var med=(a+b)/2;
+        var div=Math.abs(a-b)/((a+b)/2)*100;
+        rf.value=String(smart(med));
+        REAL[p.id]=med;
+        var f=document.getElementById('rv_'+p.id);if(f)f.value=rf.value;
+        if(div>2)msg.push('<span style="color:var(--red-hi)">as duas medidas discordam em '+br(div,1)+'% — meça uma terceira</span>');
+        else msg.push('<span style="color:var(--field-hi)">medidas coerentes ('+br(div,1)+'% de diferença)</span>');
+      }
+      var v=REAL[p.id];
+      if(v!==null&&v!==undefined&&p.faixa){
+        if(v<p.faixa[0]||v>p.faixa[1])
+          msg.push('<span style="color:var(--red-hi)">⚠ fora da faixa esperada ('+smart(p.faixa[0])+' a '+smart(p.faixa[1])+' '+p.un+') — confira a unidade</span>');
+      }
+      if(p.faixaTxt)msg.push(p.faixaTxt);
+      document.getElementById('chk_'+p.id).innerHTML=msg.join('<br>');
+    };
+    d.querySelector('#m1_'+p.id).addEventListener('input',upd);
+    d.querySelector('#m2_'+p.id).addEventListener('input',upd);
+    d.querySelector('#real_'+p.id).addEventListener('input',function(ev){
+      REAL[p.id]=pnum(ev.target.value);
+      var f=document.getElementById('rv_'+p.id);
+      if(f)f.value=ev.target.value;
+      upd();
+    });
+    d.querySelector('#obj_'+p.id).addEventListener('input',function(ev){
+      p.objUser=ev.target.value;
+      var t=document.getElementById('objlbl_'+p.id);
+      if(t)t.textContent=ev.target.value||p.obj;
+      renderPrint();
+    });
+  });
+}
+
+/* ─── ESTADO: COPIAR / COLAR / RELATÓRIO ─── */
+function stateMsg(s){var e=document.getElementById('stateMsg');if(e)e.innerHTML=s;}
+function snapshot(){
+  return {NT:NT,teams:activeTeams().map(function(t){return {n:t.n,palmo:t.palmo,passo:t.passo,env:t.env};}),
+          REAL:REAL,EST:EST,CROWD:CROWD,
+          obj:PROVAS.map(function(p){return p.objUser||'';})};
+}
+function copyState(){
+  var txt=JSON.stringify(snapshot());
+  var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');stateMsg('estado copiado — cole num bloco de notas agora');}
+  catch(e){stateMsg('não consegui copiar; selecione manualmente: '+txt);}
+  document.body.removeChild(ta);
+}
+function pasteState(){
+  var txt=window.prompt('Cole aqui o estado salvo:');
+  if(!txt)return;
+  try{
+    var s=JSON.parse(txt);
+    NT=s.NT||6;document.getElementById('ntSel').value=String(NT);
+    (s.teams||[]).forEach(function(t,i){if(TEAMS[i]){TEAMS[i].n=t.n;TEAMS[i].palmo=t.palmo;TEAMS[i].passo=t.passo;TEAMS[i].env=t.env;}});
+    REAL=s.REAL||{};EST=s.EST||{};CROWD=s.CROWD||{};
+    (s.obj||[]).forEach(function(o,i){if(PROVAS[i])PROVAS[i].objUser=o;});
+    renderTeamEditor();renderCartorio();renderAll();
+    PROVAS.forEach(function(p){
+      var r=document.getElementById('real_'+p.id);
+      if(r&&REAL[p.id]!==undefined&&REAL[p.id]!==null)r.value=smart(REAL[p.id]);
+    });
+    stateMsg('estado restaurado');
+  }catch(e){stateMsg('<span style="color:var(--red-hi)">não consegui ler esse texto</span>');}
+}
+function copyReport(){
+  var L=['COPA DAS MEDIDAS — relatório da sessão',''];
+  PROVAS.forEach(function(p){
+    var rows=DONE[p.id];
+    L.push(p.tag+' · '+p.nome+' — objeto: '+(p.objUser||p.obj));
+    L.push('  valor real: '+(REAL[p.id]!==undefined&&REAL[p.id]!==null?smart(REAL[p.id])+' '+p.un:'—'));
+    if(rows&&rows.length)rows.forEach(function(r){L.push('  '+r.pos+'º '+r.t.n+' — estimou '+smart(r.est)+' '+p.un+' — erro '+br(r.err,1)+'% — '+band(r.err).t);});
+    else L.push('  (não revelada)');
+    L.push('');
+  });
+  L.push('CLASSIFICAÇÃO DA FASE DE GRUPOS');
+  standings().forEach(function(a,k){L.push('  '+(k+1)+'º '+a.t.n+' — '+a.pts+' pts — erro médio '+(a.mErr===null?'—':br(a.mErr,1)+'%'));});
+  var txt=L.join('\n');
+  var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');stateMsg('relatório copiado — cole no registro da formação');}
+  catch(e){stateMsg('copie manualmente do console');console.log(txt);}
+  document.body.removeChild(ta);
+}
+
+/* ─── CALIBRAÇÃO ─── */
+function renderCalib(){
+  var box=document.getElementById('calibList');box.innerHTML='';
+  var head=document.createElement('div');
+  head.className='crow';
+  head.style.cssText='background:transparent;border:none;padding-bottom:0';
+  var hs='font-family:var(--f-body);font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#7A938A';
+  head.innerHTML='<span></span>'
+    +'<span style="'+hs+'">equipe</span>'
+    +'<span style="'+hs+';text-align:center">palmo (cm)</span>'
+    +'<span style="'+hs+';text-align:center">passo (cm)</span>'
+    +'<span style="'+hs+';text-align:center">enverg. (cm)</span>'
+    +'<span style="'+hs+';text-align:right">com isso, a equipe mede</span>';
+  box.appendChild(head);
+  activeTeams().forEach(function(t,i){
+    var d=document.createElement('div');d.className='crow';
+    d.innerHTML='<span class="dotc" style="background:'+t.c+'"></span>'
+      +'<span class="ename">'+esc(t.n)+'</span>'
+      +'<input class="einput" id="cal_pa'+i+'" placeholder="20" inputmode="decimal">'
+      +'<input class="einput" id="cal_ps'+i+'" placeholder="68" inputmode="decimal">'
+      +'<input class="einput" id="cal_en'+i+'" placeholder="172" inputmode="decimal">'
+      +'<span class="cconv" id="cal_out'+i+'">—</span>';
+    box.appendChild(d);
+    var upd=function(){
+      var pa=pnum(document.getElementById('cal_pa'+i).value);
+      var ps=pnum(document.getElementById('cal_ps'+i).value);
+      var en=pnum(document.getElementById('cal_en'+i).value);
+      TEAMS[i].palmo=pa;TEAMS[i].passo=ps;TEAMS[i].env=en;
+      var out=[],alert='';
+      if(pa)out.push('5 palmos = <b>'+br(pa*5,0)+' cm</b>');
+      if(ps)out.push('10 passos = <b>'+br(ps*10/100,2)+' m</b>');
+      if(en)out.push('1 envergadura = <b>'+br(en/100,2)+' m</b>');
+      if(pa&&(pa<15||pa>26))alert='<span style="color:var(--red-hi)">palmo fora do esperado (18–22 cm) — remeça</span>';
+      if(ps&&(ps<50||ps>95))alert='<span style="color:var(--red-hi)">passo fora do esperado (60–80 cm) — passo de desfile?</span>';
+      document.getElementById('cal_out'+i).innerHTML=(alert?alert+'<br>':'')+(out.length?out.join(' &nbsp;·&nbsp; '):'—');
+      renderPrint();
+    };
+    d.querySelector('#cal_pa'+i).addEventListener('input',upd);
+    d.querySelector('#cal_ps'+i).addEventListener('input',upd);
+    d.querySelector('#cal_en'+i).addEventListener('input',upd);
+  });
+}
+
+/* ─── PAINEL DE PROVA (grupos) ─── */
+function provaHTML(p){
+  var tid=(p.fase==='g'?10+p.idx:p.fase==='s'?20+p.idx:30);
+  return ''
+  +'<div class="pcard">'
+  +'<div class="pc-eyebrow">'+p.tag+'</div>'
+  +'<div class="pc-t">'+p.nome+'</div>'
+  +'<div class="pc-q">'+p.q+'</div>'
+  +'<div class="pc-rules">'
+  +'<div class="pc-r no"><b>🚫 proibido</b>'+p.no+'</div>'
+  +'<div class="pc-r yes"><b>✅ permitido</b>'+p.yes+'</div></div>'
+  +'<div class="pc-unit">resposta em '+p.un+'</div>'
+  +'<div style="font-size:11.5px;color:#7A938A;margin-top:11px">objeto: <span id="objlbl_'+p.id+'">'+p.obj+'</span></div>'
+  +'</div>'
+  +'<div class="tw"><div class="tm" id="t'+tid+'">'+fmtT(p.min*60)+'</div>'
+  +'<div class="tl" id="t'+tid+'l">pronto</div>'
+  +'<div class="tbs">'
+  +'<input type="number" id="dur'+tid+'" value="'+(p.min*60)+'" style="width:60px;background:transparent;border:1px solid var(--h-line);border-radius:4px;padding:4px 6px;color:#fff;font-family:var(--f-mono);font-size:12px;text-align:center">'
+  +'<button class="btn btn-a" onclick="startWithDuration('+tid+')">▶</button>'
+  +'<button class="btn btn-g" onclick="stopT('+tid+')">⏸</button>'
+  +'<button class="btn btn-g" onclick="resetWithDuration('+tid+')">↺</button></div></div>'
+  +'<div class="rig" id="rig_'+p.id+'">'
+  +'<div class="rig-h">ESTIMATIVAS · '+p.nome+' <span id="st_'+p.id+'">aguardando</span>'
+  +'<button class="fs-btn" onclick="palco(\'rig_'+p.id+'\')">⛶</button></div>'
+  +'<div class="egrid" id="eg_'+p.id+'"></div>'
+  +'<div class="realbox">'
+  +'<div class="fld"><label>valor real ('+p.un+')</label><input id="rv_'+p.id+'" inputmode="decimal" placeholder="—"></div>'
+  +'<button class="btn btn-gold" onclick="reveal(\''+p.id+'\')">🏁 revelar</button>'
+  +'<button class="btn btn-g" onclick="clearProva(\''+p.id+'\')">↺</button></div>'
+  +'<div class="bigreal" id="brx_'+p.id+'" style="display:none">'
+  +'<div class="bigreal-l">valor real</div><div class="bigreal-v" id="brv_'+p.id+'">—</div></div>'
+  +'</div>'
+  +'<details class="fold"><summary>carta do formador · '+p.nome+' — não projete</summary><div class="fold-in">'
+  +'<div class="inst"><div class="inst-t">A estratégia que a prova cobra</div><p>'+p.estrategia+'</p>'
+  +'<p style="margin-top:7px"><b>Se travarem, diga só isto:</b> '+p.dica+'</p></div>'
+  +'<div class="warn"><b>A armadilha desta prova.</b> '+p.armadilha+'</div>'
+  +'<div class="ok"><b>Depois de revelar, pergunte:</b> '+(p.pergunta||'peça a duas equipes que leiam o método em uma frase.')+'</div>'
+  +'</div></details>';
+}
+function renderProvaPanels(){
+  PROVAS.forEach(function(p){
+    var host=p.fase==='g'?document.getElementById('g'+p.idx)
+            :p.fase==='s'?document.getElementById('s'+p.idx)
+            :document.getElementById('f0');
+    if(!host)return;
+    host.innerHTML=provaHTML(p);
+    var rv=document.getElementById('rv_'+p.id);
+    rv.addEventListener('input',function(ev){REAL[p.id]=pnum(ev.target.value);});
+    if(REAL[p.id]!==null&&REAL[p.id]!==undefined)rv.value=String(REAL[p.id]).replace('.',',');
+    renderEstGrid(p);
+  });
+}
+function renderEstGrid(p){
+  var box=document.getElementById('eg_'+p.id);if(!box)return;
+  box.innerHTML='';
+  var list=(p.fase==='g')?activeTeams().map(function(t,i){return {t:t,i:i};}):duelPair(p.id);
+  list.forEach(function(o){
+    var d=document.createElement('div');d.className='erow';d.id='er_'+p.id+'_'+o.i;
+    d.innerHTML='<span class="dotc" style="background:'+o.t.c+';margin:0"></span>'
+      +'<span class="ename">'+esc(o.t.n)+'</span>'
+      +'<input class="einput" id="ei_'+p.id+'_'+o.i+'" inputmode="decimal" placeholder="—">'
+      +'<span class="eres" id="es_'+p.id+'_'+o.i+'"></span>';
+    box.appendChild(d);
+    var inp=d.querySelector('#ei_'+p.id+'_'+o.i);
+    if(EST[p.id][o.i]!==undefined&&EST[p.id][o.i]!==null)inp.value=String(EST[p.id][o.i]).replace('.',',');
+    inp.addEventListener('input',function(ev){EST[p.id][o.i]=pnum(ev.target.value);});
+  });
+}
+function clearProva(pid){
+  EST[pid]={};DONE[pid]=false;
+  var p=findP(pid);renderEstGrid(p);
+  var b=document.getElementById('brx_'+pid);if(b){b.style.display='none';b.classList.remove('show');}
+  var s=document.getElementById('st_'+pid);if(s)s.textContent='aguardando';
+  drawStandings();
+}
+function findP(id){for(var i=0;i<PROVAS.length;i++)if(PROVAS[i].id===id)return PROVAS[i];return null;}
+
+/* ─── REVELAÇÃO ─── */
+function reveal(pid){
+  var p=findP(pid);
+  var real=REAL[pid];
+  if(real===null||real===undefined||real<=0){
+    var s0=document.getElementById('st_'+pid);
+    if(s0)s0.textContent='informe o valor real primeiro';
+    return;
+  }
+  var rows=[];
+  var list=(p.fase==='g')?activeTeams().map(function(t,i){return {t:t,i:i};}):duelPair(pid);
+  list.forEach(function(o){
+    var e=EST[pid][o.i];
+    if(e===null||e===undefined)return;
+    rows.push({i:o.i,t:o.t,est:e,err:Math.abs(e-real)/real*100});
+  });
+  rows.sort(function(a,b){return a.err-b.err;});
+  var PTS=[10,7,5,3,2,1];
+  rows.forEach(function(r,k){
+    r.pos=k+1;
+    r.pts=(p.fase==='g')?((PTS[k]||0)+(r.err<=5?3:0)):0;
+  });
+  list.forEach(function(o){
+    var row=document.getElementById('er_'+pid+'_'+o.i);
+    var out=document.getElementById('es_'+pid+'_'+o.i);
+    if(!row||!out)return;
+    row.className='erow';
+    var r=null;
+    for(var k=0;k<rows.length;k++)if(rows[k].i===o.i)r=rows[k];
+    if(!r){out.innerHTML='<span style="color:#5D746A">sem estimativa</span>';return;}
+    var bd=band(r.err);
+    row.classList.add('b'+bd.k);
+    out.innerHTML='<span class="epos">'+r.pos+'º</span> &nbsp; <b>'+br(r.err,1)+'%</b> '
+      +'<span style="font-size:10px">'+bd.t+factorTxt(r.est,real)+'</span>'
+      +(p.fase==='g'?' &nbsp;<span style="color:var(--gold)">+'+r.pts+'</span>':'');
+  });
+  var bx=document.getElementById('brx_'+pid);
+  document.getElementById('brv_'+pid).textContent=smart(real)+' '+p.un;
+  bx.style.display='';bx.classList.remove('show');void bx.offsetWidth;bx.classList.add('show');
+  var st=document.getElementById('st_'+pid);
+  if(st)st.textContent=rows.length?('vencedora: '+rows[0].t.n+' · erro '+br(rows[0].err,1)+'%'):'nenhuma estimativa';
+  DONE[pid]=rows;
+  if(p.fase==='g'){drawStandings();}
+  if(p.fase==='s'){paintBracketBoxes();renderEstGrid(findP('f1'));renderCrowd();}
+  if(p.fase==='f'){paintBracketBoxes();fillPodium();}
+}
+
+/* ─── CLASSIFICAÇÃO ─── */
+function standings(){
+  var acc=activeTeams().map(function(t,i){return {i:i,t:t,pts:0,errs:[],done:0};});
+  PROVAS.filter(function(p){return p.fase==='g';}).forEach(function(p){
+    var rows=DONE[p.id];
+    if(!rows||!rows.length)return;
+    rows.forEach(function(r){
+      if(!acc[r.i])return;
+      acc[r.i].pts+=r.pts;acc[r.i].errs.push(r.err);acc[r.i].done++;
+    });
+  });
+  acc.forEach(function(a){
+    a.mErr=a.errs.length?a.errs.reduce(function(s,x){return s+x;},0)/a.errs.length:null;
+  });
+  acc.sort(function(a,b){
+    if(b.pts!==a.pts)return b.pts-a.pts;
+    var ae=a.mErr===null?9e9:a.mErr,be=b.mErr===null?9e9:b.mErr;
+    return ae-be;
+  });
+  return acc;
+}
+function drawStandings(){
+  var acc=standings();
+  var t=document.getElementById('standTbl');
+  var html='<tr><th></th><th>Equipe</th><th>Provas</th><th>Erro médio</th><th>Pontos</th></tr>';
+  acc.forEach(function(a,k){
+    html+='<tr class="'+(k<4?'q':'')+'"><td class="rk">'+(k+1)+'</td>'
+      +'<td class="nm"><span class="dotc" style="background:'+a.t.c+'"></span>'+esc(a.t.n)+'</td>'
+      +'<td>'+a.done+'</td>'
+      +'<td>'+(a.mErr===null?'—':br(a.mErr,1)+'%')+'</td>'
+      +'<td class="pt">'+a.pts+'</td></tr>';
+  });
+  t.innerHTML=html;
+  var nd=PROVAS.filter(function(p){return p.fase==='g'&&DONE[p.id];}).length;
+  document.getElementById('standTip').textContent=nd===0?'as provas ainda não foram reveladas'
+    :nd+' de 3 provas reveladas · as 4 primeiras (faixa verde) vão ao mata-mata';
+}
+
+/* ─── CHAVEAMENTO ─── */
+var BR={s1:[null,null],s2:[null,null],f:[null,null]};
+function seedBracket(){
+  var acc=standings();
+  var n=Math.min(4,acc.length);
+  var q=acc.slice(0,n).map(function(a){return a.i;});
+  while(q.length<4)q.push(null);
+  BR.s1=[q[0],q[3]];
+  BR.s2=[q[1],q[2]];
+  paintBracket();
+}
+function tName(i){return (i===null||i===undefined||!TEAMS[i])?'—':TEAMS[i].n;}
+function duelPair(pid){
+  var key=pid==='s1'?'s1':pid==='s2'?'s2':'f';
+  return BR[key].filter(function(i){return i!==null&&i!==undefined;})
+    .map(function(i){return {t:TEAMS[i],i:i};});
+}
+function winnerOf(pid){
+  var rows=DONE[pid];
+  if(!rows||!rows.length)return null;
+  return rows[0].i;
+}
+function paintBracketBoxes(){
+  var map=[['s1a',BR.s1[0],'s1'],['s1b',BR.s1[1],'s1'],['s2a',BR.s2[0],'s2'],['s2b',BR.s2[1],'s2']];
+  map.forEach(function(m){
+    var el=document.getElementById(m[0]);if(!el)return;
+    el.children[1].textContent=tName(m[1]);
+    el.classList.remove('win','lose');
+    var w=winnerOf(m[2]);
+    if(w!==null&&m[1]!==null&&m[1]!==undefined)el.classList.add(w===m[1]?'win':'lose');
+  });
+  var w1=winnerOf('s1'),w2=winnerOf('s2');
+  BR.f=[w1!==null?w1:null,w2!==null?w2:null];
+  var fa=document.getElementById('fa'),fb=document.getElementById('fb');
+  fa.children[1].textContent=tName(BR.f[0]);
+  fb.children[1].textContent=tName(BR.f[1]);
+  fa.classList.remove('win','lose');fb.classList.remove('win','lose');
+  var wf=winnerOf('f1');
+  if(wf!==null){
+    fa.classList.add(wf===BR.f[0]?'win':'lose');
+    fb.classList.add(wf===BR.f[1]?'win':'lose');
+  }
+}
+function paintBracket(){
+  paintBracketBoxes();
+  renderEstGrid(findP('s1'));renderEstGrid(findP('s2'));renderEstGrid(findP('f1'));
+  renderCrowd();
+}
+
+/* ─── TORCIDA ─── */
+function renderCrowd(){
+  var host=document.getElementById('f0');if(!host)return;
+  var old=document.getElementById('crowdBox');
+  if(old)old.remove();
+  var fin=BR.f.filter(function(i){return i!==null&&i!==undefined;});
+  var others=activeTeams().map(function(t,i){return i;}).filter(function(i){return fin.indexOf(i)<0;});
+  var wrap=document.createElement('div');wrap.className='rig';wrap.id='crowdBox';
+  var inner='<div class="rig-h">PALPITE DA TORCIDA <span>as equipes eliminadas também estimam</span></div><div class="crowd">';
+  if(!others.length){inner+='<div style="grid-column:1/-1;text-align:center;color:#5D746A;font-size:12px;padding:10px">nenhuma equipe na torcida</div>';}
+  others.forEach(function(i){
+    inner+='<div class="cw"><div class="cw-n"><span class="dotc" style="background:'+TEAMS[i].c+'"></span>'+esc(TEAMS[i].n)+'</div>'
+      +'<input id="cw_'+i+'" inputmode="decimal" placeholder="—"></div>';
+  });
+  inner+='</div><div class="rig-tip">registre antes da revelação — depois não vale</div>';
+  wrap.innerHTML=inner;
+  host.appendChild(wrap);
+  others.forEach(function(i){
+    var el=document.getElementById('cw_'+i);
+    if(CROWD.f1[i]!==undefined&&CROWD.f1[i]!==null)el.value=String(CROWD.f1[i]).replace('.',',');
+    el.addEventListener('input',function(ev){CROWD.f1[i]=pnum(ev.target.value);});
+  });
+}
+function median(arr){
+  var a=arr.slice().sort(function(x,y){return x-y;});
+  var n=a.length;
+  if(!n)return null;
+  return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2;
+}
+function medianReveal(){
+  var real=REAL.f1;
+  var out=document.getElementById('medOut');
+  if(real===null||real===undefined||real<=0){
+    out.innerHTML='<span style="color:var(--red-hi)">informe o valor real da final primeiro</span>';return;
+  }
+  var all=[];
+  BR.f.forEach(function(i){
+    if(i===null||i===undefined)return;
+    var v=EST.f1[i];
+    if(v!==null&&v!==undefined)all.push({i:i,v:v,fin:true});
+  });
+  activeTeams().forEach(function(t,i){
+    var v=CROWD.f1[i];
+    if(v!==null&&v!==undefined)all.push({i:i,v:v,fin:false});
+  });
+  if(all.length<3){out.innerHTML='<span style="color:var(--red-hi)">registre pelo menos três palpites</span>';return;}
+  var med=median(all.map(function(o){return o.v;}));
+  var eM=Math.abs(med-real)/real*100;
+  var errs=all.map(function(o){return {n:TEAMS[o.i].n,e:Math.abs(o.v-real)/real*100};});
+  var better=errs.filter(function(o){return o.e<eM;}).length;
+  var rank=better+1;
+  var pior=errs.filter(function(o){return o.e>eM;}).length;
+  var bd=band(eM);
+  out.innerHTML=
+     '<div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7A938A">a mediana de '+all.length+' palpites</div>'
+    +'<div style="font-family:var(--f-mono);font-size:clamp(26px,6vw,44px);font-weight:700;color:var(--gold);line-height:1.15;margin:6px 0">'+smart(med)+' L</div>'
+    +'<div style="color:#C7D9D0;font-size:14px">erro de <b style="color:var(--gold)">'+br(eM,1)+'%</b> · '+bd.t+'</div>'
+    +'<div style="margin-top:9px;color:#8FA79B">ficaria em <b style="color:#fff">'+rank+'º</b> lugar entre os '+all.length+' palpites — '
+    +'<b style="color:var(--field-hi)">melhor que '+pior+'</b> de '+all.length+'</div>';
+  document.getElementById('medNote').style.display='';
+}
+
+/* ─── PÓDIO ─── */
+function fillPodium(){
+  var champ=winnerOf('f1');
+  var vice=null;
+  if(champ!==null&&BR.f){
+    BR.f.forEach(function(i){if(i!==null&&i!==undefined&&i!==champ)vice=i;});
+  }
+  var acc=standings();
+  var third=null;
+  for(var k=0;k<acc.length;k++){
+    if(acc[k].i!==champ&&acc[k].i!==vice){third=acc[k].i;break;}
+  }
+  document.getElementById('pd1').textContent=champ!==null?tName(champ):'—';
+  document.getElementById('pd2').textContent=vice!==null?tName(vice):'—';
+  document.getElementById('pd3').textContent=third!==null?tName(third):'—';
+}
+
+/* ─── SEIS ESTRATÉGIAS ─── */
+var STRAT=[
+ {n:'Ladrilhar',d:'cobrir a superfície com uma unidade conhecida e contar quantas cabem',p:'A Superfície'},
+ {n:'Calcular pela forma',d:'medir as dimensões, aplicar a fórmula, atravessar a ponte para a capacidade',p:'O Recipiente'},
+ {n:'Repetir a âncora',d:'contar quantas vezes a unidade do corpo cabe no todo',p:'A Travessia'},
+ {n:'Multiplicar a repetição',d:'medir uma volta e multiplicar pelo número de voltas',p:'O Novelo'},
+ {n:'Subtrair o ocupado',d:'capacidade total menos o volume que já está lá dentro',p:'O Que Ainda Cabe'},
+ {n:'Compor dimensões',d:'multiplicar as três medidas e converter até a unidade pedida',p:'O Ar da Sala'}
+];
+var stShown=0;
+function revealStrat(){
+  if(stShown>=STRAT.length)return;
+  var s=STRAT[stShown];
+  var d=document.createElement('div');
+  d.style.cssText='display:grid;grid-template-columns:26px 1fr auto;gap:11px;align-items:center;background:#0D2119;border:1px solid #1D3E32;border-radius:6px;padding:10px 13px';
+  d.innerHTML='<span style="font-family:var(--f-mono);font-size:13px;font-weight:700;color:var(--gold)">'+(stShown+1)+'</span>'
+    +'<div><div style="font-family:var(--f-head);font-size:13.5px;font-weight:600;color:#fff">'+s.n+'</div>'
+    +'<div style="font-size:11.5px;color:#8FA79B;margin-top:3px">'+s.d+'</div></div>'
+    +'<span style="font-family:var(--f-mono);font-size:10px;color:#5D746A;white-space:nowrap">'+s.p+'</span>';
+  document.getElementById('stratList').appendChild(d);
+  stShown++;
+}
+function resetStrat(){stShown=0;document.getElementById('stratList').innerHTML='';}
+
+/* ═══════════ FOLHAS IMPRIMÍVEIS ═══════════ */
+var ANCORAS=[
+ ['Folha A4','21 × 29,7 cm'],['Folhas A4 para cobrir 1 m²','16 folhas'],
+ ['Área de uma folha A4','623,7 cm²'],['Massa de uma folha A4 (75 g/m²)','≈ 4,7 g'],
+ ['Espessura de 100 folhas','≈ 1 cm'],['Porta comum','≈ 2,10 × 0,80 m'],
+ ['Degrau de escada','≈ 17 cm'],['Cartão de banco','8,6 × 5,4 cm'],
+ ['Moeda de 1 real','≈ 27 mm'],['Piso cerâmico comum','30 × 30 cm'],
+ ['Caixa de leite','1 L = 1 dm³'],['Tijolo cerâmico','≈ 19 × 9 × 5,7 cm']
+];
+var FAIXAS=[
+ ['até 5%','NA MOSCA — bônus de 3 pontos'],
+ ['5% a 15%','EXCELENTE — em estimativa, isto é acerto pleno'],
+ ['15% a 40%','BOM — a ordem de grandeza está certa'],
+ ['40% a 100%','FORA — âncora mal calibrada ou dimensão chutada'],
+ ['acima de 100%','ERRO DE ORDEM DE GRANDEZA — não é a conta, é o conceito']
+];
+function page(head,sub,body){
+  return '<div class="printpage"><div class="pp-h"><span>'+head+'</span><small>'+sub+'</small></div>'+body+'</div>';
+}
+function renderPrint(){
+  var z=document.getElementById('printGen');if(!z)return;
+  var H='';
+
+  /* 1 · cartaz das faixas de erro */
+  H+=page('Como o erro é lido','cartaz de parede · 1 cópia',
+    '<div class="pp-big" style="font-size:30px">A Copa não pune a imprecisão.<br>Ela caça a troca de ordem de grandeza.</div>'
+    +FAIXAS.map(function(f){return '<div class="pp-band"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>';}).join('')
+    +'<div class="pp-note">Numa estimativa, errar 12% é acertar. Errar por um fator de 10 é outra coisa.</div>');
+
+  /* 2 · cartaz de âncoras */
+  H+=page('Âncoras universais','cartaz de parede + 1 cópia por equipe',
+    '<div class="pp-note" style="margin:0 0 12px">Medidas que você pode conferir hoje e usar o ano inteiro. Âncora não conferida é chute com nome bonito.</div>'
+    +'<table class="pt"><tr><th>Referência</th><th>Valor</th><th>Conferi na minha escola</th></tr>'
+    +ANCORAS.map(function(a){return '<tr><td>'+a[0]+'</td><td><b>'+a[1]+'</b></td><td class="tall"></td></tr>';}).join('')
+    +'</table>');
+
+  /* 3 · cartazes de prova */
+  PROVAS.forEach(function(p){
+    H+=page('Copa das Medidas','cartaz de prova · 1 cópia (mesa de apoio ou projeção reserva)',
+      '<div class="pp-eyebrow">'+p.tag+'</div>'
+      +'<div class="pp-big">'+p.nome+'</div>'
+      +'<div class="pp-q">'+p.q+'</div>'
+      +'<div class="pp-two">'
+      +'<div class="pp-box"><b>🚫 Proibido</b>'+p.no+'</div>'
+      +'<div class="pp-box"><b>✅ Permitido</b>'+p.yes+'</div></div>'
+      +'<div class="pp-unit">resposta em '+p.un+'</div>'
+      +'<div class="pp-note">Objeto: '+(p.objUser||p.obj)+' · tempo: '+p.min+' min · a equipe entrega <b>um número só</b>.</div>');
+  });
+
+  /* 4 · ficha da equipe */
+  H+=page('Ficha da Equipe','1 por equipe (6 cópias) · entregue na abertura, recolha no fim',
+    '<table class="pt"><tr><th style="width:24%">Prova</th><th style="width:18%">Nosso número</th>'
+    +'<th style="width:34%">Como chegamos (uma frase)</th><th style="width:24%">Âncora usada</th></tr>'
+    +PROVAS.map(function(p){return '<tr><td><b>'+p.nome+'</b><br><small>em '+p.un+'</small></td><td class="tall"></td><td></td><td></td></tr>';}).join('')
+    +'</table>'
+    +'<div class="pp-note"><b>Equipe: ____________________  ·  Enviado: ______________  ·  Escriba: ______________  ·  Calculista: ______________</b><br>'
+    +'O número entregue é o que está escrito aqui quando o formador disser “entreguem”. Depois disso, não se altera nada.</div>');
+
+  /* 5 · cartão de calibração */
+  H+=page('Cartão de Calibração do Corpo','1 por equipe (6 cópias) · usado na etapa 2 e levado para a escola',
+    '<div class="pp-cards">'
+    +activeTeams().map(function(t){
+      return '<div class="pp-card"><h4>'+esc(t.n)+'</h4>'
+      +'<table class="pt"><tr><th>Unidade</th><th>Medida</th><th>Esperado</th></tr>'
+      +'<tr><td>Palmo</td><td class="tall">'+(t.palmo?br(t.palmo,1)+' cm':'')+'</td><td>18–22 cm</td></tr>'
+      +'<tr><td>Passo</td><td class="tall">'+(t.passo?br(t.passo,1)+' cm':'')+'</td><td>60–80 cm</td></tr>'
+      +'<tr><td>Envergadura</td><td class="tall">'+(t.env?br(t.env,1)+' cm':'')+'</td><td>160–190 cm</td></tr>'
+      +'<tr><td>Polegar (unha)</td><td class="tall"></td><td>≈ 2 cm</td></tr></table>'
+      +'<div style="font-size:10px;margin-top:6px">Vitrúvio: envergadura ≈ altura? ☐ sim ☐ não</div></div>';
+    }).join('')+'</div>'
+    +'<div class="pp-note">Cinco passos, medidos juntos e divididos por cinco. Passo de andar pela escola — não passo de desfile.</div>');
+
+  /* 6 · ficha do observador */
+  H+=page('Ficha do Observador','1 por equipe (6 cópias) · usada nas semifinais, por quem não está duelando',
+    '<table class="pt"><tr><th style="width:22%">Semifinal</th><th style="width:26%">Âncora que a dupla usou</th>'
+    +'<th style="width:26%">Estratégia</th><th style="width:26%">Onde quase caiu na armadilha</th></tr>'
+    +'<tr><td><b>1 · O Novelo</b></td><td class="tall"></td><td></td><td></td></tr>'
+    +'<tr><td><b>2 · O Que Ainda Cabe</b></td><td class="tall"></td><td></td><td></td></tr></table>'
+    +'<div class="pp-note"><b>Regra:</b> observador não sopra resposta. Quem fala durante o duelo perde o direito de comentar depois.<br>'
+    +'<b>Na final é diferente:</b> aí a sua equipe dá um número — e ele entra na conta da sabedoria da torcida.<br><br>'
+    +'<b>Nosso palpite para a FINAL (litros de ar da sala): ______________________ L</b></div>');
+
+  /* 7 · ficha do cartório (formador) */
+  H+=page('Ficha do Cartório — só do formador','1 cópia · preencha a caneta ANTES da formação',
+    '<table class="pt"><tr><th style="width:26%">Prova</th><th style="width:24%">Objeto escolhido</th>'
+    +'<th style="width:14%">Medida 1</th><th style="width:14%">Medida 2</th><th style="width:22%">VALOR OFICIAL</th></tr>'
+    +PROVAS.map(function(p){return '<tr><td><b>'+p.nome+'</b><br><small>em '+p.un+'</small></td><td class="tall">'+(p.objUser||'')+'</td><td></td><td></td><td></td></tr>';}).join('')
+    +'</table>'
+    +'<div class="pp-note">Duas medidas que discordem mais de 2% pedem uma terceira. Este papel é a fonte oficial: se o navegador fechar, a Copa continua daqui.</div>');
+
+  /* 8 · plaquinhas de mesa */
+  H+=page('Plaquinhas de mesa','1 cópia · recorte e dobre ao meio',
+    activeTeams().map(function(t){
+      return '<div class="pp-tent"><div class="tn1">'+esc(t.n)+'</div><div class="tn2">Copa das Medidas</div></div>';
+    }).join('')
+    +'<div class="pp-note">Os seis nomes foram unidades oficiais de medida, todas tiradas do corpo. Vale dizer isso quando entregar.</div>');
+
+  z.innerHTML=H;
+}
+
+/* ═══════════ RENDER GERAL ═══════════ */
+function renderAll(){
+  renderCalib();
+  renderProvaPanels();
+  paintBracketBoxes();
+  renderCrowd();
+  drawStandings();
+  fillPodium();
+  PROVAS.forEach(function(p){if(DONE[p.id])reveal(p.id);});
+}
+renderTeamEditor();
+renderCartorio();
+renderAll();
+renderPrint();
+paintSess();
+
+/* ═══════════ TECLADO ═══════════ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){sairPalco();return;}
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA'))return;
+  if(document.querySelector('.rig.palco'))return;
+  if(e.key==='ArrowRight')step(1);
+  if(e.key==='ArrowLeft')step(-1);
+  if(e.key==='f'||e.key==='F'){toggleF();return;}
+});
+</script>
+</body>
+</html>

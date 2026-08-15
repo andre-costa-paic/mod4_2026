@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duas Perguntas Bastam — Caderno de condução (v2.1) · EF09MA06</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root{
+  --f-head:'Space Grotesk',sans-serif;
+  --f-mono:'JetBrains Mono',monospace;
+  --f-body:'Inter',sans-serif;
+
+  --cy:#0E7C8B;        --cy-hi:#22D3EE;    --cy-soft:#E4F8FB;   --cy-deep:#08525C;
+  --vi:#6D4AC4;        --vi-hi:#A78BFA;    --vi-soft:#F0EBFE;   --vi-deep:#3F2880;
+  --am:#8A6410;        --am-hi:#FBBF24;    --am-soft:#FDF5E1;
+  --gr:#0F7050;        --gr-hi:#34D399;    --gr-soft:#E4F7EF;
+  --rd:#9B2C3D;        --rd-soft:#FCEBEE;  --rd-hi:#F87171;
+
+  --h-bg:#0B0E14;      --h-line:#1C2230;
+  --ink:#12151C;       --ink-mid:#3C4351;  --ink-soft:#6E7683;
+  --border:#E2E3E7;    --bg:#FAFAFB;       --card:#fff;
+  --radius:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+:focus-visible{outline:2px solid var(--cy-hi);outline-offset:2px}
+
+/* ── HERO ─────────────────────────────────────────────── */
+.hero{background:var(--h-bg);padding:3rem 2rem 2.4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);
+  background-size:26px 26px}
+.hero::after{content:'';position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse at 78% 40%,rgba(167,139,250,.16),transparent 58%)}
+.hero-art{position:absolute;right:3%;top:50%;transform:translateY(-50%);z-index:1;opacity:.95}
+@media(max-width:820px){.hero-art{display:none}}
+.hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:2}
+.hero-eyebrow{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--cy-hi);margin-bottom:14px}
+.hero h1{font-family:var(--f-head);font-size:clamp(30px,5.4vw,48px);font-weight:700;color:#fff;line-height:1.03;margin-bottom:12px;letter-spacing:-.018em}
+.hero h1 em{font-style:normal;color:var(--cy-hi)}
+.hero-sub{font-size:15px;color:#98A1B0;line-height:1.7;max-width:530px;margin-bottom:1rem}
+.hero-thesis{font-family:var(--f-mono);font-size:12.5px;color:var(--vi-hi);border-left:2px solid var(--vi-hi);padding-left:13px;line-height:1.65;margin-bottom:1.4rem;max-width:480px}
+.hero-badges{display:flex;gap:7px;flex-wrap:wrap}
+.badge{background:rgba(255,255,255,.07);border:.5px solid rgba(34,211,238,.28);border-radius:3px;padding:5px 12px;font-family:var(--f-mono);font-size:11px;font-weight:500;color:#D6DCE5;letter-spacing:.02em}
+
+/* ── LAYOUT ───────────────────────────────────────────── */
+.container{max-width:760px;margin:0 auto;padding:0 1.5rem 7rem}
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:20;padding:1rem 0 0;margin-bottom:1.7rem}
+.tabs{display:flex;gap:3px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;padding:9px 14px 11px;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab.on{color:var(--cy);border-bottom-color:var(--cy)}
+.tab:hover:not(.on){color:var(--ink-mid)}
+.pane{display:none;animation:fade .25s ease}
+.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.slabel{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin:2.2rem 0 .95rem}
+.slabel:first-child{margin-top:0}
+.prose{font-size:14.5px;color:var(--ink-mid);line-height:1.8;margin-bottom:1rem}
+.prose b,.prose strong{color:var(--ink);font-weight:600}
+.prose em{color:var(--cy-deep);font-style:italic}
+.plist{list-style:none;margin-bottom:1rem}
+.plist li{font-size:14px;color:var(--ink-mid);line-height:1.72;padding-left:21px;position:relative;margin-bottom:9px}
+.plist li::before{content:"▪";position:absolute;left:2px;top:0;color:var(--cy);font-size:12px;line-height:1.6}
+.plist.tight li{font-size:13px;margin-bottom:6px;line-height:1.62}
+.plist.num{counter-reset:pl}
+.plist.num li{counter-increment:pl;padding-left:26px}
+.plist.num li::before{content:counter(pl,decimal-leading-zero);font-family:var(--f-mono);font-size:10px;font-weight:700;top:3px}
+.card{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:1.15rem 1.3rem;margin-bottom:10px}
+code{font-family:var(--f-mono);font-weight:500;background:var(--cy-soft);color:var(--cy-deep);padding:1px 6px;border-radius:3px;font-size:12.5px}
+
+/* ── TERMINAL / PROTOCOLO ─────────────────────────────── */
+.term{background:var(--h-bg);border:1px solid var(--h-line);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.2rem;overflow-x:auto}
+.term-h{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.17em;text-transform:uppercase;color:var(--cy-hi);border-bottom:1px solid var(--h-line);padding-bottom:9px;margin-bottom:12px;display:flex;justify-content:space-between;gap:12px}
+.term-h span{color:#5A6473}
+.prow{display:flex;gap:12px;align-items:baseline;font-family:var(--f-mono);font-size:12.5px;line-height:2;white-space:nowrap}
+.pn{color:#4E5765;width:20px;flex-shrink:0}
+.pc{color:var(--cy-hi);font-weight:700;width:104px;flex-shrink:0;letter-spacing:.04em}
+.pd{color:#BFC7D2;font-weight:400;white-space:normal}
+.pd b{color:#fff;font-weight:700}
+.pd i{color:var(--vi-hi);font-style:normal}
+
+.dialog{background:var(--h-bg);border:1px solid var(--h-line);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.2rem;font-family:var(--f-mono);font-size:12.5px;line-height:1.95;overflow-x:auto}
+.dl{white-space:nowrap}
+.dl .u{color:var(--cy-hi)}
+.dl .m{color:#BFC7D2}
+.dl .c{color:#5A6473}
+.dl .g{color:var(--gr-hi)}
+.dl .v{color:var(--vi-hi)}
+
+/* ── MÁQUINAS ─────────────────────────────────────────── */
+.machines{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:10px}
+@media(max-width:700px){.machines{grid-template-columns:repeat(2,1fr)}}
+.mc{background:#fff;border:1px solid var(--border);border-top:3px solid var(--cy);border-radius:var(--radius);padding:.8rem .55rem;text-align:center}
+.mc.v{border-top-color:var(--vi)}
+.mc.a{border-top-color:var(--am-hi)}
+.mc-n{font-family:var(--f-mono);font-size:9.5px;font-weight:700;letter-spacing:.11em;color:var(--cy);margin-bottom:4px}
+.mc.v .mc-n{color:var(--vi)}.mc.a .mc-n{color:var(--am)}
+.mc-t{font-family:var(--f-head);font-size:12px;font-weight:600;color:var(--ink);line-height:1.25;margin-bottom:7px;min-height:29px}
+.mc-f{font-family:var(--f-mono);font-size:12.5px;font-weight:700;color:var(--ink);background:var(--cy-soft);border-radius:3px;padding:4px 2px}
+.mc.v .mc-f{background:var(--vi-soft)}.mc.a .mc-f{background:var(--am-soft)}
+.mc-d{font-size:10px;color:var(--ink-soft);margin-top:6px;line-height:1.45}
+.mc-cap{text-align:center;font-size:12.5px;color:var(--ink-soft);font-style:italic;margin-bottom:1.5rem}
+.mc-cap b{color:var(--cy);font-style:normal}
+
+/* ── SCORE ────────────────────────────────────────────── */
+.scoreboard{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+@media(max-width:620px){.scoreboard{grid-template-columns:repeat(2,1fr)}}
+.sb{border-radius:var(--radius);padding:.9rem .7rem;text-align:center;border:1px solid}
+.sb-v{font-family:var(--f-mono);font-size:19px;font-weight:700;line-height:1;margin-bottom:6px}
+.sb-t{font-family:var(--f-head);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.sb-d{font-size:10.5px;line-height:1.45;opacity:.82}
+.sb.pos{background:var(--gr-soft);border-color:var(--gr);color:#0B4C36}
+.sb.neu{background:var(--cy-soft);border-color:var(--cy);color:var(--cy-deep)}
+.sb.war{background:var(--am-soft);border-color:var(--am-hi);color:#6B4E0A}
+.sb.neg{background:var(--rd-soft);border-color:var(--rd);color:#701E2C}
+
+.ceiling{background:linear-gradient(135deg,var(--h-bg),#131A26);border:1px solid var(--h-line);border-left:3px solid var(--cy-hi);border-radius:var(--radius);padding:1.3rem 1.4rem;margin:1.3rem 0}
+.ceiling-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cy-hi);margin-bottom:9px}
+.ceiling-t{font-family:var(--f-head);font-size:18px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:9px}
+.ceiling-d{font-size:13.5px;color:#A8B1BE;line-height:1.75}
+.ceiling-d b{color:var(--cy-hi);font-weight:600}
+
+/* ── PASSOS ───────────────────────────────────────────── */
+.steps{display:flex;flex-direction:column;gap:9px;margin-bottom:1.2rem}
+.step{background:var(--card);border:.5px solid var(--border);border-left:3px solid var(--cy);border-radius:var(--radius);padding:1.05rem 1.25rem;display:flex;gap:15px;align-items:flex-start;transition:box-shadow .18s}
+.step:hover{box-shadow:0 5px 20px rgba(0,0,0,.055)}
+.step.v{border-left-color:var(--vi)}
+.step.a{border-left-color:var(--am-hi)}
+.step.g{border-left-color:var(--gr)}
+.step-n{font-family:var(--f-mono);min-width:58px;height:26px;border-radius:3px;background:var(--cy);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.04em}
+.step.v .step-n{background:var(--vi)}
+.step.a .step-n{background:var(--am)}
+.step.g .step-n{background:var(--gr)}
+.step-b{flex:1;min-width:0}
+.step-t{font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.3}
+.step-d{font-size:13.5px;color:var(--ink-mid);line-height:1.72}
+.step-d p+p{margin-top:8px}
+.step-d ul, .step-d ol{margin:4px 0 0;padding-left:20px}
+.step-d li{margin-bottom:6px}
+
+/* ── TRÊS COLUNAS DE CONDUÇÃO ─────────────────────────── */
+.rct{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:4px;overflow:hidden;margin-top:11px}
+@media(max-width:620px){.rct{grid-template-columns:1fr}}
+.rct div{background:#FCFCFD;padding:.65rem .75rem}
+.rct .rct-l{font-family:var(--f-mono);font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px;display:block}
+.rct p{font-size:12.2px;line-height:1.6;color:var(--ink-mid);margin:0}
+.rct .cue{background:var(--gr-soft)}
+.rct .cue .rct-l{color:var(--gr)}
+.rct .cue p{color:#0B4C36}
+
+/* ── CALLOUTS ─────────────────────────────────────────── */
+.callout{border-radius:var(--radius);padding:13px 17px;margin:14px 0;font-size:13.5px;line-height:1.7}
+.callout p{margin:0}.callout p+p{margin-top:8px}.callout strong{font-weight:600}
+.callout-c{background:var(--cy-soft);border-left:3px solid var(--cy);color:var(--cy-deep)}
+.callout-v{background:var(--vi-soft);border-left:3px solid var(--vi);color:var(--vi-deep)}
+.callout-w{background:var(--am-soft);border-left:3px solid var(--am-hi);color:#6B4E0A}
+.callout-g{background:var(--gr-soft);border-left:3px solid var(--gr);color:#0B4C36}
+.callout-r{background:var(--rd-soft);border-left:3px solid var(--rd);color:#701E2C}
+
+/* ── FIGURA ───────────────────────────────────────────── */
+.fig{background:var(--h-bg);border:1px solid var(--h-line);border-radius:var(--radius);padding:1.1rem .9rem .85rem;margin-bottom:1.2rem;overflow-x:auto}
+.fig-h{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--cy-hi);text-align:center;margin-bottom:12px}
+.fig-cap{text-align:center;font-size:12px;color:#8A93A1;margin-top:9px;line-height:1.65}
+.fig-cap b{color:var(--cy-hi)}
+
+/* ── DUO / GRIDS ──────────────────────────────────────── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.1rem}
+@media(max-width:600px){.duo{grid-template-columns:1fr}}
+.duo-c{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem}
+.duo-t{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--cy-deep);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.duo-c.v .duo-t{color:var(--vi-deep)}
+.duo-c.r .duo-t{color:#701E2C}
+.duo-c .plist{margin-bottom:0}
+
+/* ── TABELAS ──────────────────────────────────────────── */
+table.t{width:100%;border-collapse:collapse;margin-bottom:1.2rem;font-size:12.5px;background:#fff;border-radius:var(--radius);overflow:hidden;border:.5px solid var(--border)}
+table.t th{background:var(--h-bg);color:#fff;font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;padding:9px 10px;text-align:left}
+table.t td{padding:8px 10px;border-top:.5px solid var(--border);color:var(--ink-mid);line-height:1.55;vertical-align:top}
+table.t tr:nth-child(even) td{background:#FBFBFC}
+table.t td b{color:var(--ink)}
+.mono{font-family:var(--f-mono);font-weight:600;color:var(--cy-deep)}
+.ok{color:var(--gr);font-weight:600}
+.no{color:var(--rd);font-weight:600}
+.mid{color:var(--am);font-weight:600}
+
+/* ── OPÇÕES / MÓDULOS ─────────────────────────────────── */
+.opt{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:1.15rem 1.3rem;margin-bottom:10px;position:relative}
+.opt.best{border-color:var(--cy);border-width:1px;box-shadow:0 3px 16px rgba(14,124,139,.09)}
+.opt-tag{position:absolute;top:-9px;right:14px;font-family:var(--f-mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--cy);color:#fff;padding:3px 10px;border-radius:3px}
+.opt-h{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.opt-ico{font-size:19px}
+.opt-t{font-family:var(--f-head);font-size:15px;font-weight:600;color:var(--ink)}
+.opt-sub{font-family:var(--f-mono);font-size:11px;color:var(--ink-soft);margin-top:1px}
+.pn-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+@media(max-width:560px){.pn-grid{grid-template-columns:1fr}}
+.pn-b{border-radius:4px;padding:.7rem .85rem}
+.pn-b.p{background:var(--gr-soft)}
+.pn-b.n{background:var(--rd-soft)}
+.pn-l{font-family:var(--f-mono);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.pn-b.p .pn-l{color:var(--gr)}
+.pn-b.n .pn-l{color:var(--rd)}
+.pn-b ul{list-style:none}
+.pn-b li{font-size:12px;line-height:1.55;color:var(--ink-mid);padding-left:13px;position:relative;margin-bottom:4px}
+.pn-b li:last-child{margin-bottom:0}
+.pn-b.p li::before{content:"+";position:absolute;left:0;color:var(--gr);font-weight:700}
+.pn-b.n li::before{content:"−";position:absolute;left:0;color:var(--rd);font-weight:700}
+
+.mods{display:flex;flex-direction:column;gap:8px;margin-bottom:1.1rem}
+.mod{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:.95rem 1.15rem;display:flex;gap:14px;align-items:flex-start}
+.mod-n{font-family:var(--f-mono);font-size:11px;font-weight:700;color:#fff;background:var(--vi);border-radius:3px;padding:3px 8px;flex-shrink:0;margin-top:1px}
+.mod-t{font-family:var(--f-head);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.mod-d{font-size:13px;color:var(--ink-mid);line-height:1.65}
+
+/* ── CHECKLIST ────────────────────────────────────────── */
+.check{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.3rem;margin-bottom:1.1rem}
+.ck{display:flex;gap:11px;align-items:flex-start;margin-bottom:11px}
+.ck:last-child{margin-bottom:0}
+.ck-box{width:15px;height:15px;min-width:15px;border:1.5px solid var(--cy);border-radius:3px;margin-top:2px}
+.ck-t{font-size:13.5px;color:var(--ink-mid);line-height:1.62}
+.ck-t b{color:var(--ink);font-weight:600}
+
+/* ── PERGUNTAS ────────────────────────────────────────── */
+.qgrid{display:flex;flex-direction:column;gap:8px;margin-bottom:1.1rem}
+.qcard{background:var(--card);border:.5px solid var(--border);border-left:3px solid var(--vi);border-radius:var(--radius);padding:.85rem 1.1rem;display:flex;gap:12px;align-items:flex-start}
+.qmark{font-family:var(--f-mono);font-size:15px;font-weight:700;color:var(--vi);flex-shrink:0}
+.qcard p{font-size:13.5px;color:var(--ink-mid);line-height:1.68;font-style:italic}
+
+/* ── IMPRESSOS ────────────────────────────────────────── */
+.prints{display:flex;flex-direction:column;gap:8px;margin-bottom:1.1rem}
+.print{background:var(--card);border:.5px solid var(--border);border-radius:var(--radius);padding:.95rem 1.15rem;display:flex;gap:14px;align-items:flex-start}
+.print-ico{font-size:21px;flex-shrink:0}
+.print-t{font-family:var(--f-head);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.print-d{font-size:13px;color:var(--ink-mid);line-height:1.62;margin-bottom:7px}
+.print-tag{display:inline-block;font-family:var(--f-mono);font-size:10px;font-weight:700;padding:3px 9px;border-radius:3px;background:var(--vi-soft);color:var(--vi-deep);letter-spacing:.04em;margin-right:5px}
+.print-tag.when{background:var(--cy-soft);color:var(--cy-deep)}
+
+.mats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.mat{background:var(--card);border:.5px solid var(--border);border-radius:3px;padding:5px 12px;font-size:12.5px;color:var(--ink-mid)}
+
+/* ── BARRA DE CONDUÇÃO AO VIVO ────────────────────────── */
+.livebar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--h-bg);border-top:1px solid var(--h-line);
+  box-shadow:0 -6px 24px rgba(0,0,0,.22);transform:translateY(calc(100% - 40px));transition:transform .22s ease}
+.livebar.open{transform:translateY(0)}
+.lb-handle{height:40px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 1.1rem;cursor:pointer;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--cy-hi);background:none;border:none;width:100%}
+.lb-handle .lb-now{color:#BFC7D2;letter-spacing:.02em;text-transform:none;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-body{max-width:760px;margin:0 auto;padding:.2rem 1.1rem 1.1rem}
+.lb-prog{display:flex;gap:3px;margin-bottom:12px}
+.lb-seg{height:5px;flex:1;background:#1C2230;border-radius:2px;overflow:hidden;position:relative;cursor:pointer}
+.lb-seg span{position:absolute;inset:0 100% 0 0;background:var(--cy-hi);transition:right .3s linear}
+.lb-seg.done span{right:0;background:var(--gr-hi)}
+.lb-seg.cur{outline:1px solid var(--cy-hi);outline-offset:1px}
+.lb-main{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.lb-clock{font-family:var(--f-mono);font-size:30px;font-weight:700;color:#fff;line-height:1;letter-spacing:-.01em;min-width:104px}
+.lb-clock.over{color:var(--rd-hi)}
+.lb-meta{flex:1;min-width:170px}
+.lb-phase{font-family:var(--f-head);font-size:14px;font-weight:600;color:#fff;line-height:1.25}
+.lb-next{font-family:var(--f-mono);font-size:10.5px;color:#5A6473;margin-top:3px}
+.lb-btns{display:flex;gap:6px;flex-wrap:wrap}
+.lb-b{font-family:var(--f-mono);font-size:11px;font-weight:500;color:#BFC7D2;background:#141A26;border:1px solid var(--h-line);border-radius:4px;padding:8px 13px;cursor:pointer;letter-spacing:.04em}
+.lb-b:hover{border-color:#2E3A4D;color:#fff}
+.lb-b.pri{background:var(--cy);border-color:var(--cy);color:#fff}
+.lb-sel{display:flex;gap:4px;margin-bottom:11px}
+.lb-sel button{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--h-line);color:#5A6473;border-radius:3px;padding:5px 10px;cursor:pointer}
+.lb-sel button.on{border-color:var(--cy-hi);color:var(--cy-hi)}
+
+footer{max-width:760px;margin:0 auto;padding:1.6rem 1.5rem 4rem;text-align:center;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--border);line-height:1.75}
+
+/* ── IMPRESSÃO ────────────────────────────────────────── */
+@media print{
+  .tabs-wrap,.livebar,.hero-art{display:none!important}
+  .pane{display:block!important;page-break-before:always}
+  .pane:first-of-type{page-break-before:auto}
+  body{background:#fff}
+  .hero{background:#fff;color:#000;padding:0 0 1rem;border-bottom:2px solid #000}
+  .hero h1,.hero h1 em{color:#000}
+  .hero-sub,.hero-thesis{color:#333}
+  .term,.dialog,.fig,.ceiling{background:#fff;border:1px solid #999}
+  .pd,.pd b,.ceiling-d,.ceiling-t,.fig-cap{color:#111}
+  .pc,.ceiling-l,.term-h,.fig-h{color:#000}
+  .step,.card,.print,.duo-c{break-inside:avoid}
+  a[href]::after{content:" (" attr(href) ")";font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="hero-art" width="220" height="200" viewBox="0 0 220 200" fill="none" aria-hidden="true">
+    <line x1="4" y1="100" x2="52" y2="100" stroke="#22D3EE" stroke-width="1.6" opacity=".8"/>
+    <path d="M46 94 L56 100 L46 106 Z" fill="#22D3EE" opacity=".9"/>
+    <text x="10" y="90" font-family="JetBrains Mono,monospace" font-size="12" fill="#22D3EE" opacity=".85">x</text>
+    <rect x="58" y="52" width="104" height="96" rx="5" fill="#141A26" stroke="#2B3444" stroke-width="1.4"/>
+    <rect x="58" y="52" width="104" height="96" rx="5" fill="url(#gg)" opacity=".5"/>
+    <defs>
+      <linearGradient id="gg" x1="58" y1="52" x2="162" y2="148">
+        <stop offset="0" stop-color="#A78BFA" stop-opacity=".22"/>
+        <stop offset="1" stop-color="#22D3EE" stop-opacity=".07"/>
+      </linearGradient>
+    </defs>
+    <text x="110" y="114" text-anchor="middle" font-family="Space Grotesk,sans-serif" font-size="48" font-weight="700" fill="#A78BFA" opacity=".9">?</text>
+    <circle cx="67" cy="61" r="1.8" fill="#3C4657"/><circle cx="153" cy="61" r="1.8" fill="#3C4657"/>
+    <circle cx="67" cy="139" r="1.8" fill="#3C4657"/><circle cx="153" cy="139" r="1.8" fill="#3C4657"/>
+    <line x1="168" y1="100" x2="212" y2="100" stroke="#34D399" stroke-width="1.6" opacity=".8"/>
+    <path d="M206 94 L216 100 L206 106 Z" fill="#34D399" opacity=".9"/>
+    <text x="196" y="90" font-family="JetBrains Mono,monospace" font-size="12" fill="#34D399" opacity=".85">f(x)</text>
+    <circle cx="30" cy="100" r="2.6" fill="#22D3EE" opacity=".55"/>
+    <circle cx="188" cy="100" r="2.6" fill="#34D399" opacity=".55"/>
+    <line x1="58" y1="164" x2="162" y2="164" stroke="#2B3444" stroke-width="1"/>
+    <text x="110" y="182" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#5A6473" letter-spacing="1.5">CAIXA-PRETA</text>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Condução sincronizada com aplicativo</div>
+    <h1>Duas Perguntas<br><em>Bastam</em></h1>
+    <p class="hero-sub">Uma máquina secreta transforma números. Você pode interrogá-la, mas cada pergunta tem um custo. A turma descobre, por conta própria, que nenhuma máquina linear resiste a duas perguntas bem escolhidas.</p>
+    <div class="hero-thesis">O par (a, b) é tudo que existe dentro da caixa.<br>Duas respostas revelam dois números.</div>
+    <div class="hero-badges">
+      <span class="badge">⏱ aula 60 min · formação 90 min</span>
+      <span class="badge">📱 1 celular por trio</span>
+      <span class="badge">🔌 offline</span>
+      <span class="badge">🏆 torneio + construtor</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="tabs-wrap">
+    <div class="tabs" role="tablist">
+      <button class="tab on" onclick="sw(event,'brief')">Apresentação</button>
+      <button class="tab" onclick="sw(event,'enc')">A formação · 90 min</button>
+      <button class="tab" onclick="sw(event,'aula')">A aula · 60 min</button>
+      <button class="tab" onclick="sw(event,'jogo')">O jogo</button>
+      <button class="tab" onclick="sw(event,'mat')">A matemática</button>
+      <button class="tab" onclick="sw(event,'guia')">Guia do formador</button>
+      <button class="tab" onclick="sw(event,'ope')">Operação e materiais</button>
+    </div>
+  </div>
+
+<!-- ══════════════════ BRIEFING ══════════════════ -->
+<div id="t-brief" class="pane on">
+
+  <div class="slabel">A ideia em uma frase</div>
+  <p class="prose">O computador guarda uma função afim secreta. O estudante não vê a fórmula — vê apenas uma caixa com uma entrada e uma saída. Ele pode <b>sondar</b>: mandar um número para dentro e observar o que sai. Cada sondagem custa créditos. Ao final, precisa <b>declarar</b> a lei da máquina.</p>
+  <p class="prose">A pergunta que organiza tudo não é “qual é a fórmula?”. É: <em>qual é o menor número de perguntas que resolve qualquer máquina dessas?</em></p>
+
+  <div class="dialog">
+    <div class="dl"><span class="c">// máquina 02 · créditos: 100</span></div>
+    <div class="dl"><span class="u">&gt; sondar x = 0</span></div>
+    <div class="dl"><span class="m">  saída: 5</span> <span class="c">· −20 créditos · restam 80</span></div>
+    <div class="dl"><span class="u">&gt; sondar x = 1</span></div>
+    <div class="dl"><span class="m">  saída: 7</span> <span class="c">· −20 créditos · restam 60</span></div>
+    <div class="dl"><span class="v">&gt; declarar f(x) = 2·x + 5</span></div>
+    <div class="dl"><span class="g">  ✓ MÁQUINA DECIFRADA — 60 pontos</span></div>
+    <div class="dl"><span class="c">  desempenho: ótimo absoluto (2 sondagens)</span></div>
+  </div>
+
+  <!-- <table class="t">
+    <tr><th>Camada</th><th>Quem</th><th>O que precisa levar embora</th></tr>
+    <tr><td><b>1 · Vivência</b></td><td>Formadores das CREDEs</td><td>A experiência de <em>não saber</em> e descobrir. Sem isso, não há o que replicar.</td></tr>
+    <tr><td><b>2 · Condução</b></td><td>Formadores das CREDEs → municipais</td><td>As decisões invisíveis: quando calar, o que não entregar, como formalizar depois.</td></tr>
+    <tr><td><b>3 · Aula</b></td><td>Professores de 8.º e 9.º</td><td>O roteiro de 90 minutos, os impressos e as adaptações à sala real.</td></tr>
+  </table> -->
+
+  <div class="slabel">Vantagens da atividade ser plugada</div>
+  <p class="prose">Ela não é a versão digital de uma atividade de papel. Há quatro coisas que <b>só</b> o computador entrega — e são exatamente elas que fazem o pensamento computacional aparecer:</p>
+
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">O segredo é realmente secreto</div>
+      <ul class="plist tight">
+        <li>No papel, alguém sempre conhece a resposta — e a linguagem corporal entrega. A máquina não tem rosto;</li>
+        <li>Isso muda a natureza da tarefa: deixa de ser “adivinhar o que o professor pensou” e vira <b>investigação genuína</b>.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">A pergunta tem preço</div>
+      <ul class="plist tight">
+        <li>Sem custo, a estratégia ótima é irrelevante: sonde 20 vezes e pronto;</li>
+        <li>Com orçamento, <b>pensar antes vale mais do que testar muito</b> — que é a definição prática de eficiência algorítmica.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">A validação é instantânea</div>
+      <ul class="plist tight">
+        <li>O ciclo hipótese → teste → correção acontece em segundos, não em uma aula;</li>
+        <li>Uma equipe enfrenta 6 máquinas em 30 minutos. No papel, faria duas.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">O sistema registra o processo</div>
+      <ul class="plist tight">
+        <li>Quantas sondagens? Quais valores de x foram escolhidos? Em que ordem?</li>
+        <li>O histórico vira <b>dado para o debriefing</b> — a discussão deixa de ser sobre acertos e passa a ser sobre método.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slabel">Habilidades trabalhadas</div>
+  <div class="card">
+    <p class="prose" style="margin-bottom:14px"><span class="mono">(EF09MA06)</span> Compreender as funções como relações de dependência unívoca entre duas variáveis e suas representações numérica, algébrica e gráfica, utilizando esse conceito para analisar situações que envolvam relações funcionais entre duas variáveis.</p>
+    <p class="prose" style="margin-bottom:14px"><span class="mono">(EF08MA12)</span> Identificar a natureza da variação de duas grandezas, expressando a relação existente por meio de sentença algébrica e representando-a no plano cartesiano.</p>
+    <p class="prose" style="margin-bottom:0"><span class="mono">(EF08MA07)</span> Associar uma equação linear de 1.º grau com duas incógnitas a uma reta no plano cartesiano.</p>
+  </div>
+  <div class="callout callout-v">
+    <p><strong>BNCC Computação · eixo Pensamento Computacional.</strong> A atividade mobiliza depuração (testar hipótese, corrigir), abstração (o par a, b é tudo o que descreve a máquina), algoritmo (o protocolo de sondagem funciona para <em>qualquer</em> máquina) e — no debriefing sobre a máquina ruidosa — o eixo Cultura Digital, ao explicar por que sistemas de aprendizado de máquina precisam de muitos dados.</p>
+  </div>
+
+  <div class="slabel">O que a turma sai sabendo</div>
+  <ul class="plist">
+    <li>Que uma função afim é inteiramente determinada por <b>dois</b> números — e, portanto, por dois pontos;</li>
+    <li>Que <code>f(0)</code> entrega o coeficiente linear diretamente, e que essa escolha de sondagem não é arbitrária: é a mais barata;</li>
+    <li>Que uma sondagem só, matematicamente, nunca basta;</li>
+    <li>Que um método que só funciona às vezes não é um método — distinção entre algoritmo e sorte;</li>
+    <li>Que uma máquina que responde coisas diferentes para o mesmo x não é função — a palavra <em>unívoca</em> deixa de ser decorativa.</li>
+  </ul>
+
+</div>
+
+<!-- ══════════════════ O ENCONTRO ══════════════════ -->
+<div id="t-enc" class="pane">
+
+  <div class="slabel">O encontro de formação · 90 minutos</div>
+  <p class="prose">Três blocos, nesta ordem, sem inverter: <b>viver</b>, <b>desmontar</b>, <b>replicar</b>.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-n">00–10</div>
+      <div class="step-b">
+        <div class="step-t">Contrato e instalação</div>
+        <div class="step-d">
+          <ul>
+            <li><b>Trios formados</b> antes de qualquer explicação.</li>
+            <li><b>Instalação:</b> abrir no navegador → menu → <em>adicionar à tela de início</em>.</li>
+            <li><b>Contrato:</b> <em>“nos próximos 75 minutos vocês são estudantes de 9.º ano. Depois a gente conversa como formador. Antes disso, não.”</em></li>
+          </ul>
+          <div class="rct">
+            <div><span class="rct-l">Formador</span><p>Envia HTML no grupo, circula confirmando instalação, marca papéis do trio.</p></div>
+            <div><span class="rct-l">Participante</span><p>Instala, nomeia a equipe, define quem opera, quem registra, quem decide.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>Todos os trios com o app aberto na tela inicial.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">10–15</div>
+      <div class="step-b">
+        <div class="step-t">Abertura · a caixa que ninguém abre</div>
+        <div class="step-d">
+          <ul>
+            <li>Só o seu aparelho projetado, em <b>Treino livre</b>. A plateia escolhe os valores de x; você digita e escreve a resposta no quadro.</li>
+            <li><b>Não use as palavras “função”, “coeficiente” ou “fórmula”.</b></li>
+          </ul>
+          <div class="rct">
+            <div><span class="rct-l">Formador</span><p>Sonda ao vivo, registra no quadro, não interpreta.</p></div>
+            <div><span class="rct-l">Participante</span><p>Grita valores de x, começa a arriscar hipóteses em voz alta.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>Alguém enuncia uma regra. Aí você para — e distribui os aparelhos.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">15–25</div>
+      <div class="step-b">
+        <div class="step-t">Bloco 1 · Treino livre — sondagens ilimitadas e sem custo</div>
+        <div class="step-d">
+          <ul>
+            <li>Três máquinas, créditos desligados. O objetivo é que <b>todos os trios consigam</b>.</li>
+            <li>Observe <b>quais valores de x cada trio escolheu</b>. Esse registro é o material do próximo momento.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step v">
+      <div class="step-n">25–35</div>
+      <div class="step-b">
+        <div class="step-t">Parada estratégica · a turma escreve o protocolo</div>
+        <div class="step-d">
+          <p>Pare o jogo com todos os aparelhos virados para baixo. <b>Três perguntas, nesta ordem:</b></p>
+          <ul>
+            <li>“quantas sondagens vocês usaram?”</li>
+            <li>“qual foi a pergunta mais útil que vocês fizeram?”</li>
+            <li>“daria para fazer com menos?”</li>
+          </ul>
+          <p>Alguém terá sondado <code>x = 0</code>. Puxe esse fio. <b>Um participante</b> escreve o protocolo na cartolina, com as próprias palavras, e ele fica visível até o fim.</p>
+          <div class="rct">
+            <div><span class="rct-l">Formador</span><p>Pergunta, não responde. Nomeia autoria: “protocolo da equipe X”.</p></div>
+            <div><span class="rct-l">Participante</span><p>Formula em voz alta e escreve na cartolina.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>O cartaz tem os passos de sondar 0, sondar 1 e subtrair.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">35–50</div>
+      <div class="step-b">
+        <div class="step-t">Bloco 2 · Torneio — créditos ligados, seis máquinas seguidas</div>
+        <div class="step-d">
+          <ul>
+            <li>Agora cada pergunta custa.</li>
+            <li>O aplicativo roda as seis máquinas <b>em sequência automática</b>: ao terminar uma, já entra a próxima.</li>
+            <li>Não há como liberar a Fantasma em separado — ela chega sozinha, no fim, e cada trio chegará nela em um minuto diferente.</li>
+            <li>As máquinas 04 (fracionária) e 05 (a que responde sempre o mesmo) são as que produzem discussão.</li>
+            <li>Na 05, é normal que algum trio sonde quatro ou cinco vezes achando que quebrou.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step a">
+      <div class="step-n">50–55</div>
+      <div class="step-b">
+        <div class="step-t">A Fantasma · formalização coletiva da univocidade</div>
+        <div class="step-d">
+          <ul>
+            <li>É normal que, em algum momento, alguém diga: “ela responde diferente pro mesmo número”.</li>
+            <li>Quando todos terminarem, formalize: uma função associa a cada entrada <b>uma única</b> saída.</li>
+            <li>A Fantasma não é difícil — ela não é função.</li>
+            <li>Encerre registrando os códigos de resultado e montando o placar no Painel do formador.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step v">
+      <div class="step-n">55–70</div>
+      <div class="step-b">
+        <div class="step-t">Bloco 3 · Construtor e duelo — a tentativa de quebrar o protocolo</div>
+        <div class="step-d">
+          <ul>
+            <li>Cada trio monta a própria máquina no <b>Construtor</b>, escolhendo <code>a</code> e <code>b</code> nos dois controles deslizantes, e anota o <b>código de 4 caracteres</b> no cartão de papel. O cartão vai para o trio vizinho; a tela, não.</li>
+            <li>Regra que muda tudo: <b>o trio construtor marca ponto se o adversário gastar mais de duas perguntas</b>. Duas rodadas cruzadas. Deixe que tentem esconder a máquina com negativos e quebrados.</li>
+            <li>As tentativas de complicar não funcionam, e a descoberta de que <b>não existe máquina afim difícil</b> é o melhor fecho do argumento.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">70–80</div>
+      <div class="step-b">
+        <div class="step-t">A matemática por trás · por que duas, nem mais nem menos</div>
+        <div class="step-d">
+          <ul>
+            <li>Só agora o vocabulário técnico entra.</li>
+            <li>Conduza o argumento das infinitas retas por um ponto (aba <b>A matemática</b>), a comparação de custo aritmético entre pares de sondagens e a generalização para grau <em>n</em>.</li>
+            <li>Feche com o <b>Modo ruído</b> projetado do Painel: o protocolo campeão falha, a reta só aparece como tendência, e a ponte com inteligência artificial se abre sozinha.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step a">
+      <div class="step-n">80–90</div>
+      <div class="step-b">
+        <div class="step-t">Bloco 4 · Replicar — o plano de cada CREDE</div>
+        <div class="step-d">
+          <ul>
+            <li>Agora os participantes deixam de ser estudantes e viram formadores.</li>
+            <li>Vejam a lista das <b>seis decisões de condução</b> que está na aba <b>Guia do formador</b>.</li>
+            <li>O formador de cada CREDE decide como vai replicar a oficina para os professores municipais.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slabel">O que muda quando o público é adulto</div>
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">Eles resolvem mais rápido</div>
+      <ul class="plist tight">
+        <li>Muitos vão sondar <code>x = 0</code> no primeiro minuto — já sabem álgebra;</li>
+        <li>Por isso o valor não está em <em>descobrir</em>, e sim em <b>perceber como foi descoberto</b>. Insista na pergunta “por que essa e não outra?”.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">O risco específico deste público</div>
+      <ul class="plist tight">
+        <li>Sair sabendo <b>usar</b> o aplicativo e não sabendo <b>conduzir</b> a descoberta;</li>
+        <li>Antecipar o protocolo aos professores municipais “para poupar tempo” — o erro que a cascata mais propaga;</li>
+        <li>Enunciado sempre disponível: <em>“você não está ensinando um método; está criando as condições para que ele seja inventado.”</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-c">
+    <p><strong>Vale a pena fazer se der tempo.</strong> No Bloco 4, abra o arquivo do aplicativo em um editor de texto e mostre a lista das seis máquinas — são seis linhas legíveis. Alterar <code>{a:0.5, b:3}</code> para <code>{a:2, b:6}</code> é o gesto que separa <em>usar a ferramenta</em> de <em>se apropriar dela</em>. Nenhum conhecimento de programação é necessário para essa edição, e é ela que abre o eixo gradual do protocolo de apropriação.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════ A AULA · 60 min ══════════════════ -->
+<div id="t-aula" class="pane">
+
+  <div class="slabel">Fluxo da aula com estudantes · 60 minutos</div>
+  <p class="prose">Este é o roteiro que o professor 9º ano leva para a sala.</p>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-n">5 min</div>
+      <div class="step-b">
+        <div class="step-t">Abertura · a caixa que ninguém abre</div>
+        <div class="step-d">
+          <ul>
+            <li>Projete o <b>Treino livre</b> no seu aparelho. Sonde ao vivo, deixando a turma escolher os valores de x, e escreva as respostas no quadro <b>sem comentar nada</b>.</li>
+            <li>Não use as palavras “função”, “coeficiente” ou “fórmula”.</li>
+            <li>Diga apenas: <em>“dentro dessa caixa existe uma regra. Vocês não vão vê-la. Vão descobri-la — e, ao final, vão saber exatamente quantas perguntas isso custa.”</em></li>
+          </ul>
+          <div class="rct">
+            <div><span class="rct-l">Professor</span><p>Sonda, registra no quadro, não interpreta nem confirma hipóteses.</p></div>
+            <div><span class="rct-l">Turma</span><p>Escolhe os x, arrisca regras em voz alta.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>Primeira hipótese enunciada. Distribua os aparelhos.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">8 min</div>
+      <div class="step-b">
+        <div class="step-t">Fase 1 · Treino livre — sondagens ilimitadas, sem custo</div>
+        <div class="step-d">
+          <ul>
+            <li>Três máquinas, créditos desligados (o painel mostra <code>∞</code>). O objetivo é que <b>todas as equipes consigam</b>, inclusive por força bruta, testando dez ou quinze valores.</li>
+            <li>Circule anotando <b>quais valores de x cada equipe escolheu</b>.</li>
+            <li>Equipes que sondaram 0 e 1 e equipes que sondaram 7 e 13 chegaram ao mesmo lugar, mas não pelo mesmo caminho, e é essa diferença que sustenta o próximo momento.</li>
+          </ul>
+          <div class="rct">
+            <div><span class="rct-l">Professor</span><p>Circula e anota escolhas de x. Não corrige estratégia.</p></div>
+            <div><span class="rct-l">Equipe</span><p>Sonda à vontade, registra no papel, declara sem medo de errar.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>Maioria concluiu as três máquinas de treino.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step v">
+      <div class="step-n">8 min</div>
+      <div class="step-b">
+        <div class="step-t">Parada estratégica · a turma escreve o protocolo</div>
+        <div class="step-d">
+          <p>Pare o jogo, <b>aparelhos virados para baixo</b>. Três perguntas, nesta ordem:</p>
+          <ul>
+            <li><em>“quantas sondagens vocês usaram?”</em></li>
+            <li><em>“qual foi a pergunta mais útil que vocês fizeram?”</em></li>
+            <li><em>“daria para fazer com menos?”</em></li>
+          </ul>
+          <p>Alguma equipe terá sondado <code>x = 0</code> e percebido que a resposta aparece sozinha na fórmula. Puxe esse fio. Cada equipe escreve seu protocolo na cartolina com as próprias palavras.</p>
+          <div class="rct">
+            <div><span class="rct-l">Professor</span><p>Só pergunta. Registra a autoria da descoberta no cartaz.</p></div>
+            <div><span class="rct-l">Equipe</span><p>Compara caminhos, formula o método, escreve.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>O cartaz existe e alguém consegue lê-lo em voz alta.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">20 min</div>
+      <div class="step-b">
+        <div class="step-t">Fase 2 · Torneio — créditos ligados, seis máquinas em sequência</div>
+        <div class="step-d">
+          <ul>
+            <li>Cada equipe digita o nome no aplicativo e começa. As seis máquinas vêm <b>uma após a outra, automaticamente</b>. A pontuação de cada máquina é o saldo de créditos que sobrou.</li>
+            <li>Enquanto isso, as equipes vão preenchendo a linha delas no <b>placar de parede</b> a cada máquina concluída — é o que mantém a energia de torneio, já que o aplicativo não sincroniza entre aparelhos.</li>
+          </ul>
+          <div class="rct">
+            <div><span class="rct-l">Professor</span><p>Circula, escuta, não resolve. Anota falas para o debriefing.</p></div>
+            <div><span class="rct-l">Equipe</span><p>Decide o x antes de tocar na tela. Registra tudo no papel.</p></div>
+            <div class="cue"><span class="rct-l">Sinal de virada</span><p>Primeira equipe chega ao boletim final.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step a">
+      <div class="step-n">5 min</div>
+      <div class="step-b">
+        <div class="step-t">A Fantasma · formalizar a univocidade</div>
+        <div class="step-d">
+          <ul>
+            <li>A máquina 06 chega sozinha ao fim do torneio, e cada equipe a encontra em um momento diferente.</li>
+            <li>Não tente sincronizar: <b>escute</b>. Assim que alguém disser que “ela responde diferente pro mesmo número”, chame a atenção de todos e formalize com a turma inteira.</li>
+            <li>Uma função associa a cada entrada <b>uma única</b> saída. A 06 não é uma máquina difícil — ela não é uma função, e por isso nenhum protocolo poderia resolvê-la. No aplicativo, a resposta certa é o botão <em>“esta máquina não é uma função”</em>, que vale 140 pontos de bônus.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step v">
+      <div class="step-n">10 min</div>
+      <div class="step-b">
+        <div class="step-t">Fase 3 · Construtor e duelo — as equipes viram as máquinas</div>
+        <div class="step-d">
+          <ul>
+            <li>Cada equipe monta a própria máquina no <b>Construtor</b> e anota o <b>código de 4 caracteres</b> no cartão de papel. O cartão vai para a equipe vizinha; a tela, não — ela mostra a fórmula.</li>
+            <li>A equipe desafiada abre <b>Desafio por código</b>, digita e enfrenta. Regra: <b>a construtora marca ponto se a adversária gastar mais de duas perguntas</b>. Duas rodadas cruzadas, com a pontuação anotada no cartão pelo próprio professor.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-n">4 min</div>
+      <div class="step-b">
+        <div class="step-t">Debriefing · trocando o vocabulário</div>
+        <div class="step-d">
+          <ul>
+            <li>Só agora entram os nomes técnicos, com a tabela de tradução da aba <b>Guia do formador</b>.</li>
+            <li>Feche com a <b>máquina ruidosa</b>, projetada do Painel do formador — é a ponte direta para inteligência artificial e dados, e costuma ser a parte mais lembrada.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout callout-g">
+    <p><strong>Divisão da turma.</strong> Equipes de 3, com papéis rotativos a cada máquina: quem <b>opera</b> o aparelho, quem <b>registra</b> as sondagens no papel e quem <b>decide</b> o próximo x. A rotação impede que um único estudante monopolize o celular — que é o modo mais comum de uma boa atividade plugada fracassar. Anuncie a troca de papéis em voz alta a cada máquina; sem esse comando, a rotação não acontece.</p>
+  </div>
+
+  <div class="callout callout-r">
+    <p><strong>Dois avisos operacionais que precisam ser ditos antes de começar o torneio.</strong> O aplicativo guarda o progresso apenas enquanto a página está aberta. Portanto: <b>ninguém toca no “✕ sair”</b> durante o torneio, e <b>ninguém recarrega a página</b> — em ambos os casos o boletim se perde e a equipe recomeça do zero. Peça também que aumentem o tempo de bloqueio de tela do aparelho.</p>
+  </div>
+
+  <!-- <div class="slabel">Versão de 50 minutos</div>
+  <table class="t">
+    <tr><th>Momento</th><th>Tempo</th><th>O que fica de fora</th></tr>
+    <tr><td>Abertura projetada</td><td class="mono">6 min</td><td>—</td></tr>
+    <tr><td>Treino livre</td><td class="mono">10 min</td><td>Reduza para duas máquinas de treino</td></tr>
+    <tr><td>Parada estratégica</td><td class="mono">9 min</td><td class="no">nunca corte</td></tr>
+    <tr><td>Torneio</td><td class="mono">20 min</td><td>—</td></tr>
+    <tr><td>Fantasma e fechamento</td><td class="mono">5 min</td><td>Sai o Construtor e sai a máquina ruidosa</td></tr>
+  </table> -->
+
+</div>
+
+<!-- ══════════════════ O JOGO ══════════════════ -->
+<div id="t-jogo" class="pane">
+
+  <div class="slabel">Protocolo de interrogatório · construído pela turma, não entregue</div>
+  <div class="term">
+    <div class="term-h">PROTOCOLO_SONDAGEM.txt <span>escrito pela turma na parada estratégica</span></div>
+    <div class="prow"><span class="pn">01</span><span class="pc">SONDAR</span><span class="pd">Pergunte <b>x = 0</b>. A resposta é <i>b</i> — a máquina entrega o valor de partida de graça.</span></div>
+    <div class="prow"><span class="pn">02</span><span class="pc">SONDAR</span><span class="pd">Pergunte <b>x = 1</b>. A resposta é <i>a + b</i>.</span></div>
+    <div class="prow"><span class="pn">03</span><span class="pc">ISOLAR</span><span class="pd"><b>a = (segunda resposta) − (primeira resposta)</b> — o salto de um passo.</span></div>
+    <div class="prow"><span class="pn">04</span><span class="pc">MONTAR</span><span class="pd">A lei da máquina é <b>f(x) = a·x + b</b>.</span></div>
+    <div class="prow"><span class="pn">05</span><span class="pc">CONFERIR</span><span class="pd">Teste <i>de cabeça</i> com um x qualquer. Conferir na máquina custa mais 20 créditos.</span></div>
+    <div class="prow"><span class="pn">06</span><span class="pc">DECLARAR</span><span class="pd">Preencha <b>a</b> e <b>b</b>. Errar custa <b>30 créditos</b> e trava a máquina por <b>10 segundos</b> — dá para tentar de novo, mas caro.</span></div>
+  </div>
+  <div class="callout callout-w">
+    <p><strong>Não entregue este protocolo.</strong> Ele é o produto da parada estratégica, escrito pela própria turma depois da fase livre. Entregá-lo antes destrói a atividade inteira: sobra execução de receita, que é exatamente o que se quer evitar.</p>
+  </div>
+
+  <div class="slabel">As seis máquinas · cada uma acrescenta uma dificuldade</div>
+  <div class="machines">
+    <div class="mc"><div class="mc-n">01</div><div class="mc-t">Direta</div><div class="mc-f">3x</div><div class="mc-d">b = 0<br>o caso mais simples</div></div>
+    <div class="mc"><div class="mc-n">02</div><div class="mc-t">Com base</div><div class="mc-f">2x + 5</div><div class="mc-d">b ≠ 0<br>aparece o valor de partida</div></div>
+    <div class="mc"><div class="mc-n">03</div><div class="mc-t">Descendente</div><div class="mc-f">−4x + 12</div><div class="mc-d">a &lt; 0<br>a saída diminui</div></div>
+    <div class="mc v"><div class="mc-n">04</div><div class="mc-t">Lenta</div><div class="mc-f">0,5x + 3</div><div class="mc-d">a fracionário<br>💰 0 e 1 custam 35 aqui</div></div>
+    <div class="mc v"><div class="mc-n">05</div><div class="mc-t">Teimosa</div><div class="mc-f">7</div><div class="mc-d">a = 0<br>responde sempre igual</div></div>
+  </div>
+  <div class="machines" style="grid-template-columns:1fr">
+    <div class="mc a" style="text-align:left;padding:.9rem 1.1rem">
+      <div class="mc-n">06 · FANTASMA</div>
+      <div class="mc-t" style="min-height:auto;font-size:13px">A que não pode ser decifrada — e chega sozinha ao fim do torneio</div>
+      <div class="mc-d" style="font-size:12px;margin-top:4px">Sondada duas vezes com o <b>mesmo</b> x, devolve respostas diferentes. Nenhum protocolo funciona, e o motivo é o coração da habilidade: uma função associa a cada entrada <b>uma única</b> saída. Não há lei a declarar — a resposta é o botão “esta máquina não é uma função”, que vale <b>140 pontos de bônus</b>.</div>
+    </div>
+  </div>
+  <div class="mc-cap">Os nomes evocativos <b>não aparecem durante o jogo</b> — só no boletim. “Descendente” entregaria <code>a &lt; 0</code>; “Teimosa” entregaria <code>a = 0</code>. Na tela, elas são apenas Máquina 01 a 06.</div>
+  <div class="callout callout-c">
+    <p><strong>Nenhuma máquina exige um protocolo novo.</strong> O mesmo procedimento resolve todas as cinco primeiras — e é essa invariância que caracteriza um algoritmo. A sexta existe justamente para mostrar onde a invariância termina: quando o objeto deixa de ser função.</p>
+  </div>
+
+  <div class="slabel">A economia do jogo</div>
+  <div class="scoreboard">
+    <div class="sb neu"><div class="sb-v">100</div><div class="sb-t">Créditos</div><div class="sb-d">saldo inicial em cada máquina</div></div>
+    <div class="sb war"><div class="sb-v">−20</div><div class="sb-t">Sondagem</div><div class="sb-d">custo de cada pergunta feita</div></div>
+    <div class="sb neg"><div class="sb-v">−30</div><div class="sb-t">Erro</div><div class="sb-d">declaração incorreta e trava 10 s</div></div>
+    <div class="sb pos"><div class="sb-v">60</div><div class="sb-t">Teto</div><div class="sb-d">máximo em uma máquina afim</div></div>
+  </div>
+  <table class="t">
+    <tr><th>Pergunta que sempre aparece</th><th>Resposta exata</th></tr>
+    <tr><td>Como se calcula a pontuação?</td><td>É o <b>saldo de créditos que sobrou</b> quando a equipe acerta. Duas sondagens limpas = 60 pontos.</td></tr>
+    <tr><td>Qual é o máximo em uma máquina comum?</td><td class="ok">60 — porque uma sondagem só nunca basta.</td></tr>
+    <tr><td>E na Fantasma?</td><td class="ok">200 — os 60 do saldo mais 140 de bônus por identificar que não é função.</td></tr>
+    <tr><td>Qual é o máximo do torneio inteiro?</td><td class="ok">500 pontos (5 × 60 + 200). Anuncie esse número: ele vira meta coletiva.</td></tr>
+    <tr><td>Dá para declarar de novo depois de errar?</td><td class="mid">Dá. Custa 30 créditos e 10 segundos de máquina travada.</td></tr>
+    <tr><td>E se acabarem os créditos?</td><td>A sondagem é bloqueada abaixo de 20 créditos, mas a equipe <b>ainda pode declarar</b> com o que já descobriu.</td></tr>
+    <tr><td>Por que a máquina 04 cobrou 35 numa sondagem?</td><td>Nela, sondar especificamente <code>x = 0</code> ou <code>x = 1</code> custa 35 em vez de 20 — os demais valores continuam 20. O aplicativo avisa isso na tela antes da primeira sondagem.</td></tr>
+  </table>
+
+  <div class="callout callout-v">
+    <p><strong>Por que a máquina 04 cobra diferente.</strong> É a única do torneio com tarifa: sondar 0 ou 1 custa 35 em vez de 20. O protocolo padrão continua funcionando — só deixa de ser o mais barato. Quem usa 0 e 1 aqui termina com 30 pontos; quem usa dois valores quaisquer (e resolve o sistema na mão) preserva os 60. É a mesma dualidade da aba <b>A matemática</b> — custo de obter a informação versus custo de processá-la — só que agora ela também pesa no bolso, não só no papel.</p>
+  </div>
+
+  <div class="ceiling">
+    <div class="ceiling-l">O momento decisivo da oficina</div>
+    <div class="ceiling-t">Por que ninguém neste jogo consegue fazer 80 pontos?</div>
+    <div class="ceiling-d">Oitenta pontos significaria decifrar a máquina com <b>uma única sondagem</b>. A turma vai tentar. Alguém vai chegar perto por sorte. Mas a pergunta certa é outra: <b>existe alguma pergunta única que sempre funcione?</b> Não existe — e provar isso é o conteúdo matemático central da oficina. Uma resposta só fornece um ponto, e por um ponto passam infinitas retas.</div>
+  </div>
+
+  <div class="slabel">Ficha técnica do aplicativo · o que existe em cada tela</div>
+  <div class="mods">
+    <div class="mod"><div class="mod-n">01</div><div><div class="mod-t">Treino livre</div><div class="mod-d">Três máquinas, créditos <code>∞</code>, erro sem punição e sem travamento. É a Fase 1 inteira. Ao concluir a terceira, o aplicativo volta sozinho ao início.</div></div></div>
+    <div class="mod"><div class="mod-n">02</div><div><div class="mod-t">Torneio</div><div class="mod-d">Nome da equipe, seis máquinas em sequência automática, pontuação acumulada, travamento de 10 s após erro e boletim final com tabela por máquina e o <b>código de resultado de 5 caracteres</b>.</div></div></div>
+    <div class="mod"><div class="mod-n">03</div><div><div class="mod-t">Construtor</div><div class="mod-d">Dois controles deslizantes para <code>a</code> e <code>b</code>, de <b>−20 a 20 em passos de 0,5</b>. Gera um <b>código de 4 caracteres</b> para entregar à equipe adversária. Multijogador sem rede e sem servidor.</div></div></div>
+    <div class="mod"><div class="mod-n">04</div><div><div class="mod-t">Desafio por código</div><div class="mod-d">Digita-se o código recebido e enfrenta-se a máquina do colega, com os mesmos 100 créditos. Ao final, o aplicativo informa quem marcou o ponto do duelo — mas <b>não guarda esse placar</b>: a anotação é no papel.</div></div></div>
+    <div class="mod"><div class="mod-n">05</div><div><div class="mod-t">Painel do formador</div><div class="mod-d">Gabarito das nove máquinas com <code>f(0)</code> e <code>f(1)</code>, leitor de códigos de resultado com placar consolidado, leitor de código de máquina construída e o Modo ruído para a demonstração final.</div></div></div>
+  </div>
+  <div class="callout callout-w">
+    <p><strong>Sobre os códigos.</strong> O alfabeto usado exclui as letras <b>I</b> e <b>O</b> e os dígitos <b>0</b> e <b>1</b>, justamente para que ninguém confunda ao ditar em voz alta. Se uma equipe reclamar de “código inválido”, quase sempre é isso: leram um zero onde havia a letra O. O código da máquina tem 4 caracteres (ex.: <code>EZE-9</code>); o de resultado tem 5 (ex.: <code>KL-R57</code>).</p>
+  </div>
+
+  <div class="callout callout-c">
+    <p><strong>Sobre a tarifa da máquina 04.</strong> Ao entrar nela, o aplicativo mostra um aviso fixo acima do teclado de sondagem: “sondar x = 0 e x = 1 custa 35 créditos aqui”. Ele fica visível a oficina inteira nessa máquina — não é uma pegadinha, é regra declarada. No registro de sondagens, toda pergunta que custou mais do que 20 aparece marcada com o valor pago, para a equipe conseguir somar o próprio gasto na parada estratégica seguinte.</p>
+  </div>
+
+  <div class="callout callout-r">
+    <p><strong>Um ajuste opcional, não aplicado por padrão.</strong> A tela de jogo traz botões de atalho com os valores <code>0</code> e <code>1</code> ao lado de 2, 5, 10 e −1. Esses dois atalhos facilitam o toque no protocolo ótimo sem que a equipe precise pensar no valor — o que ainda acontece livremente em M1, M2, M3, M5 e M6, já que a tarifa da máquina 04 (abaixo) resolve isso só nela. Se quiser reforçar o ponto nas outras máquinas também, abra o arquivo em um editor de texto, localize o bloco <code>&lt;div class="quick"&gt;</code> e apague as duas linhas dos botões <code>qp(0)</code> e <code>qp(1)</code>. Os demais atalhos podem ficar. Isso é uma decisão sua, não algo já aplicado nesta versão do arquivo.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════ A MATEMÁTICA ══════════════════ -->
+<div id="t-mat" class="pane">
+
+  <div class="slabel">Por que uma sondagem nunca basta</div>
+  <p class="prose">Este é o argumento que a oficina inteira existe para produzir. Ele é simples o bastante para um estudante de 9.º ano formular sozinho — desde que a pergunta seja feita na hora certa.</p>
+
+  <div class="fig">
+    <div class="fig-h">Uma resposta · infinitas máquinas compatíveis</div>
+    <svg viewBox="0 0 640 210" width="100%" style="max-width:640px;display:block;margin:0 auto" role="img" aria-label="À esquerda, várias retas passando pelo mesmo ponto. À direita, uma única reta determinada por dois pontos.">
+<g stroke="#A78BFA" stroke-width="1.5" stroke-array="5 4" opacity=".75">
+  <!-- Todas estas retas passam por (175,90) -->
+  <line x1="60" y1="136" x2="290" y2="44"/>
+  <line x1="60" y1="113" x2="290" y2="67"/>
+  <line x1="60" y1="90"  x2="290" y2="90"/>
+  <line x1="60" y1="56"  x2="290" y2="124"/>
+  <line x1="60" y1="21"  x2="290" y2="159"/>
+</g>
+
+<circle cx="175" cy="90" r="5.5" fill="#22D3EE"/>
+<text x="186" y="86"
+      font-family="JetBrains Mono,monospace"
+      font-size="11"
+      fill="#22D3EE">f(3) = 11</text>
+      <text x="175" y="203" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#6E7683">uma sondagem → um ponto</text>
+
+      <g stroke="#242C3A" stroke-width="1">
+        <line x1="360" y1="20" x2="360" y2="180"/><line x1="360" y1="180" x2="590" y2="180"/>
+      </g>
+      <line x1="360" y1="152" x2="590" y2="38" stroke="#34D399" stroke-width="2.2"/>
+      <circle cx="430" cy="117" r="5.5" fill="#22D3EE"/>
+      <circle cx="520" cy="72"  r="5.5" fill="#22D3EE"/>
+      <text x="438" y="112" font-family="JetBrains Mono,monospace" font-size="11" fill="#22D3EE">f(0)</text>
+      <text x="528" y="67"  font-family="JetBrains Mono,monospace" font-size="11" fill="#22D3EE">f(1)</text>
+      <text x="475" y="203" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#6E7683">duas sondagens → uma única reta</text>
+    </svg>
+    <div class="fig-cap">À esquerda, todas as máquinas compatíveis com a resposta obtida — e há <b>infinitas</b>. À direita, o que a segunda sondagem elimina.</div>
+  </div>
+
+  <p class="prose">Conduza assim, sem antecipar: <em>“a máquina respondeu 11 quando perguntei 3. Alguém consegue me dar uma máquina que faz isso? E outra, diferente da primeira? E mais uma?”</em> A turma produz <code>f(x) = 3x + 2</code>, <code>f(x) = x + 8</code>, <code>f(x) = 11</code>, <code>f(x) = −x + 14</code>. Quando o quadro estiver cheio de máquinas todas compatíveis com a mesma resposta, a conclusão se impõe sozinha.</p>
+
+  <div class="callout callout-g">
+    <p><strong>Impresso que vale a pena aqui.</strong> Distribua a meia-folha com um plano cartesiano vazio e o ponto (3, 11) já marcado, e peça que cada equipe desenhe <em>três</em> retas diferentes passando por ele. A folha preenchida é a prova visual do argumento, e é o registro que fica no caderno depois que o celular foi guardado.</p>
+  </div>
+
+  <div class="callout callout-c">
+    <p><strong>A formulação enxuta, para o formador ter em mãos.</strong> Uma máquina afim é descrita por dois números independentes, <em>a</em> e <em>b</em>. Cada sondagem devolve uma equação envolvendo esses dois desconhecidos. Uma equação com duas incógnitas tem infinitas soluções; duas equações independentes têm exatamente uma. <b>Dois desconhecidos exigem duas informações</b> — nem mais, nem menos.</p>
+  </div>
+
+  <div class="slabel">Por que 0 e 1, e não dois números quaisquer</div>
+  <p class="prose">Qualquer par de valores distintos de x resolve a máquina. A diferença entre as escolhas não é de <b>possibilidade</b>, é de <b>custo aritmético</b> — e essa distinção, em computação, tem nome próprio.</p>
+
+  <table class="t">
+    <tr><th>Sondagens</th><th>Contas necessárias</th><th>Avaliação</th></tr>
+    <tr><td><span class="mono">x = 0 e x = 1</span></td><td><b>b</b> aparece pronto; <b>a</b> é uma subtração</td><td class="ok">ótimo — mínimo esforço</td></tr>
+    <tr><td><span class="mono">x = 0 e x = 5</span></td><td><b>b</b> pronto; <b>a</b> exige subtrair e dividir por 5</td><td class="mid">funciona, custa mais</td></tr>
+    <tr><td><span class="mono">x = 4 e x = 9</span></td><td>subtrair, dividir por 5 e ainda voltar para achar <b>b</b></td><td class="mid">funciona, custa muito mais</td></tr>
+    <tr><td><span class="mono">x = 3 e x = 3</span></td><td>a mesma informação duas vezes</td><td class="no">inútil — 20 créditos jogados fora</td></tr>
+  </table>
+  <div class="callout callout-c">
+    <p><strong>O aplicativo ajuda aqui.</strong> No registro de sondagens, toda pergunta repetida ganha a marca <em>“x repetido”</em> ao lado. Use isso na parada estratégica: peça que as equipes contem quantas marcas dessas têm e multipliquem por 20. O desperdício vira número, e número gera conversa.</p>
+  </div>
+
+  <div class="callout callout-v">
+    <p><strong>Dois critérios diferentes de eficiência.</strong> O número de sondagens mede o custo de <em>obter</em> a informação; o número de contas mede o custo de <em>processá-la</em>. Todo par distinto empata no primeiro critério e o par (0, 1) vence no segundo. Programadores tomam exatamente essa decisão o tempo todo — e a turma acabou de tomá-la sem saber o nome.</p>
+  </div>
+
+  <div class="callout callout-w">
+    <p><strong>A máquina 04 cobra essa diferença em créditos, não só em contas.</strong> No torneio, sondar 0 ou 1 nela custa 35 em vez de 20 — o protocolo padrão continua funcionando, mas passa a valer menos: 30 pontos em vez do teto de 60. Quem opta por dois valores quaisquer, aceitando resolver o sistema na mão, preserva o teto inteiro. É a mesma tabela acima, só que agora com consequência no placar — vale perguntar à turma, depois que reclamarem do preço, se alguém percebeu essa saída.</p>
+  </div>
+
+  <div class="slabel">A generalização que a turma consegue formular sozinha</div>
+  <p class="prose">Feche o debriefing com esta pergunta: <em>“e se a máquina fosse mais complicada?”</em> A tabela abaixo costuma ser construída pela própria turma em menos de cinco minutos.</p>
+
+  <table class="t">
+    <tr><th>Tipo de máquina</th><th>Lei</th><th>Desconhecidos</th><th>Sondagens</th></tr>
+    <tr><td>Teimosa (constante)</td><td><span class="mono">f(x) = c</span></td><td>1</td><td class="ok">1</td></tr>
+    <tr><td>Afim</td><td><span class="mono">f(x) = ax + b</span></td><td>2</td><td class="ok">2</td></tr>
+    <tr><td>Quadrática</td><td><span class="mono">f(x) = ax² + bx + c</span></td><td>3</td><td class="ok">3</td></tr>
+    <tr><td>Grau n</td><td><span class="mono">aₙxⁿ + … + a₀</span></td><td>n + 1</td><td class="ok">n + 1</td></tr>
+  </table>
+  <p class="prose">O padrão é limpo: <b>o número de sondagens necessárias é o número de parâmetros desconhecidos</b>. É a mesma razão pela qual dois pontos determinam uma reta e três determinam uma parábola.</p>
+  <div class="callout callout-w">
+    <p><strong>Cuidado com uma armadilha da própria tabela.</strong> A máquina Teimosa só precisa de uma sondagem <em>se a turma já souber que ela é constante</em> — o que ninguém sabe de antemão. Essa é justamente a discussão boa: com a informação disponível durante o jogo, a segunda sondagem continua sendo necessária para <b>confirmar</b> que o salto é zero. Saber o tipo da máquina é, ele próprio, uma informação que custa.</p>
+  </div>
+
+  <div class="slabel">A máquina ruidosa · a ponte para inteligência artificial</div>
+  <p class="prose">Reserve os últimos minutos para esta demonstração, feita pelo formador na tela projetada, no <b>Modo ruído</b> do Painel. É breve e costuma ser a parte mais lembrada da oficina.</p>
+
+  <div class="fig">
+    <div class="fig-h">Máquina com ruído · o protocolo perfeito falha</div>
+    <svg viewBox="0 0 640 200" width="100%" style="max-width:640px;display:block;margin:0 auto" role="img" aria-label="Nuvem de pontos dispersos em torno de uma reta.">
+      <g stroke="#242C3A" stroke-width="1">
+        <line x1="55" y1="18" x2="55" y2="170"/><line x1="55" y1="170" x2="600" y2="170"/>
+      </g>
+      <line x1="55" y1="158" x2="600" y2="40" stroke="#34D399" stroke-width="2" opacity=".85"/>
+      <g fill="#22D3EE" opacity=".9">
+        <circle cx="95"  cy="140" r="4"/><circle cx="140" cy="152" r="4"/><circle cx="185" cy="128" r="4"/>
+        <circle cx="230" cy="136" r="4"/><circle cx="275" cy="112" r="4"/><circle cx="320" cy="104" r="4"/>
+        <circle cx="365" cy="112" r="4"/><circle cx="410" cy="80"  r="4"/><circle cx="455" cy="88"  r="4"/>
+        <circle cx="500" cy="60"  r="4"/><circle cx="545" cy="70"  r="4"/><circle cx="580" cy="44"  r="4"/>
+      </g>
+      <g fill="#FBBF24">
+        <circle cx="140" cy="152" r="6.5" fill="none" stroke="#FBBF24" stroke-width="1.6"/>
+        <circle cx="185" cy="128" r="6.5" fill="none" stroke="#FBBF24" stroke-width="1.6"/>
+      </g>
+      <text x="128" y="186" font-family="JetBrains Mono,monospace" font-size="10" fill="#FBBF24">duas sondagens → reta errada</text>
+      <text x="470" y="30" font-family="JetBrains Mono,monospace" font-size="10" fill="#34D399">a regra real</text>
+    </svg>
+    <div class="fig-cap">Com ruído, <b>duas respostas não determinam mais a máquina</b> — cada uma carrega um erro que a distorce.</div>
+  </div>
+
+  <p class="prose">Sonde duas vezes e mostre a estimativa errada. Sonde vinte e projete a nuvem — a reta aparece, mas só como <b>tendência</b>. O painel exibe lado a lado a regra real, <code>f(x) = 1,5x + 4</code>, e a regra estimada pelos dados. Então a pergunta de fechamento:</p>
+
+  <div class="callout callout-w">
+    <p><em>“Por que sistemas de inteligência artificial precisam de milhares de exemplos para aprender uma regra que vocês descobriram com duas perguntas?”</em></p>
+    <p style="margin-top:8px">Porque os dados do mundo real são a máquina ruidosa, nunca a limpa. Cada medição traz erro, e nenhuma resposta isolada é confiável. A quantidade de dados não compensa falta de inteligência — compensa <b>ruído</b>. É a diferença entre determinar uma função e estimá-la.</p>
+  </div>
+
+  <div class="slabel">Perguntas para o fechamento</div>
+  <div class="qgrid">
+    <div class="qcard"><div class="qmark">?</div><p>Duas equipes decifraram a mesma máquina fazendo perguntas diferentes. Como isso é possível, se a máquina é uma só?</p></div>
+    <div class="qcard"><div class="qmark">?</div><p>Uma equipe acertou a máquina 03 com uma sondagem só. Ela descobriu a máquina ou teve sorte? Qual é a diferença — e como se testa isso?</p></div>
+    <div class="qcard"><div class="qmark">?</div><p>No Construtor, alguém conseguiu montar uma máquina realmente difícil? Por que não?</p></div>
+    <div class="qcard"><div class="qmark">?</div><p>Que pergunta você faria a uma máquina que você desconfia ser a Fantasma — e por que essa pergunta, especificamente?</p></div>
+    <div class="qcard"><div class="qmark">?</div><p>Se cada pergunta custasse 50 créditos em vez de 20, alguma coisa mudaria na estratégia? E se custasse 1?</p></div>
+  </div>
+
+</div>
+
+<!-- ══════════════════ GUIA DO FORMADOR ══════════════════ -->
+<div id="t-guia" class="pane">
+
+  <div class="slabel">As seis decisões de condução · o conteúdo do Bloco 4</div>
+  <p class="prose">Estas são as decisões que fazem a oficina funcionar e que <b>não estão no aplicativo</b>. Elas são o que precisa sobreviver à cascata até o professor da ponta. Reconstrua-as com o grupo antes de mostrá-las.</p>
+  <ul class="plist num">
+    <li><b>Não nomear antes da hora.</b> Nenhuma palavra técnica nos primeiros 40 minutos. “Função”, “coeficiente” e “lei de formação” entram no debriefing, sobre um fenômeno que a turma já conhece por dentro.</li>
+    <li><b>Deixar o erro acontecer.</b> Travar na Teimosa e insistir na Fantasma são resultados desejados, não falhas de planejamento. Interromper para avisar economiza cinco minutos e custa o conceito.</li>
+    <li><b>Transferir a autoria.</b> O protocolo é escrito por um participante, com a letra dele, e recebe o nome da equipe que o formulou. Cartaz pronto denuncia que a descoberta era encenação.</li>
+    <li><b>Perguntar em vez de corrigir.</b> Diante de uma estratégia cara, a intervenção é <em>“o que essa pergunta te disse que você já não sabia?”</em>, nunca <em>“tenta o zero”</em>.</li>
+    <li><b>Formalizar só depois da fala do estudante.</b> A univocidade entra na conversa quando alguém já disse, com as próprias palavras, que a máquina responde diferente para o mesmo número.</li>
+    <li><b>Fechar com o custo, não com o acerto.</b> A pergunta final da oficina não é “qual era a fórmula?”, é “quantas perguntas bastam — e por quê?”.</li>
+  </ul>
+
+  <div class="slabel">Traduzindo o vocabulário · só no debriefing</div>
+  <table class="t">
+    <tr><th>Na oficina</th><th>Na matemática</th><th>Como se lê no gráfico</th></tr>
+    <tr><td><b>Sondar</b></td><td>Calcular o valor numérico da função em um ponto</td><td>a altura da reta naquele x</td></tr>
+    <tr><td><b>Resposta em x = 0</b></td><td>Coeficiente linear (b)</td><td>onde a reta cruza o eixo vertical</td></tr>
+    <tr><td><b>Salto por passo</b></td><td>Coeficiente angular (a) · taxa de variação</td><td>a inclinação da reta</td></tr>
+    <tr><td><b>Declarar a máquina</b></td><td>Determinar a lei de formação</td><td>a própria reta desenhada</td></tr>
+    <tr><td><b>Créditos gastos</b></td><td>—</td><td>custo computacional · número de consultas</td></tr>
+    <tr><td><b>Máquina Fantasma</b></td><td>Relação que não é função</td><td>dois pontos na mesma vertical</td></tr>
+    <tr><td><b>Máquina Teimosa</b></td><td>Função constante · a = 0</td><td>reta horizontal</td></tr>
+  </table>
+
+  <div class="slabel">Erros previsíveis — e o que fazer com cada um</div>
+  <table class="t">
+    <tr><th>O que acontece</th><th>Como aproveitar</th></tr>
+    <tr><td><b>Sondar sempre números grandes</b></td><td>O erro mais comum na fase livre. Não corrija: pergunte na parada estratégica quem gastou menos créditos e por quê. A comparação faz o trabalho.</td></tr>
+    <tr><td><b>Confundir a com b na declaração</b></td><td>A máquina rejeita, cobra 30 créditos e trava 10 segundos. Peça que confiram substituindo o x da primeira sondagem — o próprio erro se revela.</td></tr>
+    <tr><td><b>Deixar o campo b vazio quando b = 0</b></td><td>Acontece direto na máquina 01. O aplicativo avisa que a declaração está incompleta e não cobra nada. Diga uma vez para a turma toda: <em>“sem valor de partida, escreve zero”</em>.</td></tr>
+    <tr><td><b>Sondar o mesmo x duas vezes</b></td><td>Vinte créditos por nenhuma informação nova — e o registro marca “x repetido”. Ótimo gancho: <em>“o que essa segunda pergunta te disse que você já não sabia?”</em></td></tr>
+    <tr><td><b>Apertar “não é uma função” logo na 01</b></td><td>Alguém vai testar o botão por curiosidade e perder 30 créditos. Vale ouro no debriefing: <em>“como você provaria que ela é função?”</em> — a resposta é sondar o mesmo x duas vezes.</td></tr>
+    <tr><td><b>Chutar e acertar</b></td><td>Vai acontecer. Não desqualifique: pergunte se a mesma estratégia funcionaria na próxima máquina. A distinção entre método e sorte é conteúdo, não repreensão.</td></tr>
+    <tr><td><b>Travar na Teimosa (05)</b></td><td>Resultado desejado. Deixe gastar créditos até alguém dizer “ela responde sempre 7”. Só então formalize <code>a = 0</code>.</td></tr>
+    <tr><td><b>Insistir na Fantasma (06)</b></td><td>Também desejado. A frustração é o caminho. Formalize só depois que a inconsistência for enunciada em voz alta por um estudante.</td></tr>
+    <tr><td><b>Errar a vírgula na máquina 04</b></td><td>O aplicativo aceita <code>0,5</code> e <code>0.5</code>. Se a equipe declarar <code>5</code> em vez de <code>0,5</code>, é erro de leitura, não de método — vale mostrar a diferença na reta.</td></tr>
+    <tr><td><b>Reclamar da tarifa na máquina 04 (“travou meu método!”)</b></td><td>Reação esperada, não um problema a resolver. Pergunte de volta: <em>“existe algum outro par de números que revela a e b sem pagar a tarifa?”</em> Qualquer par distinto funciona — só exige resolver o sistema na mão. É o gancho direto para “custo de obter a informação” × “custo de processar a informação”, na aba A matemática.</td></tr>
+    <tr><td><b>Sair do torneio pelo “✕”</b></td><td>Perde o boletim inteiro. Previna antes: avise no início e escreva no quadro. Se acontecer, a equipe reinicia e você registra o resultado parcial no papel.</td></tr>
+  </table>
+
+  <div class="slabel">Falas para usar literalmente</div>
+  <div class="card">
+    <div class="duo-t" style="border:none;padding:0;margin-bottom:7px">Abertura</div>
+    <p class="prose" style="font-style:italic;margin-bottom:0">“Dentro desta caixa existe uma regra que transforma números. Vocês não vão vê-la, e eu não vou contar. Vocês podem fazer perguntas a ela — mas cada pergunta custa. No fim da oficina, vocês não vão só ter descoberto as regras: vão saber dizer qual é o menor número de perguntas que resolve qualquer máquina dessas. E vão saber provar.”</p>
+  </div>
+  <div class="card">
+    <div class="duo-t" style="border:none;padding:0;margin-bottom:7px">Parada estratégica</div>
+    <p class="prose" style="font-style:italic;margin-bottom:0">“Todas as equipes acertaram. Mas vocês não gastaram o mesmo tanto. Quero saber o que a equipe que gastou menos fez de diferente — e se isso foi sorte ou foi método. Se foi método, ele funciona na próxima máquina também. Se foi sorte, não funciona. Vamos descobrir qual dos dois é.”</p>
+  </div>
+  <div class="card">
+    <div class="duo-t" style="border:none;padding:0;margin-bottom:7px">Antes do torneio</div>
+    <p class="prose" style="font-style:italic;margin-bottom:0">“Agora a pergunta custa vinte. São seis máquinas, uma atrás da outra, e o máximo que dá para tirar no total é quinhentos. Ninguém nunca fez quinhentos na primeira vez. E, antes de começar: não apertem o ✕ e não recarreguem a página, senão o boletim de vocês evapora.”</p>
+  </div>
+  <div class="card">
+    <div class="duo-t" style="border:none;padding:0;margin-bottom:7px">Antes do Construtor</div>
+    <p class="prose" style="font-style:italic;margin-bottom:0">“Agora inverte. Vocês constroem a máquina e a equipe ao lado precisa decifrar. Vocês ganham ponto se ela gastar mais de duas perguntas. Escolham bem: dá para usar negativo, dá para usar quebrado, dá para usar salto zero. Quero ver quem consegue construir uma máquina realmente difícil.”</p>
+  </div>
+  <div class="card">
+    <div class="duo-t" style="border:none;padding:0;margin-bottom:7px">Fechamento</div>
+    <p class="prose" style="font-style:italic;margin-bottom:0">“Ninguém conseguiu esconder a máquina. E não foi por falta de criatividade — é porque não há o que esconder. Dentro daquela caixa existem exatamente dois números, e duas perguntas revelam dois números. É por isso que dois pontos determinam uma reta. Vocês não aprenderam essa frase hoje: vocês a demonstraram, tentando quebrá-la.”</p>
+  </div>
+
+  <div class="slabel">Adaptações</div>
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">🎒 Para o 8.º ano</div>
+      <ul class="plist tight">
+        <li>Se for aplicar sem alterar o arquivo: avise que a máquina 04 tem salto quebrado e permita calculadora nela;</li>
+        <li>Se puder alterar: abra o arquivo em um editor de texto, localize a linha <code>{a:0.5,b:3, …}</code> e troque para <code>{a:2,b:6, …}</code>. É uma linha, e a edição é o próprio conteúdo de apropriação;</li>
+        <li>Foco no reconhecimento do padrão de crescimento constante, sem exigir a escrita formal de <code>f(x) = ax + b</code>.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">🎓 Extensões para o 9.º ano</div>
+      <ul class="plist tight">
+        <li>Conferir custa 20 e errar custa 30 — <b>quando compensa conferir?</b> Discussão de valor esperado;</li>
+        <li>Máquina composta no papel: a saída de uma alimenta a outra. A composta ainda é afim?</li>
+        <li>Desafio de construção: existe algum par (a, b) que force o adversário a três perguntas? Por que a resposta é não?</li>
+      </ul>
+    </div>
+  </div>
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">📵 Com poucos aparelhos</div>
+      <ul class="plist tight">
+        <li>Um único aparelho projetado, com as equipes revezando as sondagens e todas registrando no papel;</li>
+        <li>Perde-se a simultaneidade, mantém-se o custo por pergunta e a discussão estratégica;</li>
+        <li>Nesse formato, a declaração é escrita e entregue <b>lacrada em envelope</b> antes da conferência — é o que devolve o suspense que a tela dava.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">🔄 Variações de contexto</div>
+      <ul class="plist tight">
+        <li><b>Tarifa secreta:</b> descobrir taxa fixa e valor por km de uma corrida;</li>
+        <li><b>Balança quebrada:</b> um erro constante em toda pesagem;</li>
+        <li><b>Conversor desconhecido:</b> Celsius para Fahrenheit sem a fórmula — e o <code>b = 32</code> aparece sozinho.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-c">
+    <p><strong>O detalhe que sustenta a oficina inteira:</strong> o formador não pode revelar o protocolo em nenhum momento antes da parada estratégica. A oficina não ensina um procedimento de descoberta de função afim — ela cria as condições para que a turma <em>invente</em> esse procedimento e depois descubra que ele é ótimo. Entregue o protocolo aos oito minutos e sobra um exercício de substituição.</p>
+  </div>
+
+</div>
+
+<!-- ══════════════════ OPERAÇÃO E MATERIAIS ══════════════════ -->
+<div id="t-ope" class="pane">
+
+  <div class="slabel">O que mudou nesta versão</div>
+  <div class="card">
+    <ul class="plist tight" style="margin-bottom:0">
+      <li><b>A Fantasma deixou de ser uma fase liberada pelo formador.</b> No aplicativo ela é a sexta máquina do torneio e chega automaticamente — o roteiro agora trata disso como chegada escalonada, com formalização coletiva ao final;</li>
+      <li><b>“Declaração é definitiva” foi corrigido.</b> O aplicativo permite nova tentativa ao custo de 30 créditos e 10 segundos de travamento;</li>
+      <li><b>O teto de pontuação foi explicitado:</b> 60 por máquina afim, 200 na Fantasma, <b>500 no torneio inteiro</b>;</li>
+      <li><b>A fala do Construtor foi ajustada:</b> os controles vão de −20 a 20 em passos de 0,5 — não existe “número gigante”;</li>
+      <li><b>Novo aviso operacional:</b> sair pelo ✕ ou recarregar a página apaga o boletim;</li>
+      <li><b>Novo alerta pedagógico:</b> os atalhos <code>0</code> e <code>1</code> na tela de jogo entregam o protocolo — com instrução opcional de remoção;</li>
+      <li><b>Nova mecânica no aplicativo — tarifa da máquina 04:</b> sondar 0 ou 1 nela custa 35 em vez de 20. O protocolo padrão continua funcionando, mas deixa de ser o mais barato — só um par diferente, exigindo resolver o sistema na mão, preserva o teto de 60 pontos. O aplicativo avisa isso na tela antes da primeira sondagem e marca o custo pago em cada linha do registro;</li>
+      <li><b>Nova aba “O encontro”</b>, com o roteiro de 180 minutos da formação de formadores e a lógica da cascata;</li>
+      <li><b>Cada fase ganhou três colunas de condução</b> — formador, participante e sinal de virada — para eliminar a hesitação de “já posso avançar?”;</li>
+      <li><b>Barra de condução ao vivo</b> com cronômetro por fase, no rodapé desta página;</li>
+      <li><b>Folha de estilo de impressão:</b> ao imprimir, todas as abas saem em sequência, em preto sobre branco.</li>
+    </ul>
+  </div>
+
+  <div class="slabel">Distribuição do aplicativo</div>
+  <p class="prose">O aplicativo é <b>um único arquivo .html</b>. Não exige instalação, conta, senha nem internet depois do primeiro acesso, e nenhum dado sai do aparelho. Três caminhos, em ordem de robustez para a realidade das redes municipais:</p>
+  <table class="t">
+    <tr><th>Como distribuir</th><th>O que você faz</th><th>Precisa de conta?</th></tr>
+    <tr><td><b>Arquivo direto</b></td><td>Envia o <span class="mono">.html</span> por WhatsApp, e-mail ou pen drive. Cada equipe abre no navegador.</td><td class="ok">não</td></tr>
+    <tr><td><b>Netlify Drop</b></td><td>Arrasta o arquivo para a página do serviço e recebe um link público na hora — bom para gerar o QR do cartão de instalação.</td><td class="ok">não</td></tr>
+    <tr><td><b>GitHub Pages</b></td><td>Sobe o arquivo em um repositório e ativa a publicação. Link permanente e estável para a cascata inteira.</td><td class="mid">sim, gratuita</td></tr>
+  </table>
+  <div class="callout callout-w">
+    <p><strong>Um detalhe operacional que vale ouro.</strong> No celular, um arquivo recebido por WhatsApp costuma abrir dentro do próprio aplicativo, o que atrapalha. Oriente as equipes a <em>abrir no navegador</em> e, em seguida, <b>adicionar à tela de início</b>. Feito isso, o ícone fica no celular e a oficina roda mesmo com a internet da escola fora do ar. Faça isso <b>no começo do encontro</b>, não na hora de jogar.</p>
+  </div>
+
+  <div class="slabel">Preparação · D−1</div>
+  <div class="check">
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Teste o aplicativo no seu próprio celular</b> — e uma vez com os dados desligados, para confirmar que roda offline.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Jogue o torneio inteiro uma vez.</b> Você precisa conhecer as seis máquinas de dentro, inclusive a sensação de travar na Teimosa.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Decida se vai remover os atalhos 0 e 1</b> da tela de jogo e distribua a versão escolhida a todos — não misture versões no mesmo encontro.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Gere o QR do link</b> e imprima o cartão de instalação. Leve também o arquivo em pen drive, como plano B.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Imprima e confira as quantidades</b> da lista de impressos, com 20% de margem.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Prepare a cartolina do protocolo em branco</b> — só o título escrito. O conteúdo é da turma.</div></div>
+  </div>
+
+  <div class="slabel">Preparação · D−0, antes de a turma entrar</div>
+  <div class="check">
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Mesas em trios</b>, com a ficha de registro, o cartão de papéis e caneta já postos.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Placar de parede afixado</b> e visível de todos os lugares. A visibilidade do placar é metade da energia do torneio.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Projeção testada</b> com o aplicativo já aberto na tela inicial, e o Painel do formador <em>fechado</em> — ele contém o gabarito.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Cronômetro visível</b> — o desta página, projetado, ou um relógio na parede.</div></div>
+    <div class="ck"><div class="ck-box"></div><div class="ck-t"><b>Aparelhos reserva carregados</b> e réguas de tomada posicionadas.</div></div>
+  </div>
+
+  <div class="slabel">Contingências · o que fazer quando</div>
+  <table class="t">
+    <tr><th>Se acontecer</th><th>Faça</th></tr>
+    <tr><td>A internet da escola cai</td><td>Nada. O aplicativo já está offline nos aparelhos. Só o QR de instalação depende de rede — por isso ele é usado nos primeiros dez minutos.</td></tr>
+    <tr><td>Uma equipe ficou sem celular</td><td>Junte com a equipe vizinha em quarteto e reforce a rotação de papéis, ou use um dos aparelhos reserva.</td></tr>
+    <tr><td>Ninguém tem celular</td><td>Rode a variação de aparelho único projetado, com declaração lacrada em envelope. O roteiro se mantém.</td></tr>
+    <tr><td>A equipe perdeu o boletim (recarregou a página)</td><td>Registre no papel o que ela já tinha e deixe refazer as máquinas restantes. Não vale a pena reiniciar o torneio inteiro.</td></tr>
+    <tr><td>“Código inválido” no duelo</td><td>Quase sempre é a letra O lida como zero, ou a letra I lida como um. Esses caracteres não existem nos códigos.</td></tr>
+    <tr><td>O grupo resolve tudo rápido demais</td><td>Antecipe o Construtor e alongue a discussão de custo aritmético. Nunca acelere a parada estratégica para ganhar tempo.</td></tr>
+    <tr><td>O grupo trava e o clima azeda</td><td>Volte ao Treino livre com todos por três minutos. Créditos desligados restauram a disposição de arriscar.</td></tr>
+  </table>
+
+  <div class="slabel">📄 Lista 1 · Materiais para imprimir</div>
+  <div class="prints">
+
+    <div class="print"><div class="print-ico">🔑</div><div>
+      <div class="print-t">1 · Gabarito e roteiro de bolso do formador</div>
+      <div class="print-d">Frente e verso de uma folha A4 dobrada. <b>Frente:</b> as três máquinas de treino e as seis do torneio, com a lei, <code>f(0)</code> e <code>f(1)</code> de cada uma, mais a economia do jogo (100 / −20 / −30 / teto 60 / Fantasma 200 / total 500). <b>Verso:</b> a linha do tempo com os minutos de cada fase, os sinais de virada e as cinco falas literais. É o único impresso que fica na sua mão o tempo todo — evita que você precise abrir o Painel do formador na frente da turma, que é onde mora o gabarito.</div>
+      <span class="print-tag">1 cópia · só o formador</span><span class="print-tag when">uso: do minuto 0 ao fim</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">📱</div><div>
+      <div class="print-t">2 · Cartão de instalação com QR</div>
+      <div class="print-d">Um oitavo de A4. Traz o <b>QR do link</b> do aplicativo, o endereço escrito por extenso (para quem não conseguir ler o código) e os três passos ilustrados: abrir no navegador → menu do navegador → <em>adicionar à tela de início</em>. Inclua a frase “depois disso funciona sem internet”. Sem este cartão, os dez primeiros minutos viram suporte técnico individual.</div>
+      <span class="print-tag">1 por participante</span><span class="print-tag when">uso: minutos 0–10, na chegada</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">👥</div><div>
+      <div class="print-t">3 · Cartão de papéis da equipe</div>
+      <div class="print-d">Um quarto de A4, dobrado em pé no centro da mesa. De um lado, o nome da equipe escrito à mão; do outro, os três papéis com uma linha de descrição cada: <b>Operador</b> (único que toca no aparelho), <b>Registrador</b> (preenche a ficha) e <b>Estrategista</b> (decide o próximo x e justifica em voz alta antes). Deixe três quadrinhos para marcar quem está em qual papel a cada rodada. É o impresso mais barato e o que mais protege a atividade: sem ele, a rotação não acontece.</div>
+      <span class="print-tag">1 por equipe</span><span class="print-tag when">uso: da formação dos trios ao fim</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">📋</div><div>
+      <div class="print-t">4 · Ficha de registro de sondagens</div>
+      <div class="print-d">A4 retrato, com <b>seis blocos idênticos</b> (um por máquina) de quatro colunas: <em>nº da pergunta · x perguntado · resposta obtida · créditos restantes</em>, e uma faixa embaixo de cada bloco para a <b>hipótese atual</b> e a <b>declaração feita</b>. No rodapé, três perguntas fixas: “quantas perguntas usamos?”, “alguma foi repetida?”, “qual delas não trouxe informação nova?”. O registro escrito é o que sustenta a parada estratégica — e é a melhor evidência de aprendizagem que esta oficina produz. Recolha ao final.</div>
+      <span class="print-tag">1 por equipe (2 no encontro de formação)</span><span class="print-tag when">uso: Fase 1 e Fase 2</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">📐</div><div>
+      <div class="print-t">5 · Meia-folha “Uma resposta, infinitas máquinas”</div>
+      <div class="print-d">Metade de A4 com um plano cartesiano vazio, o ponto <b>(3, 11)</b> já marcado e a instrução: “desenhe três máquinas diferentes que respondem 11 quando perguntamos 3, e escreva a lei de cada uma”. É o registro em papel do argumento central da oficina, usado no debriefing — e o que sobra no caderno depois que o celular foi guardado.</div>
+      <span class="print-tag">1 por participante</span><span class="print-tag when">uso: debriefing / bloco da matemática</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">🃏</div><div>
+      <div class="print-t">6 · Cartão de desafio do Construtor</div>
+      <div class="print-d">Um oitavo de A4, em papel um pouco mais firme. Campos: <b>equipe construtora</b> · <b>código de 4 caracteres</b> (com quadradinhos separados, para não confundir letra com número) · <b>equipe desafiada</b> · <b>nº de perguntas gastas</b> · <b>quem marcou o ponto</b>. O papel cumpre duas funções: impede que o código seja mostrado na tela — que revelaria a fórmula logo acima dele — e serve de <b>súmula do duelo</b>, já que o aplicativo não guarda o placar dos desafios.</div>
+      <span class="print-tag">4 por equipe</span><span class="print-tag when">uso: Fase 3 · Construtor e duelo</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">📊</div><div>
+      <div class="print-t">7 · Placar de parede</div>
+      <div class="print-d">A3 ou duas A4 emendadas, afixado antes de a turma entrar. Equipes nas linhas; colunas: <b>M1 a M6, total, e código de resultado</b>. Cada equipe preenche a própria linha a lápis conforme avança — o aplicativo não sincroniza entre aparelhos, e é esse gesto público que cria a energia de torneio. A coluna do código permite que você reconstrua tudo no Painel do formador em um minuto.</div>
+      <span class="print-tag">1 por turma</span><span class="print-tag when">uso: da Fase 2 até o fechamento</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">🔍</div><div>
+      <div class="print-t">8 · Ficha de observação da condução</div>
+      <div class="print-d">Exclusiva do encontro de formação. A4 com três colunas: <em>“o que o formador fez”</em> · <em>“o que ele deliberadamente não fez”</em> · <em>“o que eu faria diferente na minha CREDE”</em>, e um espaço final para anotar o minuto exato em que o participante percebeu o protocolo. Distribua <b>fechada, no início do Bloco 4</b> — se sair antes, os participantes assistem à oficina em vez de vivê-la.</div>
+      <span class="print-tag">1 por participante</span><span class="print-tag when">uso: minuto 135, Bloco 4</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">🗺️</div><div>
+      <div class="print-t">9 · Ficha de replicação da CREDE</div>
+      <div class="print-d">Exclusiva do encontro de formação, A4 preenchida em dupla ou trio da mesma CREDE. Campos: data prevista do encontro municipal · nº de municípios e de professores · infraestrutura real esperada (celulares por escola, projetor, internet) · <b>qual adaptação será usada</b> (90 min, 50 min, aparelho único, 8.º ano) · quem imprime o quê · como o arquivo será distribuído · uma dúvida que precisa ser resolvida antes. Recolha uma cópia: é o instrumento de acompanhamento da cascata.</div>
+      <span class="print-tag">1 por CREDE</span><span class="print-tag when">uso: minuto 160, Bloco 5</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">✉️</div><div>
+      <div class="print-t">10 · Ficha de declaração lacrada</div>
+      <div class="print-d">Opcional — só se você for rodar a variação com aparelho único. Um oitavo de A4 com dois campos grandes, <b>a</b> e <b>b</b>, e o nome da equipe. Preenchida, dobrada e entregue antes de o formador conferir na tela. É o que devolve o suspense que a validação individual dava.</div>
+      <span class="print-tag">4 por equipe · só na variação</span><span class="print-tag when">uso: substitui a declaração no app</span>
+    </div></div>
+
+    <div class="print"><div class="print-ico">📎</div><div>
+      <div class="print-t">11 · Este caderno de condução</div>
+      <div class="print-d">Imprima esta própria página pelo navegador (Ctrl+P / Cmd+P): a folha de estilo já está preparada e as sete abas saem em sequência, em preto sobre branco, sem a barra de cronômetro. Serve como material de referência para os formadores levarem para a CREDE.</div>
+      <span class="print-tag">1 por participante</span><span class="print-tag when">uso: entregue no fim, não no começo</span>
+    </div></div>
+
+  </div>
+
+  <div class="callout callout-w">
+    <p><strong>O que não se imprime, por decisão pedagógica.</strong> O <b>protocolo de sondagem</b> não tem versão impressa e nunca terá. Ele é escrito à mão, durante a oficina, por quem o formulou. Um cartaz pronto — por mais bonito que seja — denuncia que a descoberta era encenação e transforma a atividade em execução de receita.</p>
+  </div>
+
+  <div class="slabel">🧰 Lista 2 · Materiais não imprimíveis a providenciar</div>
+
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">Aparelhos e energia</div>
+      <ul class="plist tight">
+        <li><b>1 celular por equipe de 3</b>, com navegador atualizado (Chrome, Safari ou Edge). Aparelhos antigos funcionam;</li>
+        <li><b>2 celulares reserva</b> carregados, seus ou emprestados, para equipes sem aparelho;</li>
+        <li><b>Notebook do formador</b> — necessário para a projeção, para o Painel e para a edição do arquivo no Bloco 4;</li>
+        <li><b>Projetor ou TV + cabo HDMI + adaptador</b> compatível com o seu notebook. Leve o seu próprio adaptador;</li>
+        <li><b>Réguas de tomada e extensão</b>, mais 1 ou 2 <b>power banks</b>. Uma oficina de 3 horas com tela ligada consome bateria;</li>
+        <li><b>Pen drive</b> com o arquivo do aplicativo — o plano B para quando o QR não abrir.</li>
+      </ul>
+    </div>
+    <div class="duo-c v">
+      <div class="duo-t">Escrita e registro</div>
+      <ul class="plist tight">
+        <li><b>Cartolinas ou folhas de flip chart</b> — no mínimo 2: uma para o protocolo, uma reserva;</li>
+        <li><b>Marcadores grossos em 3 cores</b>, testados antes (o marcador seco na hora do protocolo é um clássico);</li>
+        <li><b>Fita crepe</b> para afixar cartolina e placar sem danificar a parede;</li>
+        <li><b>Quadro branco ou lousa + apagador</b>, para a sondagem ao vivo da abertura;</li>
+        <li><b>Canetas e lápis</b> — 1 por participante, mais margem; <b>borrachas</b> para o placar preenchido a lápis;</li>
+        <li><b>Pranchetas</b> (1 por equipe) se a sala não tiver mesa, e uma para você circular anotando.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="duo">
+    <div class="duo-c">
+      <div class="duo-t">Ritmo e ambiente</div>
+      <ul class="plist tight">
+        <li><b>Cronômetro visível para todos</b> — a barra de condução desta página projetada, ou um timer de celular grande na tela;</li>
+        <li><b>Sinal sonoro</b> (sino, apito ou o próprio timer) para marcar o fim das fases sem precisar gritar;</li>
+        <li><b>Sala com mesas em grupos de 3</b>, organizada antes da chegada. Reorganizar mesas depois custa dez minutos;</li>
+        <li><b>Etiquetas adesivas ou crachás</b> para nomes de equipe;</li>
+        <li><b>Envelopes pequenos</b> — só se for usar a variação com declaração lacrada;</li>
+        <li><b>Café e água</b> no intervalo do encontro de formação. Vale mais do que parece num bloco de 3 horas.</li>
+      </ul>
+    </div>
+    <div class="duo-c r">
+      <div class="duo-t">Decisões a tomar antes, não na hora</div>
+      <ul class="plist tight">
+        <li><b>Calculadora:</b> permitida ou não na máquina 04? Recomendo permitir no 8.º ano e proibir no 9.º;</li>
+        <li><b>Versão do arquivo:</b> com ou sem os atalhos 0 e 1? Uma só versão para todo o encontro;</li>
+        <li><b>Placar:</b> de parede ou projetado pelo Painel? Improvisar isso na hora esfria o torneio;</li>
+        <li><b>Duração:</b> 180, 120 ou 90 minutos — e o que sai, decidido no papel antes de entrar na sala;</li>
+        <li><b>Fotos e registro:</b> combine antes com a equipe da CREDE quem fotografa e o que será usado como evidência.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mats">
+    <span class="mat">1 celular por trio</span>
+    <span class="mat">2 celulares reserva</span>
+    <span class="mat">Notebook + projetor + adaptador</span>
+    <span class="mat">Réguas de tomada e power bank</span>
+    <span class="mat">Pen drive com o arquivo</span>
+    <span class="mat">2 cartolinas</span>
+    <span class="mat">Marcadores em 3 cores</span>
+    <span class="mat">Fita crepe</span>
+    <span class="mat">Quadro e apagador</span>
+    <span class="mat">Canetas, lápis e borrachas</span>
+    <span class="mat">Pranchetas</span>
+    <span class="mat">Cronômetro visível</span>
+    <span class="mat">Sinal sonoro</span>
+    <span class="mat">Etiquetas de equipe</span>
+    <span class="mat">Envelopes (variação)</span>
+  </div>
+
+  <div class="callout callout-v">
+    <p><strong>A camada que não pode faltar.</strong> Se o encontro terminar com os formadores sabendo <em>usar</em> o aplicativo, ele terá produzido dependência de ferramenta — exatamente o risco apontado no protocolo de apropriação gradual. A oficina só se completa quando eles abrem o arquivo, veem as seis linhas que descrevem as seis máquinas e <b>alteram uma delas</b>. Usar é o eixo imediato; reconstruir é o eixo gradual.</p>
+  </div>
+
+</div>
+
+</div>
+
+<!-- ══════════════════ BARRA DE CONDUÇÃO AO VIVO ══════════════════ -->
+<div class="livebar" id="livebar">
+  <button class="lb-handle" onclick="lbToggle()" aria-expanded="false" aria-controls="lbBody">
+    <span>⏱ Condução ao vivo</span>
+    <span class="lb-now" id="lbNow">toque para abrir o cronômetro</span>
+  </button>
+  <div class="lb-body" id="lbBody">
+    <div class="lb-sel">
+      <button id="pgAula" class="on" onclick="lbProg('aula')">Aula · 60 min</button>
+      <button id="pgForm" onclick="lbProg('form')">Formação · 90 min</button>
+    </div>
+    <div class="lb-prog" id="lbProg"></div>
+    <div class="lb-main">
+      <div class="lb-clock" id="lbClock">00:00</div>
+      <div class="lb-meta">
+        <div class="lb-phase" id="lbPhase">Abertura · a caixa que ninguém abre</div>
+        <div class="lb-next" id="lbNext">previsto 8 min · a seguir: Fase 1 · Treino livre</div>
+      </div>
+      <div class="lb-btns">
+        <button class="lb-b pri" id="lbPlay" onclick="lbPlay()">▶ iniciar</button>
+        <button class="lb-b" onclick="lbStep(-1)">◀ anterior</button>
+        <button class="lb-b" onclick="lbStep(1)">próxima ▶</button>
+        <button class="lb-b" onclick="lbReset()">⟲ zerar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>Duas Perguntas Bastam</b> · HTML de condução<br>
+  Protocolo de Apropriação Gradual do Pensamento Computacional — Eixo Imediato<br>
+  PAIC · Anos Finais · 8º e 9º anos
+</footer>
+
+<script>
+"use strict";
+
+/* ── abas ─────────────────────────────────────────── */
+function sw(ev, n) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  document.getElementById('t-' + n).classList.add('on');
+  ev.currentTarget.classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── cronômetro de condução ───────────────────────── */
+const PROG = {
+  aula: [
+    ["Abertura · a caixa que ninguém abre", 5],
+    ["Fase 1 · Treino livre, sem custo", 8],
+    ["Parada estratégica · a turma escreve o protocolo", 8],
+    ["Fase 2 · Torneio, seis máquinas", 20],
+    ["A Fantasma · formalizar a univocidade", 5],
+    ["Fase 3 · Construtor e duelo", 10],
+    ["Debriefing · vocabulário e máquina ruidosa", 4]
+  ],
+  form: [
+    ["Contrato e instalação", 10],
+    ["Abertura · a caixa que ninguém abre", 5],
+    ["Bloco 1 · Treino livre", 10],
+    ["Parada estratégica · protocolo escrito", 10],
+    ["Bloco 2 · Torneio", 15],
+    ["A Fantasma · formalização coletiva", 5],
+    ["Bloco 3 · Construtor e duelo", 15],
+    ["A matemática · e a máquina ruidosa", 10],
+    ["Bloco 4 · Replicar — o plano de cada CREDE", 10]
+  ]
+};
+
+let lb = { prog:"aula", idx:0, sec:0, run:false, tick:null };
+
+function lbToggle(){
+  const el = document.getElementById("livebar");
+  el.classList.toggle("open");
+  document.querySelector(".lb-handle").setAttribute("aria-expanded", el.classList.contains("open"));
+}
+function lbProg(p){
+  lb.prog = p; lb.idx = 0; lb.sec = 0; lbStop();
+  document.getElementById("pgAula").classList.toggle("on", p === "aula");
+  document.getElementById("pgForm").classList.toggle("on", p === "form");
+  lbBuild(); lbDraw();
+}
+function lbBuild(){
+  const wrap = document.getElementById("lbProg");
+  wrap.innerHTML = PROG[lb.prog].map((f,i) =>
+    '<div class="lb-seg" title="'+f[0]+'" onclick="lbGo('+i+')"><span></span></div>').join("");
+}
+function lbGo(i){ lb.idx = i; lb.sec = 0; lbDraw(); }
+function lbStep(d){
+  const n = PROG[lb.prog].length;
+  lb.idx = Math.max(0, Math.min(n - 1, lb.idx + d));
+  lb.sec = 0; lbDraw();
+}
+function lbPlay(){ lb.run ? lbStop() : lbStart(); }
+function lbStart(){
+  lb.run = true;
+  document.getElementById("lbPlay").textContent = "⏸ pausar";
+  lb.tick = setInterval(() => { lb.sec++; lbDraw(); }, 1000);
+}
+function lbStop(){
+  lb.run = false;
+  if(lb.tick){ clearInterval(lb.tick); lb.tick = null; }
+  document.getElementById("lbPlay").textContent = "▶ iniciar";
+}
+function lbReset(){ lbStop(); lb.idx = 0; lb.sec = 0; lbDraw(); }
+function mmss(s){
+  const m = Math.floor(Math.abs(s)/60), r = Math.abs(s)%60;
+  return (s<0?"−":"") + String(m).padStart(2,"0") + ":" + String(r).padStart(2,"0");
+}
+function lbDraw(){
+  const list = PROG[lb.prog], f = list[lb.idx], total = f[1]*60;
+  const left = total - lb.sec;
+  const clock = document.getElementById("lbClock");
+  clock.textContent = mmss(left);
+  clock.classList.toggle("over", left < 0);
+
+  document.getElementById("lbPhase").textContent = f[0];
+  const nxt = list[lb.idx+1];
+  document.getElementById("lbNext").textContent =
+    "previsto " + f[1] + " min · " + (nxt ? "a seguir: " + nxt[0] : "última etapa");
+  document.getElementById("lbNow").textContent = mmss(left) + " · " + f[0];
+
+  document.querySelectorAll(".lb-seg").forEach((seg,i) => {
+    seg.classList.toggle("done", i < lb.idx);
+    seg.classList.toggle("cur", i === lb.idx);
+    const bar = seg.querySelector("span");
+    if(i < lb.idx) bar.style.right = "0%";
+    else if(i > lb.idx) bar.style.right = "100%";
+    else bar.style.right = Math.max(0, 100 - (lb.sec/total)*100) + "%";
+  });
+}
+lbBuild(); lbDraw();
+</script>
+</body>
+</html>

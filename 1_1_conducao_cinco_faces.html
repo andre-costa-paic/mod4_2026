@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Condução · Cinco Faces do Mesmo Número</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Nunito+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+--f-head:'Fraunces',serif;--f-body:'Nunito Sans',sans-serif;--f-mono:'JetBrains Mono',monospace;
+--accent:#B4531C;--accent-soft:#FCF0E6;--accent-deep:#7A340A;
+--h-bg:#5C2A0E;--h-accent:#F2B98A;--h-sub:#E0C3AC;--h-eye:#E09B62;
+--ink:#1c1512;--ink-mid:#443a34;--ink-soft:#7a6d64;--border:#e9ddd3;--bg:#fdfaf7;--bg-card:#fff;--radius:14px;
+--r1:#117A65;--r1s:#E4F4EF;--r2:#1A5276;--r2s:#E7F1F8;--r3:#C05A12;--r3s:#FDF0E4;--r4:#6C3483;--r4s:#F4ECF8;--r5:#A02C2C;--r5s:#FBEAEA;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.top{background:var(--h-bg);padding:1rem 1.5rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.top-t{font-family:var(--f-head);font-size:17px;font-weight:600;color:#fff;flex:1}
+.top-t em{font-style:italic;color:var(--h-accent)}
+.top-badge{font-family:var(--f-body);font-size:11px;font-weight:600;color:var(--h-sub);background:rgba(255,255,255,.08);border:.5px solid rgba(242,185,138,.3);padding:4px 12px;border-radius:3px}
+.container{max-width:860px;margin:0 auto;padding:0 1.2rem 3rem}
+
+/* ── TABS ── */
+.tabs-wrap{position:sticky;top:0;background:var(--bg);z-index:30;padding:.9rem 0 0;margin-bottom:1.4rem}
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:none;font-family:var(--f-body);font-size:12px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;padding:10px 14px 12px;border-bottom:3px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:7px;letter-spacing:.01em}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-soft)}
+.tab:hover:not(.on){color:var(--ink-mid);background:rgba(180,83,28,.04)}
+.tab .tn{min-width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:.5px solid var(--accent);flex-shrink:0}
+.tab.on .tn{background:var(--accent);color:#fff}
+.tab.done{color:var(--r1)}
+.tab.done .tn{background:var(--r1s);color:var(--r1);border-color:var(--r1)}
+.pane{display:none;animation:fade .22s ease}
+.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── SPEECH ── */
+.speech{background:linear-gradient(135deg,var(--h-bg),#8A4218);border-radius:var(--radius);padding:1.8rem 2rem;margin-bottom:1.3rem;position:relative;overflow:hidden}
+.speech::before{content:'"';position:absolute;left:12px;top:-6px;font-family:var(--f-head);font-size:120px;color:rgba(242,185,138,.12);line-height:1}
+.speech p{font-family:var(--f-head);font-size:clamp(17px,3.2vw,24px);font-weight:400;font-style:italic;color:#FAEADB;line-height:1.55;position:relative;z-index:1}
+.speech p+p{margin-top:12px}
+.speech p b{color:var(--h-accent);font-weight:600;font-style:normal}
+
+/* ── INSTRUÇÃO ── */
+.inst{background:var(--bg-card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:1.1rem 1.4rem;margin-bottom:1rem}
+.inst-t{font-family:var(--f-head);font-size:14px;font-weight:600;color:var(--accent-deep);margin-bottom:9px}
+.inst p,.inst li{font-size:14px;color:var(--ink-mid);line-height:1.7}
+.inst ul{list-style:none;padding:0}
+.inst li{padding-left:20px;position:relative;margin-bottom:7px}
+.inst li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:11px;line-height:1.75}
+.inst b{color:var(--ink)}
+
+/* ── TIMER ── */
+.timer-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:1.5rem 0}
+.timer{font-family:var(--f-mono);font-size:clamp(48px,12vw,96px);font-weight:600;color:var(--ink);letter-spacing:.02em;line-height:1;transition:color .3s}
+.timer.low{color:var(--r5)}
+.timer.done{color:var(--r1)}
+.timer-label{font-family:var(--f-body);font-size:13px;color:var(--ink-soft);min-height:20px}
+.timer-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--f-body);font-size:12px;font-weight:700;padding:9px 18px;border-radius:100px;cursor:pointer;transition:all .15s;border:1.5px solid}
+.btn-a{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-a:hover{filter:brightness(1.1)}
+.btn-g{background:transparent;border-color:var(--border);color:var(--ink-soft)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.btn-w{background:var(--r5s);border-color:var(--r5);color:var(--r5)}
+.btn-w:hover{filter:brightness(.95)}
+
+/* ── REGRAS (compactas) ── */
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.2rem}
+@media(max-width:640px){.rules{grid-template-columns:1fr}}
+.rule{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;text-align:center}
+.rule-ico{font-size:22px;margin-bottom:6px}
+.rule-t{font-family:var(--f-head);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.rule-d{font-size:12px;color:var(--ink-mid);line-height:1.5}
+
+/* ── CALLOUT compacto ── */
+.tip{background:var(--accent-soft);border:1px solid rgba(180,83,28,.25);border-radius:var(--radius);padding:.9rem 1.2rem;margin:1rem 0;font-size:13px;color:var(--accent-deep);line-height:1.6}
+.tip b{font-weight:700}
+.warn{background:var(--r5s);border:1px solid rgba(160,44,44,.25);border-radius:var(--radius);padding:.9rem 1.2rem;margin:1rem 0;font-size:13px;color:#7A1E1E;line-height:1.6}
+
+/* ── CONVERSÕES ── */
+.conv{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:1rem 0}
+@media(max-width:520px){.conv{grid-template-columns:1fr}}
+.cv{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:.7rem .9rem;display:flex;align-items:center;gap:10px}
+.cv-a{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--accent);min-width:50px}
+.cv-d{font-size:12px;color:var(--ink-mid);line-height:1.45}
+
+/* ── GRUPO TIMER (apresentação) ── */
+.grp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:1rem 0}
+@media(max-width:600px){.grp-grid{grid-template-columns:repeat(2,1fr)}}
+.grp{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);padding:1rem .8rem;text-align:center;cursor:pointer;transition:all .2s}
+.grp.act{border-color:var(--accent);box-shadow:0 0 0 3px rgba(180,83,28,.18);background:var(--accent-soft)}
+.grp.ok{border-color:var(--r1);background:var(--r1s)}
+.grp-n{font-family:var(--f-head);font-size:28px;font-weight:700;color:var(--ink);line-height:1}
+.grp-t{font-family:var(--f-mono);font-size:20px;font-weight:600;color:var(--accent);margin-top:6px}
+.grp.act .grp-t{color:var(--accent-deep)}
+.grp.ok .grp-n,.grp.ok .grp-t{color:var(--r1)}
+.grp-order{margin:1.2rem 0;text-align:center}
+.grp-order p{font-size:13px;color:var(--ink-mid);line-height:1.7}
+
+/* ── MATCHING GAME ── */
+.match-intro{text-align:center;margin-bottom:1.5rem}
+.match-intro p{font-family:var(--f-head);font-size:clamp(16px,2.8vw,22px);font-weight:600;color:var(--accent-deep);line-height:1.4}
+.match-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:1.3rem}
+.mcard{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.4rem;
+  cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.mcard:hover:not(.open){border-color:var(--accent);box-shadow:0 4px 18px rgba(180,83,28,.12);transform:translateY(-1px)}
+.mcard.open{border-color:var(--r1);background:var(--r1s)}
+.mc-txt{font-size:14.5px;color:var(--ink-mid);line-height:1.65}
+.mc-src{font-size:11px;color:var(--ink-soft);margin-top:6px;font-style:italic}
+.mc-rev{display:none;margin-top:12px;padding-top:10px;border-top:2px dashed var(--r1);text-align:center}
+.mcard.open .mc-rev{display:block}
+.mc-num{font-family:var(--f-head);font-size:clamp(28px,6vw,48px);font-weight:700;color:var(--r1);line-height:1.1}
+.mc-faces{font-family:var(--f-mono);font-size:13px;color:var(--ink-mid);margin-top:4px}
+.mc-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:8px}
+.mc-tag.ex{background:var(--r1s);color:var(--r1)}
+.mc-tag.ar{background:var(--r5s);color:var(--r5)}
+.mc-obs{font-size:11.5px;color:var(--r5);margin-top:6px;line-height:1.45}
+.mc-hint{font-size:11px;color:var(--ink-soft);text-align:right;margin-top:4px;letter-spacing:.04em}
+.mcard.open .mc-hint{display:none}
+.match-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.score{text-align:center;margin:1rem 0;font-family:var(--f-head);font-size:16px;color:var(--ink-soft)}
+
+/* ── NAV rodapé ── */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-info{font-size:12px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-t">Cinco Faces <em>do Mesmo Número</em></div>
+  <span class="top-badge">30 min</span>
+  <span class="top-badge">acolhida</span>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)"><span class="tn">1</span>Largada</button>
+      <button class="tab" onclick="go(1)"><span class="tn">2</span>A busca</button>
+      <button class="tab" onclick="go(2)"><span class="tn">3</span>A prova</button>
+      <button class="tab" onclick="go(3)"><span class="tn">4</span>Apresentação</button>
+      <button class="tab" onclick="go(4)"><span class="tn">5</span>Revelação</button>
+    </div>
+  </div>
+
+<!-- ═══════ ETAPA 1 ═══════ -->
+<div class="pane on" id="p0">
+  <div class="speech">
+    <p>Cada um de vocês <b>é um número</b>.</p>
+    <p>Existem outras pessoas que são <b>exatamente o mesmo número</b> que você.</p>
+    <p><b>Reúnam-se.</b></p>
+  </div>
+
+  <div class="nav">
+    <span class="nav-info">etapa 1 de 5</span>
+    <button class="btn btn-a" onclick="go(1)">iniciar a busca →</button>
+  </div>
+</div>
+
+<!-- ═══════ ETAPA 2 ═══════ -->
+<div class="pane" id="p1">
+  <div class="rules">
+    <div class="rule"><div class="rule-ico">🗣️</div><div class="rule-t">Perguntar e explicar</div><div class="rule-d">Não vale exibir o crachá em silêncio. É obrigatório <b>perguntar</b> em voz alta.</div></div>
+    <div class="rule"><div class="rule-ico">🚫</div><div class="rule-t">Sem calculadora</div><div class="rule-d">Todas as contas são <b>de cabeça</b> ou no papel.</div></div>
+    <div class="rule"><div class="rule-ico">🤝</div><div class="rule-t">Quinteto completo ajuda</div><div class="rule-d">Quem já encontrou o grupo <b>não senta</b>: ajuda quem está procurando.</div></div>
+  </div>
+
+  <div class="warn" id="rescue" style="display:none"><b>⏰ 2 minutos restantes!</b> Se ainda houver gente perdida: "quem não encontrou seu grupo, <b>levante o crachá acima da cabeça</b> e fique parado." Os parados viram pontos de referência.</div>
+
+  <div class="inst">
+    <div class="inst-t">O que pode ser observado na sala de aula</div>
+    <ul>
+      <li>Quem converte de cabeça e explica ao outro → <b>fluência entre registros</b></li>
+      <li>Quem reconhece só a porcentagem → registro dominante único</li>
+      <li>Quem junta por semelhança visual (0,7 com 0,75) → <b>armadilha propositada</b></li>
+      <li>Quem espera ser encontrado → insegurança, o resgate resolve</li>
+    </ul>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(0)">← largada</button>
+    <span class="nav-info">etapa 2 de 5</span>
+    <button class="btn btn-a" onclick="go(2)">a prova →</button>
+  </div>
+</div>
+
+<!-- ═══════ ETAPA 3 ═══════ -->
+<div class="pane" id="p2">
+  <div class="speech">
+    <p>Cada número determina uma equipe.</p>
+    <p>Tarefas:</p>
+    <p>- <b>Escolham uma ordem de conversão entre as faces:</b> decimal, fração, porcentagem e figura.</p>
+    <p>- <b>Montem um fluxograma</b> (mapa mental) <b>que mostre como converter de uma face para outra na ordem que você escolheu.</b></p>
+  </div>
+
+  <div class="timer-wrap">
+    <div class="timer" id="t2">10:00</div>
+    <div class="timer-label" id="t2l">pronto para iniciar</div>
+    <div class="timer-btns">
+      <button class="btn btn-a" onclick="startT(2,300)">▶ iniciar 10 minutos</button>
+      <button class="btn btn-g" onclick="stopT(2)">⏸ pausar</button>
+      <button class="btn btn-g" onclick="resetT(2,300)">↺</button>
+    </div>
+  </div>
+
+  <div class="conv">
+    <div class="cv"><div class="cv-a">fração → decimal</div></div>
+    <div class="cv"><div class="cv-a">decimal → porcentagem</div></div>
+    <div class="cv"><div class="cv-a">porcentagem → decimal</div></div>
+    <div class="cv"><div class="cv-a">figura → fração</div></div>
+    <div class="cv"><div class="cv-a">fração → porcentagem</div></div>
+    <div class="cv"><div class="cv-a">decimal → figura</div></div>
+    <div class="cv"><div class="cv-a">figura → decimal</div></div>
+    <div class="cv"><div class="cv-a">figura → porcentagem</div></div>
+  </div>
+
+  <div class="warn"><b>Oportunidade de Recomposição na mesa do 1/3.</b> É a que vai travar: 0,333… é dízima periódica e 33,3% é um arredondamento.</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(1)">← a busca</button>
+    <span class="nav-info">etapa 3 de 5</span>
+    <button class="btn btn-a" onclick="go(3)">apresentação →</button>
+  </div>
+</div>
+
+<!-- ═══════ ETAPA 4 ═══════ -->
+<div class="pane" id="p3">
+  <div class="inst">
+    <div class="inst-t">Ordem da fala — fixa e cronometrada</div>
+    <ul>
+      <li><b>①</b> Apresentação do número nas cinco faces</li>
+      <li><b>②</b> Mostra a sexta face e explica em uma frase</li>
+      <li><b>③</b> Apresentação do fluxograma criado</li>
+    </ul>
+  </div>
+
+  <div class="grp-grid" id="grps"></div>
+
+  <div class="timer-wrap">
+    <div class="timer" id="t4">02:00</div>
+    <div class="timer-label" id="t4l">clique em um grupo para iniciar</div>
+    <div class="timer-btns">
+      <button class="btn btn-a" id="t4s" onclick="startT(4,120)">▶ 2 minutos</button>
+      <button class="btn btn-g" onclick="stopT(4)">⏸</button>
+      <button class="btn btn-g" onclick="resetT(4,120)">↺</button>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(2)">← a prova</button>
+    <span class="nav-info">etapa 4 de 5</span>
+    <button class="btn btn-a" onclick="go(4)">revelação →</button>
+  </div>
+</div>
+
+<!-- ═══════ ETAPA 5 ═══════ -->
+<div class="pane" id="p4">
+  <div class="speech">
+    <p>Os números <b>não foram sorteados</b>.</p>
+    <p>Cada um deles é um <b>dado real</b> sobre tecnologia, ética e educação.</p>
+    <p>Eu vou mostrar <b>oito dados</b>, e vocês vão me dizer dos números a seguir corresponde a cada dado:</p>
+    <p>7/10 <b>--</b> 9/10 <b>--</b> 3/4 <b>--</b> 3/5 <b>--</b> 2/5 <b>--</b> 1/3 <b>--</b> 1/8 <b>--</b> 1/10</b></p>
+  </div>
+
+  <div class="match-intro">
+    <p>Clique em cada dado para revelar o número correspondente</p>
+  </div>
+
+  <div class="match-bar">
+    <button class="btn btn-a" id="mAll">revelar todos</button>
+    <button class="btn btn-g" id="mNone">fechar todos</button>
+  </div>
+
+  <div class="match-grid" id="matchGrid"></div>
+  <div class="score" id="mScore">0 de 8 revelados</div>
+
+  <div class="nav">
+    <button class="btn btn-g" onclick="go(3)">← apresentação</button>
+    <span class="nav-info">etapa 5 de 5 · fim da acolhida</span>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══ NAVEGAÇÃO ═══ */
+const tabs=[...document.querySelectorAll('#tabs .tab')];
+const panes=[...document.querySelectorAll('.pane')];
+let cur=0;
+function go(i){
+  if(cur<i) tabs[cur].classList.add('done');
+  tabs.forEach(t=>t.classList.remove('on'));
+  panes.forEach(p=>p.classList.remove('on'));
+  tabs[i].classList.add('on');
+  panes[i].classList.add('on');
+  cur=i;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ═══ TIMERS ═══ */
+const timers={};
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startT(id,dur){
+  if(timers[id]&&timers[id].iv) return;
+  const el=document.getElementById('t'+id), lb=document.getElementById('t'+id+'l');
+  if(!timers[id]) timers[id]={rem:dur};
+  el.classList.remove('done');
+  lb.textContent='em andamento';
+  timers[id].iv=setInterval(()=>{
+    timers[id].rem--;
+    const r=timers[id].rem;
+    el.textContent=fmtT(Math.max(0,r));
+    el.classList.toggle('low',r<=15&&r>0);
+    if(id===1&&r===120){const rs=document.getElementById('rescue');if(rs)rs.style.display='block';}
+    if(r<=0){
+      clearInterval(timers[id].iv);timers[id].iv=null;
+      el.textContent='00:00';el.classList.remove('low');el.classList.add('done');
+      lb.textContent='tempo esgotado';
+    }
+  },1000);
+}
+function stopT(id){
+  if(timers[id]&&timers[id].iv){clearInterval(timers[id].iv);timers[id].iv=null;
+    document.getElementById('t'+id+'l').textContent='pausado';}
+}
+function resetT(id,dur){
+  stopT(id);timers[id]={rem:dur};
+  const el=document.getElementById('t'+id);
+  el.textContent=fmtT(dur);el.classList.remove('low','done');
+  document.getElementById('t'+id+'l').textContent='pronto para iniciar';
+  if(id===1){const rs=document.getElementById('rescue');if(rs)rs.style.display='none';}
+}
+
+/* ═══ GRUPOS (apresentação) ═══ */
+const GRUPOS=['7/10','2/5','3/5','1/3'];
+const grps=document.getElementById('grps');
+let activeGrp=-1;
+GRUPOS.forEach((g,i)=>{
+  const d=document.createElement('div');d.className='grp';d.dataset.i=i;
+  d.innerHTML='<div class="grp-n">Grupo '+(i+1)+'</div><div class="grp-t">'+g+'</div>';
+  d.addEventListener('click',()=>{
+    document.querySelectorAll('.grp').forEach(x=>x.classList.remove('act'));
+    if(activeGrp>=0&&activeGrp!==i) document.querySelectorAll('.grp')[activeGrp].classList.add('ok');
+    d.classList.add('act');activeGrp=i;
+    resetT(4,120); startT(4,120);
+  });
+  grps.appendChild(d);
+});
+
+/* ═══ MATCHING GAME ═══ */
+const DADOS=[
+ {fr:'7/10',faces:'0,7 · 70% · 7 em cada 10',
+  txt:'__ em cada __ estudantes do ensino médio que usam internet já recorrem a ferramentas de IA generativa para fazer pesquisas escolares.',
+  src:'TIC Educação 2024 — Cetic.br',tipo:'exato'},
+ {fr:'9/10',faces:'0,9 · 90% · 9 em cada 10',
+  txt:'__% das plataformas educacionais analisadas monitoravam — ou tinham capacidade de monitorar — crianças e adolescentes, muitas fora do ambiente escolar e sem consentimento.',
+  src:'Human Rights Watch, 2022',tipo:'arredondado',
+  obs:'89% → 9/10 = 90%. Diferença: 1 p.p.'},
+ {fr:'3/4',faces:'0,75 · 75% · 3 em cada 4',
+  txt:'A OCDE é a Organização para a Cooperação e Desenvolvimento Econômico, um grupo internacional formado por dezenas de países que serve como um fórum para debater políticas públicas, economias de mercado e o bem-estar social. Entre os professores da OCDE que não usaram IA, __% dizem que o motivo é não ter conhecimento e habilidade para ensinar com ela. No Brasil, 64%.',
+  src:'TALIS 2024 — OCDE / Inep',tipo:'exato'},
+ {fr:'3/5',faces:'0,6 · 60% · 6 em cada 10',
+  txt:'__ em cada __ professores brasileiros que não usaram IA dizem que a escola não tem infraestrutura para isso. A média da OCDE é 37%.',
+  src:'TALIS 2024 — OCDE / Inep',tipo:'exato'},
+ {fr:'2/5',faces:'0,4 · 40% · 4 em cada 10',
+  txt:'__ em cada __ estudantes brasileiros de 13 a 17 anos afirmam já ter sido alvo de bullying na escola.',
+  src:'PeNSE 2024 — IBGE',tipo:'exato'},
+ {fr:'1/3',faces:'0,333… · 33,3% · 1 em cada 3',
+  txt:'Apenas __% dos estudantes que usam IA generativa receberam alguma orientação da escola sobre uso seguro e responsável.',
+  src:'TIC Educação 2024 — Cetic.br',tipo:'arredondado',
+  obs:'32% → 1/3 ≈ 33,3%. Diferença: 1,3 p.p. E 1/3 não tem decimal finito.'},
+ {fr:'1/8',faces:'0,125 · 12,5% · 1 em cada 8',
+  txt:'__% dos adolescentes brasileiros sofreram bullying pela internet — em redes sociais ou aplicativos de mensagem.',
+  src:'PeNSE 2024 — IBGE',tipo:'arredondado',
+  obs:'__% → 1/8 = 12,5%. Diferença: 0,2 p.p.'},
+ {fr:'1/10',faces:'0,1 · 10% · 1 em cada 10',
+  txt:'Cerca de __ em cada __ adolescentes admite já ter praticado cyberbullying contra alguém.',
+  src:'PeNSE 2024 — IBGE',tipo:'exato'}
+];
+
+// embaralhar
+const shuffled=[...DADOS].sort(()=>Math.random()-.5);
+const mg=document.getElementById('matchGrid');
+shuffled.forEach(d=>{
+  const el=document.createElement('div');el.className='mcard';
+  el.innerHTML=
+    '<div class="mc-txt">'+d.txt+'</div>'+
+    '<div class="mc-src">'+d.src+'</div>'+
+    '<div class="mc-hint">clique para revelar</div>'+
+    '<div class="mc-rev">'+
+      '<div class="mc-num">'+d.fr+'</div>'+
+      '<div class="mc-faces">'+d.faces+'</div>'+
+      '<span class="mc-tag '+(d.tipo==='exato'?'ex':'ar')+'">'+d.tipo+'</span>'+
+      (d.obs?'<div class="mc-obs">⚠ '+d.obs+'</div>':'')+
+    '</div>';
+  el.addEventListener('click',()=>{el.classList.toggle('open');updScore();});
+  mg.appendChild(el);
+});
+
+function updScore(){
+  const n=[...mg.children].filter(c=>c.classList.contains('open')).length;
+  document.getElementById('mScore').textContent=n+' de 8 revelados';
+}
+document.getElementById('mAll').addEventListener('click',()=>{
+  [...mg.children].forEach((c,i)=>setTimeout(()=>{c.classList.add('open');updScore();},i*200));
+});
+document.getElementById('mNone').addEventListener('click',()=>{
+  [...mg.children].forEach(c=>c.classList.remove('open'));updScore();
+});
+
+/* ═══ ATALHOS DE TECLADO ═══ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowRight'&&cur<4){go(cur+1);}
+  if(e.key==='ArrowLeft'&&cur>0){go(cur-1);}
+});
+</script>
+</body>
+</html>
